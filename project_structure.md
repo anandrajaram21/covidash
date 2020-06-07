@@ -18,7 +18,6 @@
     - Plot number of deaths each day - 1 graph
     - Percentage growth - 1 graph
     - Recovery rate - 1 graph
-    - Clickable chloropleth ( if possible )
 
 ## Predictions
 
@@ -45,6 +44,7 @@
 ## Plotly Dash
 
 - To make an interactive dashboard, and display everything we analyzed, and everything we predicted
+- Clickable chloropleth ( if possible )
 
 ### Notes
 - Add screenshots of the project taken at different times (to prove values are not hard coded)

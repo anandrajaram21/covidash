@@ -49,3 +49,13 @@
 ### Notes
 - Add screenshots of the project taken at different times (to prove values are not hard coded)
 
+### Timeframes
+- Exploratory data analysis - 1 month
+- Predictions - 1 month
+- Plotly dash - 1 month
+
+### Only if we have time ( in order of preference )
+
+- State wise analysis on India, (and US too iff, time permits)
+- Make inferences from the EDA
+- Add countries to the detailed analysis

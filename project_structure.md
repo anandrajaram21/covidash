@@ -51,7 +51,7 @@
 
 ### Timeframes
 - Exploratory data analysis - 1 month
-- Predictions - 1 month
+- Predictions - 1.5 month
 - Plotly dash - 1 month
 
 ### Only if we have time ( in order of preference )

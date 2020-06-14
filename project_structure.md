@@ -9,15 +9,16 @@
 
 - Global outbreak analysis
 
-- Showing worst affected countries side by side for a direct comparison 
+- Showing worst affected countries side by side for a direct comparison - Done
 
 - Plotting chloropleths of the world map, for a nice interactive visualization (show details on hovering over the country)
 
 - Data for each of the top 5 countries to be analyzed
-    - Plot number of confirmed cases each day - 1 graph
-    - Plot number of deaths each day - 1 graph
-    - Percentage growth - 1 graph
-    - Recovery rate - 1 graph
+    - Plot number of confirmed cases each day - 1 graph - Done
+    - Plot number of deaths each day - 1 graph - Done
+    - Recovery rate - 1 graph - Done
+    
+- Probably add some stuff
 
 ## Predictions
 
@@ -27,7 +28,6 @@
     - Predict confirmed cases
     - Predict confirmed deaths
     - Recovery rate
-    - Percentage growth
 
 - Models we can use:
     - Decision tree regressor
@@ -45,6 +45,7 @@
 
 - To make an interactive dashboard, and display everything we analyzed, and everything we predicted
 - Clickable chloropleth ( if possible )
+- Update all data automatically
 
 ### Notes
 - Add screenshots of the project taken at different times (to prove values are not hard coded)
@@ -59,3 +60,7 @@
 - State wise analysis on India, (and US too iff, time permits)
 - Make inferences from the EDA
 - Add countries to the detailed analysis
+
+### Issues
+
+- Negative case values - needs to be fixed asap

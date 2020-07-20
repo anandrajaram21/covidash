@@ -41,7 +41,7 @@
 - Artificial Neural Network
     - Try and maximize the accuracy for each country
 
-## Plotly Dash
+## Streamlit
 
 - To make an interactive dashboard, and display everything we analyzed, and everything we predicted
 - Clickable chloropleth ( if possible )
@@ -60,7 +60,3 @@
 - State wise analysis on India, (and US too iff, time permits)
 - Make inferences from the EDA
 - Add countries to the detailed analysis
-
-### Issues
-
-- Negative case values - needs to be fixed asap

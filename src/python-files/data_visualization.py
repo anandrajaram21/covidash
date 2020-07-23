@@ -1,5 +1,5 @@
 # Imports
-import main
+import sys
 import os
 from datetime import datetime
 from datetime import date
@@ -8,6 +8,14 @@ import numpy as np
 import plotly
 import plotly.express as px
 import plotly.graph_objects as go
+import plotly.offline as pyo
+
+# To import the main.py file
+sys.path.append('../')
+from python_files import main
+
+# Setting up plotly to work offline and in jupyter notebooks
+pyo.init_notebook_mode()
 
 # Getting all the data
 confirmed_global, deaths_global, recovered_global, country_cases = main.collect_data()

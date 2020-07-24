@@ -14,9 +14,6 @@ import plotly.offline as pyo
 sys.path.append('../')
 from python_files import main
 
-# Setting up plotly to work offline and in jupyter notebooks
-pyo.init_notebook_mode()
-
 # Getting all the data
 confirmed_global, deaths_global, recovered_global, country_cases = main.collect_data()
 

@@ -12,4 +12,5 @@
 - After creating the environment, execute the following commands
 
 > source covid_env/bin/activate
+
 > pip install -r requirements.txt

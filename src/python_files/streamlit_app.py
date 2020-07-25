@@ -56,6 +56,19 @@ elif option == 'Global Pandemic Situation':
     st.write(graph2)
     st.write(graph3)
 
+elif option == 'Individual Country Analysis':
+    country_name = st.text_input('Enter Country Name', 'India')
+
+    st.write('Country name chosen is', country_name)
+
+    country_confirmed = main.get_new_cases(country_name)
+    country_deaths = main.get_new_deaths(country_name)
+    country_recoveries = main.get_new_recoveries(country_name)
+
+    st.write(main.get_plot(country_confirmed))
+    st.write(main.get_plot(country_deaths))
+    st.write(main.get_plot(country_recoveries))
+
 elif option == 'Safety Measures':
 
     safety =\
@@ -92,48 +105,3 @@ elif option == 'Safety Measures':
     """
     
     st.markdown(safety)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# country_name = st.text_input('Enter Country Name', 'India')
-
-# st.write('Country name chosen is', country_name)
-
-# country_confirmed = main.get_new_cases(country_name)
-# country_deaths = main.get_new_deaths(country_name)
-# country_recoveries = main.get_new_recoveries(country_name)
-
-# st.write(main.get_plot(country_confirmed))
-# st.write(main.get_plot(country_deaths))
-# st.write(main.get_plot(country_recoveries))

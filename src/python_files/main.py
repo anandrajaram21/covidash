@@ -131,7 +131,7 @@ Returns a plotly express object which you can then display with the show method 
 '''
 
 def get_plot(time_series):
-    fig = px.bar(time_series, x = 'date', y = 'cases', template = 'plotly_dark')
+    fig = px.bar(time_series, x = 'date', y = 'cases')
     return fig
 
 '''

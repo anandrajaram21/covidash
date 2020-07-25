@@ -8,8 +8,6 @@ This file should be imported into every other file, and the functions inside thi
 
 # COVID-19 Outbreak Analysis
 
-# Data Preprocessing
-
 # Imports
 import os
 from datetime import datetime
@@ -133,7 +131,7 @@ Returns a plotly express object which you can then display with the show method 
 '''
 
 def get_plot(time_series):
-    fig = px.bar(time_series, x = 'date', y = 'cases', template = 'plotly_dark')
+    fig = px.bar(time_series, x = 'date', y = 'cases')
     return fig
 
 '''
@@ -151,9 +149,11 @@ def plot_timeseries(country_name, func_name, title):
         yaxis_title = f'Number of {"deaths" if "deaths" in title else "new cases"}'
     )
     fig.show()
-
-# Creating a dictionary with keys as based_on parameter with its value being a list of other required parameters for the chloropleth function
-# The following dictionary can be used in other files as well
+    
+"""
+Creating a dictionary with keys as based_on parameter with its value being a list of other required parameters for the chloropleth function
+The following dictionary can be used in other files as well
+"""
 chloropleths = {
     "confirmed":["CONFIRMED CASES","No. of confirmed cases","blues_r"],
     "deaths":["NUMBER OF DEATHS","No. of deaths",'oranges_r'],
@@ -218,4 +218,5 @@ def chloropleth(based_on,title,bar_title,color_scale):
         )],
         paper_bgcolor="white"
     )
-    fig.show()
+    # fig.show()
+    return fig

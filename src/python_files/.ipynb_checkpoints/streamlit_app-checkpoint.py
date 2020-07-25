@@ -24,7 +24,9 @@ st.title("COVID-19 Pandemic Analysis")
 option = st.sidebar.selectbox('Choose your option', ('What is COVID-19', 'Global Pandemic Situation', 'Individual Country Analysis', 'Safety Measures', 'About Us'))
 
 if option == 'What is COVID-19':
-    covid_19 = """
+
+    covid_19 =\
+    """
     ## COVID-19
     Coronavirus disease 2019 (COVID-19) is an infectious disease caused by severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2). It was first identified in December 2019 in Wuhan, Hubei, China, and has resulted in an ongoing pandemic.
     ## Symptoms of COVID-19
@@ -35,10 +37,42 @@ if option == 'What is COVID-19':
     st.markdown(covid_19)
     
 elif option == 'Global Pandemic Situation':
-    st.write('Display graphs here')
+    # Chloropleth Setup
+    chloropleths = main.chloropleths
+
+    # Plotting the confirmed cases chloropleth
+    graph = 'confirmed'
+    graph1 = main.chloropleth(graph,chloropleths[graph][0],chloropleths[graph][1],chloropleths[graph][2])
+
+    # Plotting the deaths chloropleth
+    graph = 'deaths'
+    graph2 = main.chloropleth(graph,chloropleths[graph][0],chloropleths[graph][1],chloropleths[graph][2])
+
+    # Plotting the recovered cases chloropleth
+    graph = 'recovered'
+    graph3 = main.chloropleth(graph,chloropleths[graph][0],chloropleths[graph][1],chloropleths[graph][2])
+
+    st.write(graph1)
+    st.write(graph2)
+    st.write(graph3)
+
+elif option == 'Individual Country Analysis':
+    country_name = st.text_input('Enter Country Name', 'India')
+
+    st.write('Country name chosen is', country_name)
+
+    country_confirmed = main.get_new_cases(country_name)
+    country_deaths = main.get_new_deaths(country_name)
+    country_recoveries = main.get_new_recoveries(country_name)
+
+    st.write(main.get_plot(country_confirmed))
+    st.write(main.get_plot(country_deaths))
+    st.write(main.get_plot(country_recoveries))
 
 elif option == 'Safety Measures':
-    safety = """
+
+    safety =\
+    """
     ## **Safety Measures**
     ## 1. Wash Your Hands Often
     - Wash your hands often with soap and water for at least 20 seconds especially after you have been in a public place, or after blowing your nose, coughing, or sneezing.
@@ -71,14 +105,3 @@ elif option == 'Safety Measures':
     """
     
     st.markdown(safety)
-# country_name = st.text_input('Enter Country Name', 'India')
-
-# st.write('Country name chosen is', country_name)
-
-# country_confirmed = main.get_new_cases(country_name)
-# country_deaths = main.get_new_deaths(country_name)
-# country_recoveries = main.get_new_recoveries(country_name)
-
-# st.write(main.get_plot(country_confirmed))
-# st.write(main.get_plot(country_deaths))
-# st.write(main.get_plot(country_recoveries))

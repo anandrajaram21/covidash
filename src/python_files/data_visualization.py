@@ -33,12 +33,12 @@ chloropleths = main.chloropleths
 
 # Plotting the confirmed cases chloropleth
 graph = 'confirmed'
-main.chloropleth(graph,chloropleths[graph][0],chloropleths[graph][1],chloropleths[graph][2])
+main.chloropleth(graph,chloropleths[graph][0],chloropleths[graph][1],chloropleths[graph][2]).show()
 
 # Plotting the deaths chloropleth
 graph = 'deaths'
-main.chloropleth(graph,chloropleths[graph][0],chloropleths[graph][1],chloropleths[graph][2])
+main.chloropleth(graph,chloropleths[graph][0],chloropleths[graph][1],chloropleths[graph][2]).show()
 
 # Plotting the recovered cases chloropleth
 graph = 'recovered'
-main.chloropleth(graph,chloropleths[graph][0],chloropleths[graph][1],chloropleths[graph][2])
+main.chloropleth(graph,chloropleths[graph][0],chloropleths[graph][1],chloropleths[graph][2]).show()

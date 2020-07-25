@@ -218,4 +218,5 @@ def chloropleth(based_on,title,bar_title,color_scale):
         )],
         paper_bgcolor="white"
     )
-    fig.show()
+    # fig.show()
+    return fig

@@ -36,6 +36,7 @@ if option == 'What is COVID-19':
     """
     st.markdown(covid_19)
     
+
 elif option == 'Global Pandemic Situation':
     # Chloropleth Setup
     chloropleths = main.chloropleths

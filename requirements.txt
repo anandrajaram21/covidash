@@ -26,7 +26,6 @@ docutils==0.15.2
 entrypoints==0.3
 enum-compat==0.0.3
 ephem==3.7.7.1
-fbprophet==0.6
 gast==0.3.3
 google-auth==1.19.2
 google-auth-oauthlib==0.4.1
@@ -95,7 +94,6 @@ Pygments==2.6.1
 PyMeeus==0.3.7
 pyparsing==2.4.7
 pyrsistent==0.16.0
-pystan==2.19.1.1
 python-dateutil==2.8.1
 pytz==2020.1
 PyWavelets==1.1.1

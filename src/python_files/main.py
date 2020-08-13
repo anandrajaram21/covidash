@@ -51,7 +51,7 @@ def collect_data():
     confirmed_global.drop(columns = ['Province/State', 'Lat', 'Long'], inplace = True)
     deaths_global.drop(columns = ['Province/State', 'Lat', 'Long'], inplace = True)
     recovered_global.drop(columns = ['Province/State', 'Lat', 'Long'], inplace = True)
-
+    country_cases.drop(columns = ['Last_Update', 'Incident_Rate', 'People_Tested', 'People_Hospitalized', 'UID'], inplace = True)
     # Renaming the columns for easier access
     confirmed_global.rename(columns = {"Country/Region": "country"}, inplace = True)
     deaths_global.rename(columns = {"Country/Region": "country"}, inplace = True)
@@ -59,7 +59,6 @@ def collect_data():
 
     country_cases.rename(columns = {
         "Country_Region" : "country",
-        "Last_Update": "last",
         "Confirmed": "confirmed",
         "Deaths": "deaths",
         "Recovered" : "recovered",

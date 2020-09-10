@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import math
 import plotly.graph_objects as go
+import plotly
 from pmdarima import auto_arima
 from sklearn.model_selection import train_test_split
 from statsmodels.tsa.statespace.sarimax import SARIMAX
@@ -112,15 +113,15 @@ def mape(y_true, y_pred):
 
 ## Function for forecasting
 
-def Future(df,order,seasonal_order,train,test,data):
+def Future(order,seasonal_order,train,test,data):
     
-    model = SARIMAX(df['Total'],  
+    model = SARIMAX(data['Total'],  
                         order = order,  
                         seasonal_order = seasonal_order) 
     result = model.fit() 
   
-    forecast = result.predict(start = len(df),  
-                          end = (len(df)-1) + 14).rename('Forecast') 
+    forecast = result.predict(start = len(data),  
+                          end = (len(data)-1) + 14).rename('Forecast') 
     
  
     error_check = result.predict(start = len(train), end = len(train) - 1 +len(test))
@@ -141,10 +142,8 @@ def arima_predict(df_name,country):
     model = find_params(train)
     pred = Predict(model,train,test)
     mape_error = mape(test, pred["Prediction"])
-    
     order=model.get_params()['order']
     seasonal_order=model.get_params()['seasonal_order']
     
-    forecast,graph,error = Future(data,order, seasonal_order, train, test,data)
-    
+    forecast,graph,error = Future(order, seasonal_order, train, test,data)
     return forecast,graph,(error + np.std([error, mape_error]))

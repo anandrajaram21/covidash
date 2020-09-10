@@ -17,7 +17,12 @@ sys.path.append('../')
 from python_files import main
 
 # Getting all the data
-confirmed_global, deaths_global, recovered_global, country_cases = main.collect_data()
+@st.cache
+def collect_data():
+    confirmed_global, deaths_global, recovered_global, country_cases = main.collect_data()
+    return confirmed_global, deaths_global, recovered_global, country_cases
+
+confirmed_global, deaths_global, recovered_global, country_cases = collect_data()
 
 # Streamlit trials
 st.title("COVID-19 Pandemic Analysis")
@@ -26,6 +31,7 @@ option = st.sidebar.selectbox('Choose your option', ('What is COVID-19', 'Global
 
 if option == 'What is COVID-19':
 
+    st.image('./images/virus1.jpeg', use_column_width = True)
     covid_19 = vfs.covid_19
     
     st.markdown(covid_19)
@@ -33,6 +39,8 @@ if option == 'What is COVID-19':
 
 elif option == 'Global Pandemic Situation':
     st.write("Global Pandemic Situation")
+    country_name = st.selectbox('Choose a Country/Region', list(country_cases['country'].sort_values().unique()))
+    st.write(f'Country chosen is {country_name}')
 #     # Chloropleth Setup
 #     chloropleths = main.chloropleths
 

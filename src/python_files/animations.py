@@ -1,18 +1,15 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# #  Animations
-
-# In[1]:
-
+## Animations
 
 # Imports
+
+import sys
 from datetime import datetime,date,timedelta
 import pandas as pd
 import numpy as np
 import plotly.io as pio
 import plotly.graph_objects as go
 from plotly.offline import init_notebook_mode
+
 # To import the main.py file
 sys.path.append('../')
 from python_files import main
@@ -20,33 +17,17 @@ from python_files import main
 # Getting all the data
 confirmed_global, deaths_global, recovered_global, country_cases = main.collect_data()
 
+## BAR GRAPH
 
-
-# ## BAR GRAPH
-
-# In[3]:
-
-
-
-bar_df=confirmed_global.transpose()
-l=[datetime.strptime(date,"%m/%d/%y").strftime("20%y-%m-%d") for date in bar_df.index[1:]]
+bar_df = confirmed_global.transpose()
+l = [datetime.strptime(date,"%m/%d/%y").strftime("20%y-%m-%d") for date in bar_df.index[1:]]
 l.insert(0,0)
 bar_df.set_index(pd.Index(l),inplace=True)
-L=pd.to_datetime(l,utc=False)
-
-
-# In[12]:
-
+L = pd.to_datetime(l,utc=False)
 
 bar_df.set_index(pd.Index(L),inplace=True)
-bar_df=bar_df.transpose()
+bar_df = bar_df.transpose()
 pio.templates.default = "plotly"
-
-
-# In[13]:
-
-
-
 
 def daterange(date1, date2,n):
     for n in range(int ((date2 - date1).days)+1):
@@ -115,15 +96,4 @@ def animated_barchart(dataset, categrical_col, start, end, title , frame_rate = 
     )
     fig.show()
 
-
-# In[11]:
-
-
 animated_barchart(bar_df, '1970-01-01',bar_df.columns[1],bar_df.columns[-1],title = "VIZUALIZATION OF TOP 10 BY COMPARISON", frame_rate = 24)
-
-
-# In[ ]:
-
-
-
-

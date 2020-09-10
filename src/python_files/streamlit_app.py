@@ -106,3 +106,15 @@ elif option == 'Safety Measures':
     """
     
     st.markdown(safety)
+
+elif option == 'About Us':
+    
+    about = \
+    """
+    ### This project was made by 3 High school students
+    - Arunachala Amuda Murugan - [GitHub Profile](https://github.com/Majimearun)
+    - Anirudh Lakhotia - [GitHub Profile](https://github.com/anirudhlakhotia)
+    - Anand Rajaram - [GitHub Profile](https://github.com/anandrajaram21)
+    ### You can find the source code for this project [here](https://github.com/anandrajaram21/covid-19)
+    """
+    st.markdown(about)

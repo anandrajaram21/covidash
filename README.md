@@ -1,4 +1,4 @@
-# Exploratory and Predictive Analysis of the COVID-19 pandemic
+# Exploratory and Predictive Data Analysis of the COVID-19 pandemic
 
 ## How to reproduce the project on a local environment
 

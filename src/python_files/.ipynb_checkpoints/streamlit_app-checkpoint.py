@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 from datetime import date
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 import plotly
@@ -11,6 +12,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import plotly.offline as pyo
 import vars_for_streamlit as vfs
+import map 
 
 # To import the main.py file
 sys.path.append('../')
@@ -39,26 +41,29 @@ if option == 'What is COVID-19':
 
 elif option == 'Global Pandemic Situation':
     st.write("Global Pandemic Situation")
+    
+    metrics = ('Confirmed Cases', 'Recoveries', 'Deaths')
+    metric = st.selectbox('Choose any one', ('Confirmed Cases', 'Recoveries', 'Deaths'))
     country_name = st.selectbox('Choose a Country/Region', list(country_cases['country'].sort_values().unique()))
-    st.write(f'Country chosen is {country_name}')
-#     # Chloropleth Setup
-#     chloropleths = main.chloropleths
-
-#     # Plotting the confirmed cases chloropleth
-#     graph = 'confirmed'
-#     graph1 = main.chloropleth(graph,chloropleths[graph][0],chloropleths[graph][1],chloropleths[graph][2])
-
-#     # Plotting the deaths chloropleth
-#     graph = 'deaths'
-#     graph2 = main.chloropleth(graph,chloropleths[graph][0],chloropleths[graph][1],chloropleths[graph][2])
-
-#     # Plotting the recovered cases chloropleth
-#     graph = 'recovered'
-#     graph3 = main.chloropleth(graph,chloropleths[graph][0],chloropleths[graph][1],chloropleths[graph][2])
-
-#     st.write(graph1)
-#     st.write(graph2)
-#     st.write(graph3)
+    
+    country_cases_sorted = country_cases.sort_values('confirmed', ascending = False)
+    country_cases_sorted.index = [x for x in range(len(country_cases_sorted))]
+    
+    confirmed = dict(study = "confirmed",color = "blue")
+    recovered = dict(study = "recovered",color = "pink")
+    deaths = dict(study = "deaths",color = "red")
+    columns = ["country",["deaths","confirmed","recovered"],"Lat","Long_"]
+    
+    if metric == metrics[0]:
+        figure = map.plot_study(country_cases_sorted, columns, confirmed, country_name)
+    
+    elif metric == metrics[1]:
+        figure = map.plot_study(country_cases_sorted, columns, recovered, country_name)
+    
+    elif metric == metrics[2]:
+        figure = map.plot_study(country_cases_sorted, columns, deaths, country_name)
+        
+    st.plotly_chart(figure)
 
 elif option == 'Individual Country Analysis':
     st.write('Individual Country Analysis')
@@ -85,3 +90,9 @@ elif option == 'About Us':
     about = vfs.about
     
     st.markdown(about)
+    
+# elif option == 'Test':
+#     components.html("""
+#     <img src="https://raw.githubusercontent.com/anandrajaram21/covid-19/master/src/python_files/images/sanitizer.jpeg" alt="virus" style="width: 50%;">
+#     <img src="https://raw.githubusercontent.com/anandrajaram21/covid-19/master/src/python_files/images/virus1.jpeg" alt="sanitizer" style="width: 50%;">
+#     """, height = 1920)

@@ -96,4 +96,4 @@ def animated_barchart(dataset, categrical_col, start, end, title , frame_rate = 
     )
     fig.show()
 
-animated_barchart(bar_df, '1970-01-01',bar_df.columns[1],bar_df.columns[-1],title = "VIZUALIZATION OF TOP 10 BY COMPARISON", frame_rate = 24)
+# animated_barchart(bar_df, '1970-01-01',bar_df.columns[1],bar_df.columns[-1],title = "VIZUALIZATION OF TOP 10 BY COMPARISON", frame_rate = 24)

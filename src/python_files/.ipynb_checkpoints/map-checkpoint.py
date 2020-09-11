@@ -19,6 +19,11 @@ from python_files import main
 chart_studio.tools.set_credentials_file(username='chartstudiouser', api_key='m9KxT5JPEEukONNW8E50')
 mapbox_access_token = 'pk.eyJ1IjoiY2hhcnRzdHVkaW91c2VyIiwiYSI6ImNrZXd3bTBoNTA4bnYyemw4N3l5aDN5azIifQ.7e-KoC1KMXr_EKbkahgAQQ'
 
+# Getting country_cases_sorted 
+confirmed_global, deaths_global, recovered_global, country_cases = main.collect_data()
+country_cases_sorted = country_cases.sort_values('confirmed', ascending = False)
+country_cases_sorted.index = [x for x in range(len(country_cases_sorted))]
+
 def chainer(s):
     return list(chain.from_iterable(s.str.split(',')))
 

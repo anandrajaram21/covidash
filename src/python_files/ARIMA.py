@@ -15,8 +15,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # To import the main.py file
-sys.path.append('../')
-from python_files import main
+import main
 
 ## Data Preprocessing Functions
 

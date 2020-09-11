@@ -32,7 +32,7 @@ def option1(metric):
     metrics = ('Confirmed Cases', 'Recoveries', 'Deaths')
 
     confirmed = dict(study = "confirmed",color = "blue")
-    recovered = dict(study = "recovered",color = "pink")
+    recovered = dict(study = "recovered",color = "green")
     deaths = dict(study = "deaths",color = "red")
     columns = ["country",["deaths","confirmed","recovered"],"Lat","Long_"]
 
@@ -53,7 +53,7 @@ def option2(country_name, metric):
     metrics = ('Confirmed Cases', 'Recoveries', 'Deaths')
 
     confirmed = dict(study = "confirmed",color = "blue")
-    recovered = dict(study = "recovered",color = "pink")
+    recovered = dict(study = "recovered",color = "green")
     deaths = dict(study = "deaths",color = "red")
     columns = ["country",["deaths","confirmed","recovered"],"Lat","Long_"]
     

@@ -98,7 +98,7 @@ def create_basic_layout(latitude,longitude):
             ),
             pitch = 0,
             zoom = 2,
-            style = 'satellite-streets'
+            style = 'dark'
         ),
     )
     return layout

@@ -150,6 +150,7 @@ def option4():
 # The Main App Starts Here
 def main_app_function():
     st.title('COVID-19 Pandemic Analysis')
+
     options = ('What is COVID-19', 'Global Pandemic Situation', 'Individual Country Analysis', 'Safety Measures', 'About Us')
 
     choice = st.sidebar.selectbox('Choose an Option', options)

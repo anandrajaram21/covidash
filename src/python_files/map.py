@@ -89,7 +89,7 @@ def create_basic_layout(latitude,longitude):
     Creates a layout centred about the given latitude and longitude
     """
     layout = dict(
-        height = 800,
+        height = 400,
         margin = dict(t=0, b=0, l=0, r=0),
         font = dict(color='#FFFFFF', size=15),
         paper_bgcolor = '#000000',

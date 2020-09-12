@@ -14,6 +14,7 @@ cachetools==4.1.1
 certifi==2020.6.20
 cffi==1.14.2
 chardet==3.0.4
+chart-studio==1.1.0
 click==7.1.2
 cycler==0.10.0
 Cython==0.29.17

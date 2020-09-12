@@ -20,6 +20,62 @@ import map
 import ARIMA
 import animations
 import main
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+# The Data Collection and Preprocessing
+@st.cache
+def collect_data():
+    # Defining the variables required
+    filenames = ['time_series_covid19_confirmed_global.csv',
+                'time_series_covid19_deaths_global.csv',
+                'time_series_covid19_recovered_global.csv']
+
+    url = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/'
+
+    # Making the main dataframes required for the analysis
+    confirmed_global = pd.read_csv(url + filenames[0])
+    deaths_global = pd.read_csv(url + filenames[1])
+    recovered_global = pd.read_csv(url + filenames[2])
+    country_cases = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/web-data/data/cases_country.csv')
+
+    # Simple Data Cleaning - Removing and renaming the Columns
+
+    # Removing the Province/State column, as it is pretty much not of any use
+    confirmed_global.drop(columns = ['Province/State', 'Lat', 'Long'], inplace = True)
+    deaths_global.drop(columns = ['Province/State', 'Lat', 'Long'], inplace = True)
+    recovered_global.drop(columns = ['Province/State', 'Lat', 'Long'], inplace = True)
+    country_cases.drop(columns = ['Last_Update', 'Incident_Rate', 'People_Tested', 'People_Hospitalized', 'UID'], inplace = True)
+
+    # Renaming the columns for easier access
+    confirmed_global.rename(columns = {"Country/Region": "country"}, inplace = True)
+    deaths_global.rename(columns = {"Country/Region": "country"}, inplace = True)
+    recovered_global.rename(columns = {"Country/Region": "country"}, inplace = True)
+
+    country_cases.rename(columns = {
+        "Country_Region" : "country",
+        "Confirmed": "confirmed",
+        "Deaths": "deaths",
+        "Recovered" : "recovered",
+        "Active" : "active",
+        "Mortality_Rate": "mortality"
+    }, inplace = True)
+
+    # Removing some duplicate values from the table
+    confirmed_global = confirmed_global.groupby(['country'], as_index = False).sum()
+    deaths_global = deaths_global.groupby(['country'], as_index = False).sum()
+    recovered_global = recovered_global.groupby(['country'], as_index = False).sum()
+
+    # This value is being changed as there was an error in the original dataset that had to be modified
+    confirmed_global.at[178, '5/20/20'] = 251667
+
+    return (confirmed_global, deaths_global, recovered_global, country_cases)
+
+confirmed_global, deaths_global, recovered_global, country_cases = collect_data()
+
 # ---------------------------------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------------
@@ -101,7 +157,7 @@ def main_app_function():
     options = ('What is COVID-19', 'Global Pandemic Situation', 'Individual Country Analysis', 'Safety Measures', 'About Us')
 
     choice = st.sidebar.selectbox('Choose an Option', options)
-    confirmed_global, deaths_global, recovered_global, country_cases = main.collect_data()
+
     if choice == options[0]:
         option0()
 

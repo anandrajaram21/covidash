@@ -1,11 +1,17 @@
 ## Importing libraries
-
+import data
+import copy
 import sys
+import os
+from datetime import datetime
+from datetime import date
 import pandas as pd
 import numpy as np
-import math
-import plotly.graph_objects as go
 import plotly
+import plotly.io as pio
+import plotly.express as px
+import plotly.graph_objects as go
+import plotly.offline as pyo
 from pmdarima import auto_arima
 from sklearn.model_selection import train_test_split
 from statsmodels.tsa.statespace.sarimax import SARIMAX
@@ -14,26 +20,9 @@ from statsmodels.tsa.statespace.sarimax import SARIMAX
 import warnings
 warnings.filterwarnings("ignore")
 
-# To import the main.py file
-import main
-
-## Data Preprocessing Functions
-
-def get_data():
-    confirmed_global, deaths_global, recovered_global, country_cases = main.collect_data()
-    
-    recovered = recovered_global.groupby("country").sum().T
-    deaths = deaths_global.groupby("country").sum().T
-    confirmed = confirmed_global.groupby("country").sum().T
-    
-    deaths.index = pd.to_datetime(deaths.index, infer_datetime_format = True)
-    recovered.index = pd.to_datetime(recovered.index, infer_datetime_format = True)
-    confirmed.index = pd.to_datetime(confirmed.index, infer_datetime_format = True)
-    
-    return deaths, recovered, confirmed
+deaths, recovered, confirmed = data.deaths_global, data.recovered_global, data.confirmed_global
 
 def create_data_frame(dataframe,country):
-    deaths, recovered, confirmed = get_data()
     if dataframe == 'deaths':
         data = pd.DataFrame(index = deaths.index, data = deaths[country].values, columns = ["Total"])
 

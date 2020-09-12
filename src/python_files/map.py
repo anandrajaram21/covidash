@@ -1,23 +1,29 @@
 # Interactive Maps Using Plotly Chart Studio and Mapbox
 # Importing necessary libraries
+import data
+import copy
 import sys
+import os
+from datetime import datetime
+from datetime import date
+import pandas as pd
+import numpy as np
+import plotly
+import plotly.io as pio
+import plotly.express as px
+import plotly.graph_objects as go
+import plotly.offline as pyo
 import chart_studio.plotly as py
 import chart_studio
-import pandas as pd
-import plotly
-import numpy as np 
 from math import log,e
 from itertools import chain
-
-# Importing main.py 
-import main
 
 # Setting up credentials for the map 
 chart_studio.tools.set_credentials_file(username='chartstudiouser', api_key='m9KxT5JPEEukONNW8E50')
 mapbox_access_token = 'pk.eyJ1IjoiY2hhcnRzdHVkaW91c2VyIiwiYSI6ImNrZXd3bTBoNTA4bnYyemw4N3l5aDN5azIifQ.7e-KoC1KMXr_EKbkahgAQQ'
 
 # Getting country_cases_sorted 
-confirmed_global, deaths_global, recovered_global, country_cases = main.collect_data()
+confirmed_global, deaths_global, recovered_global, country_cases = data.confirmed_global, data.deaths_global, data.recovered_global, data.country_cases
 country_cases_sorted = country_cases.sort_values('confirmed', ascending = False)
 country_cases_sorted.index = [x for x in range(len(country_cases_sorted))]
 

@@ -1,11 +1,10 @@
 # Imports
+import data
 import copy
 import sys
 import os
 from datetime import datetime
 from datetime import date
-import streamlit as st
-import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 import plotly
@@ -13,18 +12,8 @@ import plotly.io as pio
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.offline as pyo
-
-# Custom file imports
-import vars_for_streamlit as vfs
-import map 
-import ARIMA
-import animations
-import main
-
-# ---------------------------------------------------------------------------------------------------------------------------------
-# ---------------------------------------------------------------------------------------------------------------------------------
-# ---------------------------------------------------------------------------------------------------------------------------------
-# ---------------------------------------------------------------------------------------------------------------------------------
+import streamlit as st
+import streamlit.components.v1 as components
 
 # The Data Collection and Preprocessing
 @st.cache
@@ -74,7 +63,14 @@ def collect_data():
 
     return (confirmed_global, deaths_global, recovered_global, country_cases)
 
-confirmed_global, deaths_global, recovered_global, country_cases = collect_data()
+data.confirmed_global, data.deaths_global, data.recovered_global, data.country_cases = collect_data()
+confirmed_global, deaths_global, recovered_global, country_cases = data.confirmed_global, data.deaths_global, data.recovered_global, data.country_cases
+
+# Custom file imports
+import vars_for_streamlit as vfs
+import map 
+import arima
+import animations
 
 # ---------------------------------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------------
@@ -123,15 +119,15 @@ def option2(country_name, metric):
 
     if metric == metrics[0]:
         figure = map.plot_study(map.country_cases_sorted, columns, confirmed, country_name)
-        forecast, graph, error = ARIMA.arima_predict('confirmed', country_name)
+        forecast, graph, error = arima.arima_predict('confirmed', country_name)
 
     elif metric == metrics[1]:
         figure = map.plot_study(map.country_cases_sorted, columns, recovered, country_name)
-        forecast, graph, error = ARIMA.arima_predict('recovered', country_name)
+        forecast, graph, error = arima.arima_predict('recovered', country_name)
     
     elif metric == metrics[2]:
         figure = map.plot_study(map.country_cases_sorted, columns, deaths, country_name)
-        forecast, graph, error = ARIMA.arima_predict('deaths', country_name)
+        forecast, graph, error = arima.arima_predict('deaths', country_name)
 
     return forecast, graph, error, figure
     

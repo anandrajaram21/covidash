@@ -1,21 +1,21 @@
 ## Animations
-
 # Imports
-
+import data
+import copy
 import sys
-from datetime import datetime,date,timedelta
+import os
+from datetime import datetime
+from datetime import date
+from datetime import timedelta
 import pandas as pd
 import numpy as np
+import plotly
 import plotly.io as pio
+import plotly.express as px
 import plotly.graph_objects as go
-from plotly.offline import init_notebook_mode
+import plotly.offline as pyo
 
-# To import the main.py file
-sys.path.append('../')
-from python_files import main
-
-# Getting all the data
-confirmed_global, deaths_global, recovered_global, country_cases = main.collect_data()
+confirmed_global, deaths_global, recovered_global, country_cases = data.confirmed_global, data.deaths_global, data.recovered_global, data.country_cases
 
 ## BAR GRAPH
 

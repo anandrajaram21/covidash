@@ -20,7 +20,15 @@ from statsmodels.tsa.statespace.sarimax import SARIMAX
 import warnings
 warnings.filterwarnings("ignore")
 
-deaths, recovered, confirmed = data.deaths_global, data.recovered_global, data.confirmed_global
+confirmed_global, deaths_global, recovered_global, country_cases = data.confirmed_global, data.deaths_global, data.recovered_global, data.country_cases
+
+recovered = recovered_global.groupby("country").sum().T
+deaths = deaths_global.groupby("country").sum().T
+confirmed = confirmed_global.groupby("country").sum().T
+
+deaths.index = pd.to_datetime(deaths.index, infer_datetime_format = True)
+recovered.index = pd.to_datetime(recovered.index, infer_datetime_format = True)
+confirmed.index = pd.to_datetime(confirmed.index, infer_datetime_format = True)
 
 def create_data_frame(dataframe,country):
     if dataframe == 'deaths':

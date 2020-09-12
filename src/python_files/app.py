@@ -89,7 +89,7 @@ def option0():
     st.markdown(covid_19)
 
 # The Global Pandemic Situation Page
-@st.cache
+@st.cache(show_spinner=False)
 def option1(metric):
     metrics = ('Confirmed Cases', 'Recoveries', 'Deaths')
 
@@ -110,7 +110,7 @@ def option1(metric):
     return figure
 
 # The Individual Country Analysis Page
-@st.cache(allow_output_mutation = True)
+@st.cache(allow_output_mutation = True,show_spinner=False)
 def option2(country_name, metric):
     metrics = ('Confirmed Cases', 'Recoveries', 'Deaths')
 
@@ -195,7 +195,7 @@ def main_app_function():
         st.plotly_chart(figure1)
         st.plotly_chart(graph1)
         st.write(forecast1)
-        st.write(f'Error is {error1}')
+        st.write(f'Allow an error of upto: {round(error1,2)}%')
 
     elif choice == options[3]:
         option3()

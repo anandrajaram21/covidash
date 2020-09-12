@@ -145,4 +145,6 @@ def arima_predict(df_name,country):
     seasonal_order=model.get_params()['seasonal_order']
     
     forecast,graph,error = Future(order, seasonal_order, train, test,data)
+    for i in range(len(forecast)):
+        forecast[i]=int(forecast[i])
     return forecast,graph,(error + np.std([error, mape_error]))

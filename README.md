@@ -30,7 +30,7 @@ If this is your first time running this command, it might take some time to run 
 **Step 4** - Run the docker container with the following command
 
 ```
-docker run --rm -p 8051:8051 -p 8888:8888 -e JUPYTER_ENABLE_LAB=yes -v "$PWD":/home/jovyan/work covid
+docker run --rm -p 8888:8888 -e JUPYTER_ENABLE_LAB=yes -v "$PWD":/home/jovyan/work covid
 ```
 
 This command fires up a docker container that contains a jupyter lab server. The terminal will show you 2 links that you can use to navigate to the jupyter lab server. Click on the second link, and jupyter lab should open up in your browser. 

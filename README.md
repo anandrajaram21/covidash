@@ -27,10 +27,17 @@ docker build -t covid:latest . # Do not forget the '.' at the end
 
 If this is your first time running this command, it might take some time to run as it has to fetch a base image from docker hub. Do not get scared if you see some red text appear on the screen. Pay no attention to it
 
+You can use this command instead if you dont want to build the image manually. This command pulls a Docker image from Docker Hub, that contains all the dependencies for the application
+
+```
+docker pull anandrajaram21/covid-19:latest
+```
+
 **Step 4** - Run the docker container with the following command
 
 ```
 docker run --rm -p 8888:8888 -e JUPYTER_ENABLE_LAB=yes -v "$PWD":/home/jovyan/work covid
+# Replace "covid" in the command with "anandrajaram21/covid" if you pulled the image from Docker Hub
 ```
 
 This command fires up a docker container that contains a jupyter lab server. The terminal will show you 2 links that you can use to navigate to the jupyter lab server. Click on the second link, and jupyter lab should open up in your browser. 

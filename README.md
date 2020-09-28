@@ -12,7 +12,7 @@
 
 **Step 1** - Install and set up Docker on your system. You can follow the installation instructions from [here](https://docs.docker.com/get-docker/)
 
-**Step 2** - Clone this Github repository on your system with change the working directory to the covid-19 repo with the following set of commands
+**Step 2** - Clone this Github repository on your system and change the working directory to the covid-19 repo with the following set of commands
 
 ```
 git clone https://github.com/anandrajaram21/covid-19.git

@@ -1,14 +1,8 @@
 # Exploratory and Predictive Data Analysis of the COVID-19 pandemic
 
-## How to reproduce the project on a local environment
-
-- There are 2 methods that you can use to setup a local development environment on your computer
-  1. Using Docker (recommended)
-  2. Using python venv
-
 ### Using Docker to set up a local development environment (recommended)
 
-- This method is recommended as you do not need anything installed on your system, except Docker. You don't even need Python installed.
+This method is recommended as you do not need anything installed on your system, except Docker. You don't even need Python installed.
 
 **Step 1** - Install and set up Docker on your system. You can follow the installation instructions from [here](https://docs.docker.com/get-docker/)
 
@@ -22,36 +16,59 @@ cd covid-19
 **Step 3** - Use the following command to build a docker image with the provided Dockerfile. 
 
 ```
-docker build -t covid:latest . # Do not forget the '.' at the end
+docker build -t covid . # Do not forget the '.' at the end
 ```
 
 If this is your first time running this command, it might take some time to run as it has to fetch a base image from docker hub. Do not get scared if you see some red text appear on the screen. Pay no attention to it
 
-You can use this command instead if you dont want to build the image manually. This command pulls a Docker image from Docker Hub, that contains all the dependencies for the application
+You can use this command instead if you don't want to build the image manually. This command pulls a Docker image from Docker Hub, that contains all the dependencies required to run the Python files and Jupyter Notebooks.
 
 ```
-docker pull anandrajaram21/covid-19:latest
+docker pull anandrajaram21/covid-19:dev
 ```
 
 **Step 4** - Run the docker container with the following command
 
 ```
-docker run --rm -p 8888:8888 -e JUPYTER_ENABLE_LAB=yes -v "$PWD":/home/jovyan/work covid
+docker run -it --name <use any name> -p 8888:8888 -v "$PWD":/home/jovyan/work covid bash
 # Replace "covid" in the command with "anandrajaram21/covid" if you pulled the image from Docker Hub
 ```
 
-This command fires up a docker container that contains a jupyter lab server. The terminal will show you 2 links that you can use to navigate to the jupyter lab server. Click on the second link, and jupyter lab should open up in your browser. 
+This command will start a terminal session in the Docker container. From here, you can now run `jupyter lab` or `jupyter notebook` depending on which one you prefer.
 
-**Step 5** - Once you are in the Jupyter Lab interface, navigate to the "work" folder. You should see all the project files present. The main project files are present in src/python_files and src/jupyter_notebooks. The other files are stuff you dont have to worry about.
+**Step 5** - Once you are in the Jupyter Lab/Notebook interface, navigate to the "work" folder. You should see all the project files present. The main project files are present in src/python_files and src/jupyter_notebooks. The other files are stuff you don't have to worry about. The changes made to the files are reflected on the host system, so you can just edit the files you need and exit.
 
-**Step 6** - If you want to run the streamlit web app, its very easy.
+**Step 6** - Once you are done making changes to the files, run `exit` in the Docker container's terminal, to come out of the Docker container. Then run the following command to stop the container.
 
-  **Step 6(a)** - Open the "Launcher" in Jupyter Lab, and fire up a terminal from there. This terminal allows you to execute commands in the docker container
+```
+docker stop <name provided in Step 4>
+```
 
-  **Step 6(b)** - Run the following command in the terminal window that shows up
+**Step 7** - If you want to resume editing your files at some point in the future, all you have to do is run the following commands.
 
-  ```
-  streamlit run src/python_files/app.py
-  ```
+```
+docker start <name provided in Step 4>
+docker exec -it <name provided in Step 4> bash
+```
 
-  You will see some output logged to the terminal. Click on the first link and a new browser tab will be opened, where you can see the streamlit.
+Executing these commands gives you a terminal session in the Docker container. You can now repeat steps from Step 5 onwards.
+
+### Alternative (Using python venv)
+
+Replace python3 with python in the following commands depending on which OS you are using.
+
+**Step 1** - Run the following command to create a python3 venv
+
+```
+python3 -m venv covid_env
+```
+
+**Step 2** - Activate the venv, install all dependencies with the following commands.
+
+```
+# The activation command differs with the OS you are using. Check the Python documentation for more information.
+source covid_env/bin/activate
+pip install -r requirements.txt
+```
+
+**Step 3** - Run the command `jupyter lab` in the terminal to fire up a jupyter lab server.

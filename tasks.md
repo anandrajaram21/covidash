@@ -1,8 +1,6 @@
-# Priority 1
-- Choose 1 final model 
+# Main Priority
 - Finish the streamlit web app
-  - Change the maps to Arun's maps in the map.ipynb file
-  - Add the predictions page
+
   
   
 # The Web App

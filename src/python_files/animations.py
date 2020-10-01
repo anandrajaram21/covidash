@@ -134,8 +134,6 @@ def animated_barchart(dataset, categorical_col, start, end, title , frame_rate=3
     )
     return fig
 
-'''
-Example:
+
 
 animated_barchart(bar_df, '1970-01-01', bar_df.columns[1], bar_df.columns[-1], title="Top 10 Countries Visualization", frame_rate=24)
-'''

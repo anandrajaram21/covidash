@@ -11,11 +11,13 @@ RUN pip install --quiet --no-cache-dir \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
-RUN pip install --quiet --no-cache-dir pmdarima streamlit
+RUN pip install --quiet --no-cache-dir pmdarima
 
 RUN pip install --quiet --no-cache-dir statsmodels==0.12.0
 
 RUN pip install --quiet --no-cache-dir plotly
+
+RUN pip install --quiet --no-cache-dir dash
 
 RUN pip install --quiet --no-cache-dir chart_studio
 

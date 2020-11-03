@@ -19,6 +19,8 @@ RUN pip install --quiet --no-cache-dir plotly
 
 RUN pip install --quiet --no-cache-dir dash
 
+RUN pip install --quiet --no-cache-dir dash-bootstrap-components
+
 RUN pip install --quiet --no-cache-dir chart_studio
 
 RUN jupyter labextension install jupyterlab-plotly@4.10.0

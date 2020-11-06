@@ -6,6 +6,9 @@ import plotly.express as px
 import pandas as pd
 import pyarrow as pa
 import redis
+import animations
+import map
+import arima
 
 external_stylesheets = [dbc.themes.BOOTSTRAP]
 

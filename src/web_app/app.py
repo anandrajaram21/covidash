@@ -6,11 +6,8 @@ import plotly.express as px
 import pandas as pd
 import pyarrow as pa
 import redis
-import animations
-import map
-import arima
 
-external_stylesheets = [dbc.themes.BOOTSTRAP]
+external_stylesheets = [dbc.themes.SOLAR]
 
 # Starting a Redis connection to cache data
 r = redis.Redis()
@@ -69,12 +66,16 @@ def collect_data():
 
         return (confirmed_global, deaths_global, recovered_global, country_cases)
 
+confirmed_global, deaths_global, recovered_global, country_cases = collect_data()
+
+import arima
+import map
+import animations
+
 app.layout = dbc.Container(
     dbc.Alert("Hello Bootstrap!", color="success"),
     className="p-5",
 )
-
-confirmed_global, deaths_global, recovered_global, country_cases = collect_data()
 
 if __name__ == "__main__":
     app.run_server()

@@ -13,6 +13,7 @@ import plotly
 from pmdarima import auto_arima
 from sklearn.model_selection import train_test_split
 from statsmodels.tsa.statespace.sarimax import SARIMAX
+import pyarrow as pa
 
 # Ignoring warnings
 import warnings
@@ -20,7 +21,7 @@ warnings.filterwarnings('ignore')
 
 # Data Preprocessing
 def get_data():
-    confirmed_global, deaths_global, recovered_global, country_cases = (context.deserialize(r.get("confirmed_global")), context.deserialize(r.get("deaths_global")), context.deserialize(r.get("recovered_global")), context.deserialize(r.get("country_cases")))
+    confirmed_global, deaths_global, recovered_global, country_cases = (pa.deserialize(r.get("confirmed_global")), pa.deserialize(r.get("deaths_global")), pa.deserialize(r.get("recovered_global")), pa.deserialize(r.get("country_cases")))
 
     
     recovered = recovered_global.groupby('country').sum().T

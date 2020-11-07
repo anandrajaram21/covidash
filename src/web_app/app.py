@@ -11,13 +11,10 @@ external_stylesheets = [dbc.themes.SOLAR]
 
 # Starting a Redis connection to cache data
 r = redis.Redis()
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 def collect_data():
-    context = pa.default_serialization_context()
-
     if r.exists("confirmed_global") and r.exists("recovered_global") and r.exists("deaths_global"):
-        return (context.deserialize(r.get("confirmed_global")), context.deserialize(r.get("deaths_global")), context.deserialize(r.get("recovered_global")), context.deserialize(r.get("country_cases")))
+        return (pa.deserialize(r.get("confirmed_global")), pa.deserialize(r.get("deaths_global")), pa.deserialize(r.get("recovered_global")), pa.deserialize(r.get("country_cases")))
 
     else:
         filenames = ['time_series_covid19_confirmed_global.csv',
@@ -55,13 +52,13 @@ def collect_data():
 
         confirmed_global.at[178, '5/20/20'] = 251667
 
-        r.set("confirmed_global", context.serialize(confirmed_global).to_buffer().to_pybytes())
+        r.set("confirmed_global", pa.serialize(confirmed_global).to_buffer().to_pybytes())
         r.expire("confirmed_global", 43200)
-        r.set("deaths_global", context.serialize(deaths_global).to_buffer().to_pybytes())
+        r.set("deaths_global", pa.serialize(deaths_global).to_buffer().to_pybytes())
         r.expire("deaths_global", 43200)
-        r.set("recovered_global", context.serialize(recovered_global).to_buffer().to_pybytes())
+        r.set("recovered_global", pa.serialize(recovered_global).to_buffer().to_pybytes())
         r.expire("recovered_global", 43200)
-        r.set("country_cases", context.serialize(country_cases).to_buffer().to_pybytes())
+        r.set("country_cases", pa.serialize(country_cases).to_buffer().to_pybytes())
         r.expire("country_cases", 43200)
 
         return (confirmed_global, deaths_global, recovered_global, country_cases)
@@ -71,6 +68,9 @@ confirmed_global, deaths_global, recovered_global, country_cases = collect_data(
 import arima
 import map
 import animations
+
+# Main app starts here
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.layout = dbc.Container(
     dbc.Alert("Hello Bootstrap!", color="success"),

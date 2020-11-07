@@ -17,9 +17,10 @@ import plotly.io as pio
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.offline as pyo
+import pyarrow as pa
 
 # Data Collection and Preprocessing
-confirmed_global, deaths_global, recovered_global, country_cases = (context.deserialize(r.get("confirmed_global")), context.deserialize(r.get("deaths_global")), context.deserialize(r.get("recovered_global")), context.deserialize(r.get("country_cases")))
+confirmed_global, deaths_global, recovered_global, country_cases = (pa.deserialize(r.get("confirmed_global")), pa.deserialize(r.get("deaths_global")), pa.deserialize(r.get("recovered_global")), pa.deserialize(r.get("country_cases")))
 
 bar_df = confirmed_global.transpose()
 l = [datetime.strptime(date, '%m/%d/%y').strftime('20%y-%m-%d') for date in bar_df.index[1:]]

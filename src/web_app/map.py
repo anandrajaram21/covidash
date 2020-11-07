@@ -20,13 +20,14 @@ import chart_studio
 from math import log
 from math import e
 from itertools import chain
+import pyarrow as pa
 
 # Setting up credentials for the map 
 chart_studio.tools.set_credentials_file(username='chartstudiouser', api_key='m9KxT5JPEEukONNW8E50')
 mapbox_access_token = 'pk.eyJ1IjoiY2hhcnRzdHVkaW91c2VyIiwiYSI6ImNrZXd3bTBoNTA4bnYyemw4N3l5aDN5azIifQ.7e-KoC1KMXr_EKbkahgAQQ'
 
 # Getting sorted country cases
-confirmed_global, deaths_global, recovered_global, country_cases = (context.deserialize(r.get("confirmed_global")), context.deserialize(r.get("deaths_global")), context.deserialize(r.get("recovered_global")), context.deserialize(r.get("country_cases")))
+confirmed_global, deaths_global, recovered_global, country_cases = (pa.deserialize(r.get("confirmed_global")), pa.deserialize(r.get("deaths_global")), pa.deserialize(r.get("recovered_global")), pa.deserialize(r.get("country_cases")))
 
 country_cases_sorted = country_cases.sort_values('confirmed', ascending = False)
 country_cases_sorted.index = [x for x in range(len(country_cases_sorted))]

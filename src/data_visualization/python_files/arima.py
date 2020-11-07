@@ -20,41 +20,52 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Data Preprocessing
+
+
 def get_data():
     confirmed_global, deaths_global, recovered_global, country_cases = main.collect_data()
-    
+
     recovered = recovered_global.groupby('country').sum().T
     deaths = deaths_global.groupby('country').sum().T
     confirmed = confirmed_global.groupby('country').sum().T
-    
+
     deaths.index = pd.to_datetime(deaths.index, infer_datetime_format=True)
-    recovered.index = pd.to_datetime(recovered.index, infer_datetime_format=True)
-    confirmed.index = pd.to_datetime(confirmed.index, infer_datetime_format=True)
-    
+    recovered.index = pd.to_datetime(
+        recovered.index, infer_datetime_format=True)
+    confirmed.index = pd.to_datetime(
+        confirmed.index, infer_datetime_format=True)
+
     return deaths, recovered, confirmed
+
 
 def create_data_frame(dataframe, country):
     deaths, recovered, confirmed = get_data()
 
     if dataframe == 'deaths':
-        data = pd.DataFrame(index=deaths.index, data=deaths[country].values, columns=['Total'])
+        data = pd.DataFrame(index=deaths.index,
+                            data=deaths[country].values, columns=['Total'])
 
     elif dataframe == 'recovered':
-        data = pd.DataFrame(index=recovered.index, data=recovered[country].values, columns=['Total'])
+        data = pd.DataFrame(index=recovered.index,
+                            data=recovered[country].values, columns=['Total'])
 
     elif dataframe == 'confirmed':
-        data = pd.DataFrame(index=confirmed.index, data=confirmed[country].values, columns=['Total'])
+        data = pd.DataFrame(index=confirmed.index,
+                            data=confirmed[country].values, columns=['Total'])
 
     data = data[(data != 0).all(1)]
-    
+
     data['Date'] = data.index
-    cols = [data.columns[-1]] + [col for col in data if col != data.columns[-1]]
-    data = data[cols]   
+    cols = [data.columns[-1]] + \
+        [col for col in data if col != data.columns[-1]]
+    data = data[cols]
 
     return data
 
 # Graphing
-def plot_forecast(data,forecast):
+
+
+def plot_forecast(data, forecast):
     fig = go.Figure()
 
     fig.add_trace(
@@ -94,6 +105,8 @@ def plot_forecast(data,forecast):
     return fig
 
 # Model Training and Testing
+
+
 def find_params(train_set):
     stepwise_model = auto_arima(
         train_set, start_p=0, start_q=0,
@@ -106,21 +119,26 @@ def find_params(train_set):
     )
     return stepwise_model
 
+
 def predict_cases(stepwise_model, train, test):
     stepwise_model.fit(train)
     pred = stepwise_model.predict(n_periods=len(test))
 
     pred = pd.DataFrame(pred, index=test.index, columns=['Prediction'])
-    pred =  pred.values.flatten()
-   
+    pred = pred.values.flatten()
+
     return pred
 
 # Error Calculation
-def mape(y_true, y_pred): 
+
+
+def mape(y_true, y_pred):
     y_true, y_pred = np.array(y_true), np.array(y_pred)
     return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
 
 # Forecasting
+
+
 def future_cases(order, seasonal_order, train, test, data):
     model = SARIMAX(
         data.diff()['Total'][1:],
@@ -133,11 +151,13 @@ def future_cases(order, seasonal_order, train, test, data):
         start=len(data),
         end=((len(data)-1) + 14)
     ).rename('Forecast')
-    
+
     forecast_cumulative = []
     start = data['Total'][-1]
 
     for i in forecast.values:
+        if i < 0:
+            i = 0
         start = start + i
         forecast_cumulative.append(start)
     forecast['cumulative'] = forecast_cumulative
@@ -146,18 +166,20 @@ def future_cases(order, seasonal_order, train, test, data):
     return forecast_cumulative, graph
 
 # Main Function
+
+
 def arima_predict(df_name, country):
-    data = create_data_frame(df_name,country)
-    
+    data = create_data_frame(df_name, country)
+
     train = data['Total'][:len(data)*4//5].diff()[1:]
     test = data['Total'][len(data)*4//5:].diff()[1:]
     start = data['Total'][-len(test)-1]
 
     model = find_params(train)
     pred = predict_cases(model, train, test)
-    predictions_cumulative=[]
+    predictions_cumulative = []
 
-    for i in pred :
+    for i in pred:
         start = start + i
         predictions_cumulative.append(start)
 
@@ -165,11 +187,12 @@ def arima_predict(df_name, country):
 
     MAPE = mape(y_test_cumulative, predictions_cumulative)
 
-    order=model.get_params()['order']
-    seasonal_order=model.get_params()['seasonal_order']
+    order = model.get_params()['order']
+    seasonal_order = model.get_params()['seasonal_order']
     forecast, graph = future_cases(order, seasonal_order, train, test, data)
 
     return forecast, graph, MAPE
+
 
 '''
 Example:

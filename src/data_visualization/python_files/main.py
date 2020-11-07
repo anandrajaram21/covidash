@@ -13,7 +13,7 @@ def collect_data():
     # Data from the John Hopkins University Dataset on GitHub
     # https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series
 
-    # Defining the variables required
+    # Defining the variables requiredk
     filenames = ['time_series_covid19_confirmed_global.csv',
                 'time_series_covid19_deaths_global.csv',
                 'time_series_covid19_recovered_global.csv']

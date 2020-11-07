@@ -14,6 +14,9 @@ from pmdarima import auto_arima
 from sklearn.model_selection import train_test_split
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 import pyarrow as pa
+import redis
+
+r = redis.Redis()
 
 # Ignoring warnings
 import warnings

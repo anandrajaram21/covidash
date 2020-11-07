@@ -18,6 +18,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 import plotly.offline as pyo
 import pyarrow as pa
+import redis
+
+r = redis.Redis()
 
 # Data Collection and Preprocessing
 confirmed_global, deaths_global, recovered_global, country_cases = (pa.deserialize(r.get("confirmed_global")), pa.deserialize(r.get("deaths_global")), pa.deserialize(r.get("recovered_global")), pa.deserialize(r.get("country_cases")))

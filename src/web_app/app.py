@@ -9,7 +9,6 @@ import redis
 
 external_stylesheets = [dbc.themes.SOLAR]
 
-# Starting a Redis connection to cache data
 r = redis.Redis()
 
 def collect_data():
@@ -73,9 +72,18 @@ import animations
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.layout = dbc.Container(
-    dbc.Alert("Hello Bootstrap!", color="success"),
-    className="p-5",
+    [
+        dbc.NavbarSimple(
+            [
+                dbc.NavItem(dbc.NavLink("Home", href="/")),
+                dbc.NavItem(dbc.NavLink("Global Situation", href="/global")),
+                dbc.NavItem(dbc.NavLink("Country Analysis", href="/country")),
+                dbc.NavItem(dbc.NavLink("Preventive Measures", href="/prevent")),
+            ]
+        )
+    ]
 )
+
 
 if __name__ == "__main__":
     app.run_server()

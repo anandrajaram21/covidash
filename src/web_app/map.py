@@ -21,6 +21,9 @@ from math import log
 from math import e
 from itertools import chain
 import pyarrow as pa
+import redis
+
+r = redis.Redis()
 
 # Setting up credentials for the map 
 chart_studio.tools.set_credentials_file(username='chartstudiouser', api_key='m9KxT5JPEEukONNW8E50')

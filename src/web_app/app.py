@@ -71,16 +71,22 @@ import animations
 # Main app starts here
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
+navbar = dbc.NavbarSimple(
+    children=[
+        dbc.NavItem(dbc.NavLink("Home", href="/")),
+        dbc.NavItem(dbc.NavLink("Global Situation", href="/global")),
+        dbc.NavItem(dbc.NavLink("Country Analysis", href="/country")),
+        dbc.NavItem(dbc.NavLink("Preventive Measures", href="/prevent"))
+    ],
+    dark=True,
+    color="dark",
+    brand="Covidash",
+    brand_href="/"
+)
+
 app.layout = dbc.Container(
     [
-        dbc.NavbarSimple(
-            [
-                dbc.NavItem(dbc.NavLink("Home", href="/")),
-                dbc.NavItem(dbc.NavLink("Global Situation", href="/global")),
-                dbc.NavItem(dbc.NavLink("Country Analysis", href="/country")),
-                dbc.NavItem(dbc.NavLink("Preventive Measures", href="/prevent")),
-            ]
-        )
+        navbar
     ]
 )
 

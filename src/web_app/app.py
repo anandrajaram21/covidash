@@ -6,6 +6,7 @@ import plotly.express as px
 import pandas as pd
 import pyarrow as pa
 import redis
+from datetime import datetime
 
 external_stylesheets = [dbc.themes.SOLAR]
 
@@ -68,6 +69,15 @@ import arima
 import map
 import animations
 
+bar_df = confirmed_global.transpose()
+l = [datetime.strptime(date, '%m/%d/%y').strftime('20%y-%m-%d') for date in bar_df.index[1:]]
+l.insert(0, 0)
+bar_df.set_index(pd.Index(l), inplace=True)
+
+L = pd.to_datetime(l, utc=False)
+bar_df.set_index(pd.Index(L), inplace=True)
+bar_df = bar_df.transpose()
+
 # Main app starts here
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
@@ -84,9 +94,17 @@ navbar = dbc.NavbarSimple(
     brand_href="/"
 )
 
-app.layout = dbc.Container(
+app.layout = html.Div(
     [
-        navbar
+        navbar,
+        dbc.Container(
+            [
+                dcc.Graph(
+                    id="worldmap",
+                    figure=animations.animated_barchart(bar_df, '1970-01-01', bar_df.columns[1], bar_df.columns[-1], title="Top 10 Countries Visualization", frame_rate=24)
+                )
+            ]
+        )
     ]
 )
 

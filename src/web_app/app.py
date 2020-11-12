@@ -101,18 +101,16 @@ animations_figure = animations.animated_barchart(bar_df, '1970-01-01', bar_df.co
 
 app.layout = html.Div(
     [
+        dcc.Location(id="url", refresh=False),
         navbar,
-        dbc.Container(
-            [
-                dcc.Graph(
-                    id="worldmap",
-                    figure=animations_figure
-                )
-            ]
-        )
+        html.Div(id="page-content")
     ]
 )
 
+@app.callback(dash.dependencies.Output('page-content', 'children'),
+              [dash.dependencies.Input('url', 'pathname')])
+def display_page(pathname):
+    return dbc.Container(children=[html.H1(f"{pathname}")])
 
 if __name__ == "__main__":
     app.run_server()

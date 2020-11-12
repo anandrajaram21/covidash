@@ -33,7 +33,7 @@ bar_df.set_index(pd.Index(l), inplace=True)
 L = pd.to_datetime(l, utc=False)
 bar_df.set_index(pd.Index(L), inplace=True)
 bar_df = bar_df.transpose()
-pio.templates.default = 'plotly'
+pio.templates.default = 'plotly_dark'
 
 def daterange(date1, date2,n):
     for n in range(int((date2 - date1).days) + 1):

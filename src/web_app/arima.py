@@ -10,11 +10,14 @@ import numpy as np
 import math
 import plotly.graph_objects as go
 import plotly
+import plotly.io as pio
 from pmdarima import auto_arima
 from sklearn.model_selection import train_test_split
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 import pyarrow as pa
 import redis
+
+pio.templates.default = "plotly_dark"
 
 r = redis.Redis()
 

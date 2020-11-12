@@ -7,6 +7,9 @@ import pandas as pd
 import pyarrow as pa
 import redis
 from datetime import datetime
+import plotly.io as pio
+
+pio.templates.default = "plotly_dark"
 
 external_stylesheets = [dbc.themes.SOLAR]
 
@@ -94,6 +97,8 @@ navbar = dbc.NavbarSimple(
     brand_href="/"
 )
 
+animations_figure = animations.animated_barchart(bar_df, '1970-01-01', bar_df.columns[1], bar_df.columns[-1], title="Top 10 Countries Visualization", frame_rate=24)
+
 app.layout = html.Div(
     [
         navbar,
@@ -101,7 +106,7 @@ app.layout = html.Div(
             [
                 dcc.Graph(
                     id="worldmap",
-                    figure=animations.animated_barchart(bar_df, '1970-01-01', bar_df.columns[1], bar_df.columns[-1], title="Top 10 Countries Visualization", frame_rate=24)
+                    figure=animations_figure
                 )
             ]
         )

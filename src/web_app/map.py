@@ -23,6 +23,8 @@ from itertools import chain
 import pyarrow as pa
 import redis
 
+pio.templates.default = "plotly_dark"
+
 r = redis.Redis()
 
 # Setting up credentials for the map 

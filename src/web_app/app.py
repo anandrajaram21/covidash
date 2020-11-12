@@ -83,6 +83,7 @@ bar_df = bar_df.transpose()
 
 # Main app starts here
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+server = app.server
 
 navbar = dbc.NavbarSimple(
     children=[
@@ -97,12 +98,30 @@ navbar = dbc.NavbarSimple(
     brand_href="/"
 )
 
-# Making the Individual Pages
 animations_figure = animations.animated_barchart(bar_df, '1970-01-01', bar_df.columns[1], bar_df.columns[-1], title="Top 10 Countries Visualization", frame_rate=24)
+
+# Making the Individual Pages
 home_page = dbc.Container(
     children=[
-        html.H1("Welcome to the Home Page")
-    ]
+        html.Img(src="https://www.fda.gov/files/covid19-1600x900.jpg", height="35%", width="80%"),
+        html.Br(),
+        html.Br(),
+        html.Br(),
+        html.H2("COVID-19"),
+        html.Div(style={"fontSize": 20}, children="Coronavirus disease 2019 (COVID-19) is an infectious disease caused by severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2). It was first identified in December 2019 in Wuhan, Hubei, China, and has resulted in an ongoing pandemic."),
+        html.Br(),
+        html.Br(),
+        html.H2("Symptoms of COVID-19"),
+        html.Div(style={"fontSize": 20}, children="Common symptoms include fever, cough, fatigue, shortness of breath, and loss of smell and taste. While the majority of cases result in mild symptoms, some progress to acute respiratory distress syndrome (ARDS) possibly precipitated by cytokine storm, multi-organ failure, septic shock, and blood clots. The time from exposure to onset of symptoms is typically around five days, but may range from two to fourteen days"),
+        html.Br(),
+        html.Br(),
+        html.H2("Treatment"),
+        html.Div(style={"fontSize": 20}, children="There are no vaccines nor specific antiviral treatments for COVID-19. Management involves the treatment of symptoms, supportive care, isolation, and experimental measures. The World Health Organization (WHO) declared the COVID‑19 outbreak a public health emergency of international concern (PHEIC) on 30 January 2020 and a pandemic on 11 March 2020. Local transmission of the disease has occurred in most countries across all six WHO regions."),
+        html.Br(),
+        html.Br(),
+        html.Br(),
+    ],
+    className="text-center"
 )
 global_page = dbc.Container(
     children=[

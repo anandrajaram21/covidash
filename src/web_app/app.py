@@ -97,20 +97,48 @@ navbar = dbc.NavbarSimple(
     brand_href="/"
 )
 
+# Making the Individual Pages
 animations_figure = animations.animated_barchart(bar_df, '1970-01-01', bar_df.columns[1], bar_df.columns[-1], title="Top 10 Countries Visualization", frame_rate=24)
+home_page = dbc.Container(
+    children=[
+        html.H1("Welcome to the Home Page")
+    ]
+)
+global_page = dbc.Container(
+    children=[
+        html.H1("This is the global situation")
+    ]
+)
+country_page = dbc.Container(
+    children=[
+        html.H1("This is the individual country analysis page")
+    ]
+)
+preventive_page = dbc.Container(
+    children=[
+        html.H1("This is the preventive measures page")
+    ]
+)
 
 app.layout = html.Div(
     [
         dcc.Location(id="url", refresh=False),
         navbar,
-        html.Div(id="page-content")
+        dbc.Container(id="page-content")
     ]
 )
 
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
 def display_page(pathname):
-    return dbc.Container(children=[html.H1(f"{pathname}")])
+    if pathname == "/":
+        return home_page
+    elif pathname == "/global":
+        return global_page
+    elif pathname == "/country":
+        return country_page
+    elif pathname == "/prevent":
+        return preventive_page
 
 if __name__ == "__main__":
     app.run_server()

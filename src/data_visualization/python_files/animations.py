@@ -1,6 +1,7 @@
 # %%
 import sys
-import main
+sys.path.append('../')
+from python_files import main
 
 import pandas as pd
 import plotly.express as px

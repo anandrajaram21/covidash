@@ -106,6 +106,7 @@ confirmed_global, deaths_global, recovered_global, country_cases = collect_data(
 import map
 import animations
 import prophet
+import app_vars as av
 
 
 bar_df = confirmed_global.transpose()
@@ -147,45 +148,29 @@ home_page = dbc.Container(
             height="35%",
             width="80%",
         ),
-        html.Br(),
-        html.Br(),
-        html.Br(),
-        html.H2("COVID-19"),
-        html.Div(
-            style={"fontSize": 20},
-            children="Coronavirus disease 2019 (COVID-19) is an infectious disease caused by severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2). It was first identified in December 2019 in Wuhan, Hubei, China, and has resulted in an ongoing pandemic.",
-        ),
-        html.Br(),
-        html.Br(),
-        html.H2("Symptoms of COVID-19"),
-        html.Div(
-            style={"fontSize": 20},
-            children="Common symptoms include fever, cough, fatigue, shortness of breath, and loss of smell and taste. While the majority of cases result in mild symptoms, some progress to acute respiratory distress syndrome (ARDS) possibly precipitated by cytokine storm, multi-organ failure, septic shock, and blood clots. The time from exposure to onset of symptoms is typically around five days, but may range from two to fourteen days",
-        ),
-        html.Br(),
-        html.Br(),
-        html.H2("Treatment"),
-        html.Div(
-            style={"fontSize": 20},
-            children="There are no vaccines nor specific antiviral treatments for COVID-19. Management involves the treatment of symptoms, supportive care, isolation, and experimental measures. The World Health Organization (WHO) declared the COVID‑19 outbreak a public health emergency of international concern (PHEIC) on 30 January 2020 and a pandemic on 11 March 2020. Local transmission of the disease has occurred in most countries across all six WHO regions.",
-        ),
-        html.Br(),
-        html.Br(),
-        html.Br(),
-    ],
-    className="text-center",
-)
-
-global_page = dbc.Container(
-    children=[
-        html.H1("hello world")
+       dcc.Markdown(
+           av.covid_19,
+           className="mt-5"
+       )
     ]
 )
+
+global_page = dbc.Container(children=[html.H1("hello world")])
 country_page = dbc.Container(
     children=[html.H1("This is the individual country analysis page")]
 )
 preventive_page = dbc.Container(
-    children=[html.H1("This is the preventive measures page")]
+    children=[
+        html.Img(
+            src="https://images.pexels.com/photos/3735769/pexels-photo-3735769.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+            height="35%",
+            width="80%",
+        ),
+        dcc.Markdown(
+            av.safety,
+            className="mt-5"
+        ),
+    ],
 )
 
 app.layout = html.Div(

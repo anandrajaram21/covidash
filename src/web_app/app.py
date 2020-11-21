@@ -1,4 +1,5 @@
-import arima
+# Imports and data preprocessing
+
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -100,8 +101,11 @@ def collect_data():
 
 confirmed_global, deaths_global, recovered_global, country_cases = collect_data()
 
+# Importing these modules later as they rely on having data stored in redis
+
 import map
 import animations
+import prophet
 
 
 bar_df = confirmed_global.transpose()
@@ -171,7 +175,12 @@ home_page = dbc.Container(
     ],
     className="text-center",
 )
-global_page = dbc.Container(children=[html.H1("This is the global situation")])
+
+global_page = dbc.Container(
+    children=[
+        html.H1("hello world")
+    ]
+)
 country_page = dbc.Container(
     children=[html.H1("This is the individual country analysis page")]
 )

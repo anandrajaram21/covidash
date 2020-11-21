@@ -13,13 +13,12 @@ from fbprophet import Prophet
 from fbprophet.diagnostics import cross_validation
 import redis
 import pyarrow as pa
-import main
 import time
 
 pio.templates.default = "plotly_dark"
 r = redis.Redis()
-# Data Preprocessing Functions
 
+# Data Preprocessing Functions
 
 def get_data():
     confirmed_global, deaths_global, recovered_global, country_cases = (
@@ -199,10 +198,3 @@ def prophet_predict(df_name="confirmed", country="US"):
 
 # # Example
 
-
-start = time.time()
-fig, error = prophet_predict("confirmed", "US")
-end = time.time()
-fig.show()
-print(f"Allow an error of upto {round(error,2)}%")
-print(end - start)

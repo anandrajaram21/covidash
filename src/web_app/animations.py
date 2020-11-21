@@ -8,7 +8,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 import pyarrow as pa
 import redis
-import main
 
 r = redis.Redis()
 

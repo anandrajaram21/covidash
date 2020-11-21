@@ -1,4 +1,3 @@
-import data_viz
 import arima
 import dash
 import dash_core_components as dcc
@@ -102,6 +101,7 @@ def collect_data():
 confirmed_global, deaths_global, recovered_global, country_cases = collect_data()
 
 import map
+import animations
 
 
 bar_df = confirmed_global.transpose()
@@ -133,7 +133,7 @@ navbar = dbc.NavbarSimple(
     brand_href="/",
 )
 
-animations_figure = data_viz.animated_barchart(df=confirmed_global)
+animations_figure = animations.animated_barchart(df=confirmed_global)
 
 # Making the Individual Pages
 home_page = dbc.Container(

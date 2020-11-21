@@ -47,12 +47,9 @@ def collect_data():
             "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/web-data/data/cases_country.csv"
         )
 
-        confirmed_global.drop(
-            columns=["Province/State", "Lat", "Long"], inplace=True)
-        deaths_global.drop(
-            columns=["Province/State", "Lat", "Long"], inplace=True)
-        recovered_global.drop(
-            columns=["Province/State", "Lat", "Long"], inplace=True)
+        confirmed_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
+        deaths_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
+        recovered_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
         country_cases.drop(
             columns=[
                 "Last_Update",
@@ -64,12 +61,9 @@ def collect_data():
             inplace=True,
         )
 
-        confirmed_global.rename(
-            columns={"Country/Region": "country"}, inplace=True)
-        deaths_global.rename(
-            columns={"Country/Region": "country"}, inplace=True)
-        recovered_global.rename(
-            columns={"Country/Region": "country"}, inplace=True)
+        confirmed_global.rename(columns={"Country/Region": "country"}, inplace=True)
+        deaths_global.rename(columns={"Country/Region": "country"}, inplace=True)
+        recovered_global.rename(columns={"Country/Region": "country"}, inplace=True)
 
         country_cases.rename(
             columns={
@@ -83,33 +77,28 @@ def collect_data():
             inplace=True,
         )
 
-        confirmed_global = confirmed_global.groupby(
-            ["country"], as_index=False).sum()
-        deaths_global = deaths_global.groupby(
-            ["country"], as_index=False).sum()
-        recovered_global = recovered_global.groupby(
-            ["country"], as_index=False).sum()
+        confirmed_global = confirmed_global.groupby(["country"], as_index=False).sum()
+        deaths_global = deaths_global.groupby(["country"], as_index=False).sum()
+        recovered_global = recovered_global.groupby(["country"], as_index=False).sum()
 
         confirmed_global.at[178, "5/20/20"] = 251667
 
         r.set(
-            "confirmed_global", pa.serialize(
-                confirmed_global).to_buffer().to_pybytes()
+            "confirmed_global", pa.serialize(confirmed_global).to_buffer().to_pybytes()
         )
         r.expire("confirmed_global", 43200)
-        r.set("deaths_global", pa.serialize(
-            deaths_global).to_buffer().to_pybytes())
+        r.set("deaths_global", pa.serialize(deaths_global).to_buffer().to_pybytes())
         r.expire("deaths_global", 43200)
         r.set(
-            "recovered_global", pa.serialize(
-                recovered_global).to_buffer().to_pybytes()
+            "recovered_global", pa.serialize(recovered_global).to_buffer().to_pybytes()
         )
         r.expire("recovered_global", 43200)
-        r.set("country_cases", pa.serialize(
-            country_cases).to_buffer().to_pybytes())
+        r.set("country_cases", pa.serialize(country_cases).to_buffer().to_pybytes())
         r.expire("country_cases", 43200)
 
         return (confirmed_global, deaths_global, recovered_global, country_cases)
+
+
 confirmed_global, deaths_global, recovered_global, country_cases = collect_data()
 
 import map
@@ -191,8 +180,7 @@ preventive_page = dbc.Container(
 )
 
 app.layout = html.Div(
-    [dcc.Location(id="url", refresh=False), navbar,
-     dbc.Container(id="page-content")]
+    [dcc.Location(id="url", refresh=False), navbar, dbc.Container(id="page-content")]
 )
 
 

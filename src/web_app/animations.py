@@ -1,139 +1,169 @@
-'''
+"""
 # Animations
-This file contains some animations visualizing the outbreak and spread of COVID-19 across the world.
-'''
+This file contains beautiful animations that visualize the current COVID-19 situation
+"""
 
-# Imports
-import main
-import copy
-import sys
-import os
-from datetime import datetime
-from datetime import date
-from datetime import timedelta
 import pandas as pd
-import numpy as np
-import plotly
-import plotly.io as pio
 import plotly.express as px
 import plotly.graph_objects as go
-import plotly.offline as pyo
+import pyarrow as pa
+import redis
+import main
 
-# Data Collection and Preprocessing
-confirmed_global, deaths_global, recovered_global, country_cases = main.collect_data()
+r = redis.Redis()
 
-bar_df = confirmed_global.transpose()
-l = [datetime.strptime(date, '%m/%d/%y').strftime('20%y-%m-%d') for date in bar_df.index[1:]]
-l.insert(0, 0)
-bar_df.set_index(pd.Index(l), inplace=True)
+confirmed_global, deaths_global, recovered_global, country_cases = (
+    pa.deserialize(r.get("confirmed_global")),
+    pa.deserialize(r.get("deaths_global")),
+    pa.deserialize(r.get("recovered_global")),
+    pa.deserialize(r.get("country_cases")),
+)
 
-L = pd.to_datetime(l, utc=False)
-bar_df.set_index(pd.Index(L), inplace=True)
-bar_df = bar_df.transpose()
-pio.templates.default = 'plotly'
 
-def daterange(date1, date2,n):
-    for n in range(int((date2 - date1).days) + 1):
-        yield date1 + timedelta(days=n)
-        
-def animated_barchart(dataset, categorical_col, start, end, title , frame_rate=3):
-    names = dataset[categorical_col]
-    yvals = dataset.loc[:, start]
+def unpivot(df):
+    return df.melt(id_vars=["country"], value_vars=df.columns[1:])
 
-    def get_colors():
-        r = np.random.randint(1, 187)
-        g = np.random.randint(1, 187)
-        b = np.random.randint(1, 187)
-        return [r, g, b]
 
-    colors = []
-    for i in range(len(names)):
-        c = get_colors()
-        colors.append(f'rgb({str(c[0])}, {str(c[1])}, {str(c[2])})')
-       
-    def top_10(d):
-        df = pd.DataFrame({'names': names, 'pop': d, 'color': colors})
-        data = df.sort_values(by='pop').iloc[-10:,]
-        return data
-    
-    list_of_frames = []
-    for i in daterange(start, end, frame_rate):
-        d = bar_df.loc[:, str(i)]
-        p_data = top_10(d)
-        list_of_frames.append(
-            go.Frame(
-                data=[
-                    go.Bar(
-                        x=p_data['names'], y=p_data['pop'],
-                        marker_color=p_data['color'], text=p_data['names'],
-                        hoverinfo='none', textposition='outside',
-                        texttemplate='%{x}<br>%{y:s}', cliponaxis=False
-                    )
-                ],
-                layout=go.Layout(
-                    font={'size': 20},
-                    height=700,
-                    xaxis={'showline': False,'tickangle': -90, 'visible': False},
-                    yaxis={'showline': False, 'visible': False},
-                    title=f'{title} For: {str(i.date())}'
-                )
-            )
-        )
-
-    f_data = top_10(yvals)
-
-    fig = go.Figure(
-        data=[
-            go.Bar(
-                x=f_data['names'], y=f_data['pop'],
-                marker_color=f_data['color'], text=f_data['names'],
-                hoverinfo='none', textposition='outside',
-                texttemplate='%{x}<br>%{y:s}', cliponaxis=False
-            )
-        ],
-        layout=go.Layout(
-            font={'size': 20},
-            height=700,
-            xaxis={'showline': False,'tickangle': -90, 'visible': False},
-            yaxis={'showline': False, 'visible': False},
-            title=f'{title} For: {str(start.date())}',
-            updatemenus=[
-                dict(
-                    type='buttons',
-                    buttons=[
-                        dict(
-                            label='Play',
-                            method='animate',
-                            args=[
-                                None, {
-                                    'frame': {'duration': 200},
-                                    'fromcurrent': True
-                                }
-                            ]
-                        ),
-                        {
-                            'args': [
-                                [None],
-                                {
-                                    'frame': {
-                                        'duration': 0,
-                                        'redraw': False
-                                    },
-                                    'mode': 'immediate',
-                                    'transition': {'duration': 0}
-                                }
-                            ],
-                            'label': 'Pause',
-                            'method': 'animate'
-                        }
-                    ]
-                )
-            ]
-        ),
-        frames=list(list_of_frames)
+def take_top10(df):
+    top = list(
+        df[df["variable"] == df["variable"][df.index[-1]]]
+        .sort_values(by=["value"], ascending=False)
+        .head(10)["country"]
     )
+    df = df[df["country"].isin(top)]
+    return df
+
+
+def create_data(df):
+    new = take_top10(df)
+    l = list(set(new["variable"]))
+    l.sort()
+    l.reverse()
+    ff = new[new["variable"].isin(l[::5])]
+    ff.rename(
+        columns={"country": "Country", "variable": "Date", "value": "Cases"},
+        inplace=True,
+    )
+    return ff
+
+
+def plot_fig(ff):
+    fig = px.bar(
+        ff,
+        x="Country",
+        y="Cases",
+        color="Country",
+        template="plotly_dark",
+        animation_frame="Date",
+        animation_group="Country",
+        range_y=[0, ff["Cases"].max()],
+    )
+    fig.layout.update(showlegend=False)
     return fig
 
 
+def animated_barchart(df):
+    return plot_fig(create_data(take_top10(unpivot(df))))
 
-animated_barchart(bar_df, '1970-01-01', bar_df.columns[1], bar_df.columns[-1], title="Top 10 Countries Visualization", frame_rate=24)
+
+def compare(df, *args):
+    l = list(args)
+    temp = unpivot(df)
+    temp = temp[temp["country"].isin(l)]
+    return temp
+
+
+def plot_fig_compare(ff):
+    fig = px.bar(
+        ff,
+        x="Country",
+        y="Cases",
+        color="Country",
+        template="plotly_dark",
+        animation_frame="Date",
+        animation_group="Country",
+        range_y=[0, ff["Cases"].max()],
+    )
+    fig.layout.update(hovermode="x")
+    return fig
+
+
+def create_comparison(df, *args):
+    df = compare(df, *args)
+    ff = create_data(df)
+    return plot_fig_compare(ff)
+
+
+def static_line(df, *args):
+    df = compare(df, *args)
+    ff = create_data(df)
+    fig = px.line(
+        ff,
+        x="Date",
+        y="Cases",
+        color="Country",
+        template="plotly_dark",
+        range_y=[0, ff["Cases"].max()],
+    )
+    fig.layout.update(hovermode="x")
+    return fig
+
+
+def line_comparison(country):
+    whole_df = pd.DataFrame()
+    whole_df["dates"] = list(confirmed_global.columns[1:])
+    whole_df["confirmed"] = list(
+        confirmed_global.loc[confirmed_global["country"] == country].values.flatten()[
+            1:
+        ]
+    )
+    whole_df["deaths"] = list(
+        deaths_global.loc[deaths_global["country"] == country].values.flatten()[1:]
+    )
+    whole_df["recovered"] = list(
+        recovered_global.loc[recovered_global["country"] == country].values.flatten()[
+            1:
+        ]
+    )
+
+    fig = go.Figure()
+
+    fig.add_trace(
+        go.Scatter(
+            x=whole_df["dates"], y=whole_df["confirmed"], mode="lines", name="confirmed"
+        )
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=whole_df["dates"], y=whole_df["deaths"], mode="lines", name="deaths"
+        )
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=whole_df["dates"], y=whole_df["recovered"], mode="lines", name="recovered"
+        )
+    )
+
+    fig.update_layout(
+        height=500,
+        showlegend=True,
+        xaxis={"showgrid": False},
+        yaxis={"showgrid": False},
+        template="plotly_dark",
+        title_text=f"Analysis of {country.title()}",
+        hovermode="x",
+    )
+
+    return fig
+
+
+"""
+Example:
+
+line_comparison("India")
+static_line(recovered_global,"India","New Zealand","US")
+create_comparison(confirmed_global,"India","US","Australia")
+animated_barchart(confirmed_global)
+"""

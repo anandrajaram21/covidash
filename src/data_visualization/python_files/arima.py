@@ -5,7 +5,6 @@ This file contains the ARIMA model that is used to forecast the COVID-19 cases
 
 # Imports
 import main
-import sys
 import pandas as pd
 import numpy as np
 import math
@@ -14,11 +13,6 @@ import plotly
 from pmdarima import auto_arima
 from sklearn.model_selection import train_test_split
 from statsmodels.tsa.statespace.sarimax import SARIMAX
-
-# Ignoring warnings
-import warnings
-
-warnings.filterwarnings("ignore")
 
 # Data Preprocessing
 

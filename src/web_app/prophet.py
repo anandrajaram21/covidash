@@ -11,10 +11,11 @@ import plotly.io as pio
 import plotly
 from fbprophet import Prophet
 from fbprophet.diagnostics import cross_validation
-import redis 
+import redis
 import pyarrow as pa
 import main
 import time
+
 pio.templates.default = "plotly_dark"
 r = redis.Redis()
 # Data Preprocessing Functions
@@ -63,83 +64,93 @@ def create_data_frame(df_name="confirmed", country="US"):
     data.columns = ["ds", "y"]
     return data
 
+
 # # Model Functions
 
+
 def build_model():
-    '''
-The return value is a fbprophet.forecaster.Prophet object
-    '''
-    prophet= Prophet (growth="linear",
-                  seasonality_mode="additive",
-                  changepoint_prior_scale=30,
-                  seasonality_prior_scale=35,
-                  daily_seasonality=False,
-                  weekly_seasonality=False,
-                  yearly_seasonality=False,).add_seasonality(name="monthly",period=30.5,fourier_order=55).add_seasonality(name="weekly",period=7,fourier_order=15).add_seasonality(name="daily",period=1,fourier_order=15)
+    """
+    The return value is a fbprophet.forecaster.Prophet object
+    """
+    prophet = (
+        Prophet(
+            growth="linear",
+            seasonality_mode="additive",
+            changepoint_prior_scale=30,
+            seasonality_prior_scale=35,
+            daily_seasonality=False,
+            weekly_seasonality=False,
+            yearly_seasonality=False,
+        )
+        .add_seasonality(name="monthly", period=30.5, fourier_order=55)
+        .add_seasonality(name="weekly", period=7, fourier_order=15)
+        .add_seasonality(name="daily", period=1, fourier_order=15)
+    )
     return prophet
 
-def predict_future(prophet,data):
-    '''
-prophet: fbprophet.forecaster.Prophet object 
-         Facebook Prophet Model
-data: Data to be fit into the Model for analysis
 
-The return value is a Series with a Pandas DatetimeIndex of the dates on which prediction occurs, 
-containing the predicted values
-    '''
+def predict_future(prophet, data):
+    """
+    prophet: fbprophet.forecaster.Prophet object
+             Facebook Prophet Model
+    data: Data to be fit into the Model for analysis
+
+    The return value is a Series with a Pandas DatetimeIndex of the dates on which prediction occurs,
+    containing the predicted values
+    """
     prophet.fit(data)
-    future=prophet.make_future_dataframe(freq='D',periods=14)
-    forecast=prophet.predict(future)
-    ftr=pd.Series(data=forecast[len(data):]['yhat'].values,index=forecast[len(data):]['ds'])
-    ftr.columns=['Total']
-    ftr.index.freq='D'
+    future = prophet.make_future_dataframe(freq="D", periods=14)
+    forecast = prophet.predict(future)
+    ftr = pd.Series(
+        data=forecast[len(data) :]["yhat"].values, index=forecast[len(data) :]["ds"]
+    )
+    ftr.columns = ["Total"]
+    ftr.index.freq = "D"
     for i in range(len(ftr)):
-        if(ftr[i]%1>=0.5):
-            ftr[i]=math.ceil(ftr[i])
+        if ftr[i] % 1 >= 0.5:
+            ftr[i] = math.ceil(ftr[i])
         else:
-            ftr[i]=int(ftr[i])
+            ftr[i] = int(ftr[i])
     return ftr
 
 
 # # Graphing Function
 
 
-
-
-def plot_forecast(data,forecast):
-    ''' 
-Plot the forecasted values against the data at hand
-data: Dataframe with columns 'ds','y' containing Dates and Values of the data at hand respectively
-forecast: Series with a Pandas DatetimeIndex of the dates on which prediction occurs, 
-          containing the predicted values
-The return value is a plotly.graph_objs._figure.Figure which showcases predictions 
-    '''
+def plot_forecast(data, forecast):
+    """
+    Plot the forecasted values against the data at hand
+    data: Dataframe with columns 'ds','y' containing Dates and Values of the data at hand respectively
+    forecast: Series with a Pandas DatetimeIndex of the dates on which prediction occurs,
+              containing the predicted values
+    The return value is a plotly.graph_objs._figure.Figure which showcases predictions
+    """
     fig = go.Figure()
 
-    fig.add_trace(go.Scatter(x=data["ds"], y=data["y"],   
-                            mode='lines',
-                            name='Up till now '))
-        
-    fig.add_trace(go.Scatter(x=forecast.index, y=forecast.values,   
-                            mode='lines',
-                            name='Prediction*'))
+    fig.add_trace(
+        go.Scatter(x=data["ds"], y=data["y"], mode="lines", name="Up till now ")
+    )
 
-    fig.update_layout(title={
-                'text': "Forecasted results",
-                'y':0.9,
-                'x':0.5,
-                'xanchor': 'center',
-                'yanchor': 'top'},
-                        template = "plotly_dark",
-                        xaxis_title="Date",
-                        yaxis_title="Cases",
-                        legend_title="Legend ",
-                        font=dict(
-                                family="Arial",
-                                size=15,
-                                color="white"
-                                )
-                        )
+    fig.add_trace(
+        go.Scatter(
+            x=forecast.index, y=forecast.values, mode="lines", name="Prediction*"
+        )
+    )
+
+    fig.update_layout(
+        title={
+            "text": "Forecasted results",
+            "y": 0.9,
+            "x": 0.5,
+            "xanchor": "center",
+            "yanchor": "top",
+        },
+        template="plotly_dark",
+        xaxis_title="Date",
+        yaxis_title="Cases",
+        legend_title="Legend ",
+        font=dict(family="Arial", size=15, color="white"),
+    )
     return fig
 
 
@@ -147,7 +158,7 @@ The return value is a plotly.graph_objs._figure.Figure which showcases predictio
 
 
 def mape(y_true, y_pred):
-    '''Return the Mean Absolute Percentage Error between any 2 Series'''
+    """Return the Mean Absolute Percentage Error between any 2 Series"""
     y_true, y_pred = np.array(y_true), np.array(y_pred)
     return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
 
@@ -157,37 +168,41 @@ def mape(y_true, y_pred):
 # In[8]:
 
 
-def prophet_predict(df_name="confirmed",country="US"):
-    '''
-Predict for any Country
-df_name: Choice of prediction: "recovered", "confirmed", "deaths"
-country: Name of the country you wish to predict for
-The return values are: 
-1)A plotly.graph_objs._figure.Figure which showcases predictions 
-2)Mean Absolute Error Percentage of the prediction 
-    '''
-    
-    data = create_data_frame(df_name,country)
-    prophet=build_model()
-    ftr=predict_future(prophet,data)
-    fig=plot_forecast(data,ftr)
-    df_cv = cross_validation(prophet,initial=f'{0.8*len(data)} days',period='15 days',horizon = '7 days',parallel='processes')
+def prophet_predict(df_name="confirmed", country="US"):
+    """
+    Predict for any Country
+    df_name: Choice of prediction: "recovered", "confirmed", "deaths"
+    country: Name of the country you wish to predict for
+    The return values are:
+    1)A plotly.graph_objs._figure.Figure which showcases predictions
+    2)Mean Absolute Error Percentage of the prediction
+    """
+
+    data = create_data_frame(df_name, country)
+    prophet = build_model()
+    ftr = predict_future(prophet, data)
+    fig = plot_forecast(data, ftr)
+    df_cv = cross_validation(
+        prophet,
+        initial=f"{0.8*len(data)} days",
+        period="15 days",
+        horizon="7 days",
+        parallel="processes",
+    )
     for i in range(len(df_cv)):
-        df_cv.yhat.values[i]=int(df_cv.yhat.values[i])
-    end=time.time()
-    error=mape(df_cv.y,df_cv.yhat)
-    
-    return fig,error
+        df_cv.yhat.values[i] = int(df_cv.yhat.values[i])
+    end = time.time()
+    error = mape(df_cv.y, df_cv.yhat)
+
+    return fig, error
 
 
 # # Example
 
 
-
-start=time.time()
-fig,error=prophet_predict("confirmed","US")
-end=time.time()
+start = time.time()
+fig, error = prophet_predict("confirmed", "US")
+end = time.time()
 fig.show()
-print(f'Allow an error of upto {round(error,2)}%')
-print(end-start)
-
+print(f"Allow an error of upto {round(error,2)}%")
+print(end - start)

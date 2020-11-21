@@ -3,17 +3,20 @@
 # Facebook Prophet Model
 
 # Imports
+import sys
 import pandas as pd
+from fbprophet import Prophet
+from fbprophet.diagnostics import cross_validation
 import numpy as np
 import math
 import plotly.graph_objects as go
 import plotly.io as pio
 import plotly
-from fbprophet import Prophet
-from fbprophet.diagnostics import cross_validation
+import time
 import main
 
 pio.templates.default = "plotly_dark"
+
 
 # Data Preprocessing Functions
 
@@ -93,6 +96,11 @@ def predict_future(prophet, data):
     )
     ftr.columns = ["Total"]
     ftr.index.freq = "D"
+    for i in range(len(ftr)):
+        if ftr[i] % 1 >= 0.5:
+            ftr[i] = math.ceil(ftr[i])
+        else:
+            ftr[i] = int(ftr[i])
     return ftr
 
 

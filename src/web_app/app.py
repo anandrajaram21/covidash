@@ -1,5 +1,4 @@
 import data_viz
-import map
 import arima
 import dash
 import dash_core_components as dcc
@@ -111,9 +110,9 @@ def collect_data():
         r.expire("country_cases", 43200)
 
         return (confirmed_global, deaths_global, recovered_global, country_cases)
-
-
 confirmed_global, deaths_global, recovered_global, country_cases = collect_data()
+
+import map
 
 
 bar_df = confirmed_global.transpose()

@@ -112,6 +112,7 @@ def create_data(df, study, color):
 def create_basic_layout(latitude, longitude):
     layout = {
         "height": 400,
+        "width": 1920,
         "margin": {"t": 0, "b": 0, "l": 0, "r": 0},
         "font": {"color": "#FFFFFF", "size": 15},
         "paper_bgcolor": "#000000",

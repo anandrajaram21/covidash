@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
-covid_19 =\
-    """
+covid_19 = """
     ## COVID-19
     Coronavirus disease 2019 (COVID-19) is an infectious disease caused by severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2). It was first identified in December 2019 in Wuhan, Hubei, China, and has resulted in an ongoing pandemic.
     ## Symptoms of COVID-19
@@ -10,8 +9,7 @@ covid_19 =\
     There are no vaccines nor specific antiviral treatments for COVID-19. Management involves the treatment of symptoms, supportive care, isolation, and experimental measures. The World Health Organization (WHO) declared the COVID‑19 outbreak a public health emergency of international concern (PHEIC) on 30 January 2020 and a pandemic on 11 March 2020. Local transmission of the disease has occurred in most countries across all six WHO regions.
     """
 
-safety =\
-    """
+safety = """
     ## **Safety Measures**
     ## 1. Wash Your Hands Often 👏
     - Wash your hands often with soap and water for at least 20 seconds especially after you have been in a public place, or after blowing your nose, coughing, or sneezing.
@@ -43,8 +41,7 @@ safety =\
         - Don’t take your temperature within 30 minutes of exercising or after taking medications that could lower your temperature, like acetaminophen.
     """
 
-about = \
-    """
+about = """
     ### This project was made by 3 High school students
     - Arunachala Amuda Murugan - [GitHub Profile](https://github.com/Majimearun)
     - Anirudh Lakhotia - [GitHub Profile](https://github.com/anirudhlakhotia)

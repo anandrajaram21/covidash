@@ -20,6 +20,7 @@ r = redis.Redis()
 
 # Data Preprocessing Functions
 
+
 def get_data():
     confirmed_global, deaths_global, recovered_global, country_cases = (
         pa.deserialize(r.get("confirmed_global")),
@@ -197,4 +198,3 @@ def prophet_predict(df_name="confirmed", country="US"):
 
 
 # # Example
-

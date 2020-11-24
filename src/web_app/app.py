@@ -1,3 +1,8 @@
+"""
+# App
+This file contains the source code for the web app made with plotly dash
+"""
+
 # Imports and data preprocessing
 
 import dash
@@ -13,7 +18,7 @@ import plotly.io as pio
 
 pio.templates.default = "plotly_dark"
 
-external_stylesheets = [dbc.themes.SOLAR]
+external_stylesheets = [dbc.themes.CYBORG]
 
 r = redis.Redis()
 
@@ -100,6 +105,7 @@ def collect_data():
 
 
 confirmed_global, deaths_global, recovered_global, country_cases = collect_data()
+country_cases_sorted = country_cases.sort_values("confirmed", ascending=False)
 
 # Importing these modules later as they rely on having data stored in redis
 
@@ -108,22 +114,27 @@ import animations
 import prophet
 import app_vars as av
 
-
-bar_df = confirmed_global.transpose()
-l = [
-    datetime.strptime(date, "%m/%d/%y").strftime("20%y-%m-%d")
-    for date in bar_df.index[1:]
-]
-l.insert(0, 0)
-bar_df.set_index(pd.Index(l), inplace=True)
-
-L = pd.to_datetime(l, utc=False)
-bar_df.set_index(pd.Index(L), inplace=True)
-bar_df = bar_df.transpose()
-
 # Main app starts here
+
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
+
+# Making the Graphs Required for the Pages
+
+animations_figure = animations.animated_barchart(df=confirmed_global)
+
+confirmed = dict(study="confirmed", color="blue")
+recovered = dict(study="recovered", color="pink")
+deaths = dict(study="deaths", color="red")
+
+columns = ["country", ["deaths", "confirmed", "recovered"], "Lat", "Long_"]
+
+world_map = map.plot_study(country_cases_sorted, columns, confirmed)
+confirmed_timeseries = animations.plot_world_timeseries(confirmed_global)
+deaths_timeseries = animations.plot_world_timeseries(deaths_global)
+recovered_timeseries = animations.plot_world_timeseries(recovered_global)
+
+# Making the Individual Pages
 
 navbar = dbc.NavbarSimple(
     children=[
@@ -138,9 +149,6 @@ navbar = dbc.NavbarSimple(
     brand_href="/",
 )
 
-animations_figure = animations.animated_barchart(df=confirmed_global)
-
-# Making the Individual Pages
 home_page = dbc.Container(
     children=[
         html.Img(
@@ -148,17 +156,39 @@ home_page = dbc.Container(
             height="35%",
             width="80%",
         ),
-       dcc.Markdown(
-           av.covid_19,
-           className="mt-5"
-       )
-    ]
+        dcc.Markdown(av.covid_19, className="mt-5"),
+    ],
+    className="mt-5",
 )
 
-global_page = dbc.Container(children=[html.H1("hello world")])
+global_page = html.Div(
+    children=[
+        dcc.Dropdown(
+            id="metric",
+            options=[
+                {"label": "Confirmed Cases", "value": "Confirmed"},
+                {"label": "Recoveries", "value": "Recoveries"},
+                {"label": "Deaths", "value": "Deaths"},
+            ],
+            value="Confirmed",
+            style={"fontSize": 22, "margin": "10px"},
+        ),
+        dbc.Row(dcc.Graph(id="metric-output"), className="mt-5 justify-content-center"),
+        dbc.Row(
+            [
+                dbc.Col(dcc.Graph(figure=confirmed_timeseries), className="m-3"),
+                dbc.Col(dcc.Graph(figure=deaths_timeseries), className="m-3"),
+                dbc.Col(dcc.Graph(figure=recovered_timeseries), className="m-3"),
+            ]
+        ),
+    ],
+    className="mt-5 justify-content-center text-center",
+)
+
 country_page = dbc.Container(
     children=[html.H1("This is the individual country analysis page")]
 )
+
 preventive_page = dbc.Container(
     children=[
         html.Img(
@@ -166,16 +196,48 @@ preventive_page = dbc.Container(
             height="35%",
             width="80%",
         ),
-        dcc.Markdown(
-            av.safety,
-            className="mt-5"
-        ),
+        dcc.Markdown(av.safety, className="mt-5"),
     ],
 )
 
 app.layout = html.Div(
-    [dcc.Location(id="url", refresh=False), navbar, dbc.Container(id="page-content")]
+    [dcc.Location(id="url", refresh=False), navbar, html.Div(id="page-content")]
 )
+
+# Defining the Callbacks
+
+
+# @app.callback(
+#     dash.dependencies.Output("metric-output", "figure"),
+#     [
+#         dash.dependencies.Input("confirmed", "n_clicks"),
+#         dash.dependencies.Input("recoveries", "n_clicks"),
+#         dash.dependencies.Input("deaths", "n_clicks"),
+#     ],
+# )
+# def update_graph(btn1, btn2, btn3):
+#     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+#     if "confirmed" in changed_id:
+#         return map.plot_study(country_cases_sorted, columns, confirmed)
+#     elif "recoveries" in changed_id:
+#         return map.plot_study(country_cases_sorted, columns, recovered)
+#     elif "deaths" in changed_id:
+#         return map.plot_study(country_cases_sorted, columns, deaths)
+#     else:
+#         return map.plot_study(country_cases_sorted, columns, confirmed)
+
+
+@app.callback(
+    dash.dependencies.Output("metric-output", "figure"),
+    [dash.dependencies.Input("metric", "value")],
+)
+def update_graph(value):
+    if value == "Confirmed":
+        return map.plot_study(country_cases_sorted, columns, confirmed)
+    elif value == "Recoveries":
+        return map.plot_study(country_cases_sorted, columns, recovered)
+    elif value == "Deaths":
+        return map.plot_study(country_cases_sorted, columns, deaths)
 
 
 @app.callback(

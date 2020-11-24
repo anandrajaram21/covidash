@@ -1,4 +1,5 @@
 """
+# Map
 This file contains the functions required beautiful, interactive maps using Plotly Chart Studio and Mapbox
 """
 
@@ -124,6 +125,7 @@ def create_data(df, study, color):
 def create_basic_layout(latitude, longitude):
     layout = {
         "height": 400,
+        "width": 800,
         "margin": {"t": 0, "b": 0, "l": 0, "r": 0},
         "font": {"color": "#FFFFFF", "size": 15},
         "paper_bgcolor": "#000000",
@@ -134,6 +136,7 @@ def create_basic_layout(latitude, longitude):
             "center": {"lat": latitude, "lon": longitude},
             "pitch": 0,
             "zoom": 2,
+            "style": "dark"
         },
     }
     return layout
@@ -195,7 +198,7 @@ def plot_study(starting_df, cols, study_dict, location="global"):
 """
 Example:
 
-confirmed = dict(study="confirmed",color="blue")
+confirmed = dict(study="confirmed",color="blue
 recovered = dict(study="recovered",color="pink")
 deaths = dict(study="deaths",color="red")
 

@@ -19,6 +19,7 @@ confirmed_global, deaths_global, recovered_global, country_cases = (
 )
 
 
+
 def unpivot(df):
     return df.melt(id_vars=["country"], value_vars=df.columns[1:])
 
@@ -44,6 +45,20 @@ def create_data(df):
         inplace=True,
     )
     return ff
+
+def plot_world_timeseries(df):
+    data = df.sum()
+    data = data[1:]
+    # data = data.to_frame()
+    data = pd.DataFrame(data={'Date': data.index, 'Cases': data})
+    fig = px.bar(
+        data,
+        x="Date",
+        y="Cases",
+        template="plotly_dark"
+    )
+    fig.layout.update(hovermode="x")
+    return fig
 
 
 def plot_fig(ff):
@@ -156,8 +171,6 @@ def line_comparison(country):
     )
 
     return fig
-
-
 """
 Example:
 

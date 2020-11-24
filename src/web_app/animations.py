@@ -8,6 +8,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 import pyarrow as pa
 import redis
+from datetime import date
+from datetime import timedelta
 
 r = redis.Redis()
 
@@ -17,7 +19,6 @@ confirmed_global, deaths_global, recovered_global, country_cases = (
     pa.deserialize(r.get("recovered_global")),
     pa.deserialize(r.get("country_cases")),
 )
-
 
 
 def unpivot(df):
@@ -46,17 +47,40 @@ def create_data(df):
     )
     return ff
 
-def plot_world_timeseries(df):
+
+def get_world_timeseries(df):
     data = df.sum()
     data = data[1:]
-    # data = data.to_frame()
-    data = pd.DataFrame(data={'Date': data.index, 'Cases': data})
-    fig = px.bar(
-        data,
-        x="Date",
-        y="Cases",
-        template="plotly_dark"
-    )
+    data = pd.DataFrame(data={"Date": data.index, "Cases": data})
+    return data
+
+
+def plot_world_timeseries(df, df_name):
+    data = get_world_timeseries(df)
+    if df_name == "confirmed":
+        fig = px.bar(
+            data,
+            x="Date",
+            y="Cases",
+            template="plotly_dark",
+            color_discrete_sequence=["blue"] * len(data),
+        )
+    elif df_name == "recovered":
+        fig = px.bar(
+            data,
+            x="Date",
+            y="Cases",
+            template="plotly_dark",
+            color_discrete_sequence=["green"] * len(data),
+        )
+    elif df_name == "deaths":
+        fig = px.bar(
+            data,
+            x="Date",
+            y="Cases",
+            template="plotly_dark",
+            color_discrete_sequence=["red"] * len(data),
+        )
     fig.layout.update(hovermode="x")
     return fig
 
@@ -71,6 +95,7 @@ def plot_fig(ff):
         animation_frame="Date",
         animation_group="Country",
         range_y=[0, ff["Cases"].max()],
+        width=1600,
     )
     fig.layout.update(showlegend=False)
     return fig
@@ -171,6 +196,8 @@ def line_comparison(country):
     )
 
     return fig
+
+
 """
 Example:
 

@@ -124,8 +124,8 @@ def create_data(df, study, color):
 # Graphing
 def create_basic_layout(latitude, longitude):
     layout = {
-        "height": 400,
-        "width": 800,
+        "height": 700,
+        "width": 1600,
         "margin": {"t": 0, "b": 0, "l": 0, "r": 0},
         "font": {"color": "#FFFFFF", "size": 15},
         "paper_bgcolor": "#000000",
@@ -136,7 +136,7 @@ def create_basic_layout(latitude, longitude):
             "center": {"lat": latitude, "lon": longitude},
             "pitch": 0,
             "zoom": 2,
-            "style": "dark"
+            "style": "dark",
         },
     }
     return layout

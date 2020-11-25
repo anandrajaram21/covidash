@@ -254,21 +254,33 @@ global_page = html.Div(
                                 dbc.Row(html.H4("Yesterday"), className="ml-3 mt-2"),
                                 dbc.Row(html.H5(id="yesterday"), className="ml-3 mb-2"),
                             ],
-                            className="bg-danger rounded mt-3 p-3",
+                            style={
+                                "borderRadius": "30px",
+                                "backgroundColor": "#077e87",
+                            },
+                            className="mt-3 p-3",
                         ),
                         html.Div(
                             [
                                 dbc.Row(html.H4("Last Week"), className="ml-3 mt-2"),
                                 dbc.Row(html.H5(id="lastweek"), className="ml-3 mb-2"),
                             ],
-                            className="bg-success rounded mt-3 p-3",
+                            style={
+                                "borderRadius": "30px",
+                                "backgroundColor": "#2f9fb7",
+                            },
+                            className="mt-3 p-3",
                         ),
                         html.Div(
                             [
                                 dbc.Row(html.H4("Last Month"), className="ml-3 mt-2"),
                                 dbc.Row(html.H5(id="lastmonth"), className="ml-3 mb-2"),
                             ],
-                            className="bg-primary rounded mt-3 p-3",
+                            style={
+                                "borderRadius": "30px",
+                                "backgroundColor": "#46bed6",
+                            },
+                            className="mt-3 p-3",
                         ),
                     ],
                     className="align-items-center",

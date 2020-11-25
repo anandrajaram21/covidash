@@ -179,7 +179,7 @@ home_page = dbc.Container(
     className="mt-5",
 )
 
-global_page = dbc.Container(
+global_page = html.Div(
     children=[
         dbc.Row(
             children=[
@@ -232,15 +232,21 @@ global_page = dbc.Container(
         ),
         dbc.Row(html.H3("World Map"), className="mt-5 justify-content-center"),
         dbc.Row(
-            dcc.Loading(dcc.Graph(id="metric-output"), id="map-loading"),
+            dbc.Col(
+                dcc.Loading(dcc.Graph(id="metric-output"), id="map-loading"), width=12
+            ),
             className="mt-5 justify-content-center",
         ),
-        dbc.Row(
-            html.H3("Time Series"), className="mt-5 justify-content-center"
-        ),
+        dbc.Row(html.H3("Time Series"), className="mt-5 justify-content-center"),
         dbc.Row(
             [
-                dbc.Col(dcc.Loading(dcc.Graph(id="timeseries-output"), id="ts-loading"), sm=12, md=12, lg=6, xl=8),
+                dbc.Col(
+                    dcc.Loading(dcc.Graph(id="timeseries-output"), id="ts-loading"),
+                    sm=12,
+                    md=12,
+                    lg=8,
+                    xl=8,
+                ),
                 dbc.Col(
                     [
                         html.Div(
@@ -248,33 +254,45 @@ global_page = dbc.Container(
                                 dbc.Row(html.H4("Yesterday"), className="ml-3 mt-2"),
                                 dbc.Row(html.H5(id="yesterday"), className="ml-3 mb-2"),
                             ],
-                            className="bg-secondary rounded mt-3 p-3",
+                            className="bg-danger rounded mt-3 p-3",
                         ),
                         html.Div(
                             [
                                 dbc.Row(html.H4("Last Week"), className="ml-3 mt-2"),
                                 dbc.Row(html.H5(id="lastweek"), className="ml-3 mb-2"),
                             ],
-                            className="bg-secondary rounded mt-3 p-3",
+                            className="bg-success rounded mt-3 p-3",
                         ),
                         html.Div(
                             [
                                 dbc.Row(html.H4("Last Month"), className="ml-3 mt-2"),
                                 dbc.Row(html.H5(id="lastmonth"), className="ml-3 mb-2"),
                             ],
-                            className="bg-secondary rounded mt-3 p-3",
+                            className="bg-primary rounded mt-3 p-3",
                         ),
                     ],
                     className="align-items-center",
-                    sm=12, md=12, lg=6, xl=4
+                    sm=12,
+                    md=12,
+                    lg=4,
+                    xl=4,
                 ),
             ],
             className="mt-5 align-items-center",
         ),
         dbc.Row(html.H3("Animation"), className="mt-5 justify-content-center"),
-        dbc.Row(dcc.Loading(dcc.Graph(id="animation-output"), id="animation-loading"), className="m-5 justify-content-center"),
+        dbc.Row(
+            dbc.Col(
+                dcc.Loading(dcc.Graph(id="animation-output"), id="animation-loading"),
+                sm=12,
+                md=12,
+                lg=12,
+                xl=12,
+            ),
+            className="m-5 justify-content-center align-items-center",
+        ),
     ],
-    className="mt-5",
+    className="m-5",
 )
 
 country_page = dbc.Container(
@@ -293,7 +311,7 @@ preventive_page = dbc.Container(
 )
 
 app.layout = html.Div(
-    [dcc.Location(id="url", refresh=False), navbar, dbc.Container(id="page-content")]
+    [dcc.Location(id="url", refresh=False), navbar, html.Div(id="page-content")]
 )
 
 # Defining the Callbacks
@@ -444,6 +462,7 @@ def update_lastmonth(btn1, btn2, btn3):
         ts = animations.get_world_timeseries(confirmed_global)
         lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
         return prettify(lastmonth_cases)
+
 
 @app.callback(
     dash.dependencies.Output("page-content", "children"),

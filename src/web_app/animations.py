@@ -95,7 +95,6 @@ def plot_fig(ff):
         animation_frame="Date",
         animation_group="Country",
         range_y=[0, ff["Cases"].max()],
-        width=1600,
     )
     fig.layout.update(showlegend=False)
     return fig

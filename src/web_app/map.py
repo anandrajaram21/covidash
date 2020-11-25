@@ -93,16 +93,19 @@ def create_data(df, study, color):
     for country in countries:
         try:
             event_data = dict(
-                lat=df.loc[(df["Study"] == study) & (df["Country"] == country), "Lat"],
+                lat=df.loc[(df["Study"] == study) & (
+                    df["Country"] == country), "Lat"],
                 lon=df.loc[
-                    (df["Study"] == study) & (df["Country"] == country), "Long_"
+                    (df["Study"] == study) & (
+                        df["Country"] == country), "Long_"
                 ],
                 name=f"{study}: {country}",
                 marker={
                     "size": log(
                         float(
                             df.loc[
-                                (df["Study"] == study) & (df["Country"] == country),
+                                (df["Study"] == study) & (
+                                    df["Country"] == country),
                                 "Count",
                             ]
                         ),
@@ -122,7 +125,7 @@ def create_data(df, study, color):
 
 
 # Graphing
-def create_basic_layout(latitude, longitude):
+def create_basic_layout(latitude, longitude, zoom):
     layout = {
         "height": 700,
         "margin": {"t": 0, "b": 0, "l": 0, "r": 0},
@@ -134,7 +137,7 @@ def create_basic_layout(latitude, longitude):
             "bearing": 0,
             "center": {"lat": latitude, "lon": longitude},
             "pitch": 0,
-            "zoom": 2,
+            "zoom": zoom,
             "style": "dark",
         },
     }
@@ -169,7 +172,7 @@ def interactive_map(data, layout):
     return figure
 
 
-def plot_study(starting_df, cols, study_dict, location="global"):
+def plot_study(starting_df, cols, study_dict, location="global", zoom=2):
     color = study_dict["color"]
     study = study_dict["study"]
     latitude = 20.59
@@ -185,10 +188,10 @@ def plot_study(starting_df, cols, study_dict, location="global"):
                 (country_cases_sorted["country"] == location), "Long_"
             ]
         )
-
+        zoom = 4
     df = convert_df(starting_df, cols)
     data = create_data(df, study, color)
-    layout = create_basic_layout(latitude, longitude)
+    layout = create_basic_layout(latitude, longitude, zoom)
     updated_layout = update_layout(study, layout)
     figure = interactive_map(data, updated_layout)
     return figure

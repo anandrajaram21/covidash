@@ -103,15 +103,15 @@ def collect_data():
         r.set(
             "confirmed_global", pa.serialize(confirmed_global).to_buffer().to_pybytes()
         )
-        r.expire("confirmed_global", 43200)
+        r.expire("confirmed_global", 3600)
         r.set("deaths_global", pa.serialize(deaths_global).to_buffer().to_pybytes())
-        r.expire("deaths_global", 43200)
+        r.expire("deaths_global", 3600)
         r.set(
             "recovered_global", pa.serialize(recovered_global).to_buffer().to_pybytes()
         )
-        r.expire("recovered_global", 43200)
+        r.expire("recovered_global", 3600)
         r.set("country_cases", pa.serialize(country_cases).to_buffer().to_pybytes())
-        r.expire("country_cases", 43200)
+        r.expire("country_cases", 3600)
 
         return (confirmed_global, deaths_global, recovered_global, country_cases)
 
@@ -123,12 +123,17 @@ country_cases_sorted = country_cases.sort_values("confirmed", ascending=False)
 
 import map
 import animations
+
 # import prophet
 import app_vars as av
 
 # Main app starts here
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(
+    __name__,
+    external_stylesheets=external_stylesheets,
+    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
+)
 server = app.server
 
 # Making the Graphs and Declaring the Variables Required for the Pages
@@ -174,7 +179,7 @@ home_page = dbc.Container(
     className="mt-5",
 )
 
-global_page = html.Div(
+global_page = dbc.Container(
     children=[
         dbc.Row(
             children=[
@@ -186,7 +191,12 @@ global_page = html.Div(
                         color="primary",
                         block=True,
                         outline=True,
-                    )
+                    ),
+                    sm=12,
+                    md=12,
+                    lg=4,
+                    xl=4,
+                    className="mb-4",
                 ),
                 dbc.Col(
                     dbc.Button(
@@ -196,7 +206,12 @@ global_page = html.Div(
                         color="success",
                         block=True,
                         outline=True,
-                    )
+                    ),
+                    sm=12,
+                    md=12,
+                    lg=4,
+                    xl=4,
+                    className="mb-4",
                 ),
                 dbc.Col(
                     dbc.Button(
@@ -206,33 +221,43 @@ global_page = html.Div(
                         color="danger",
                         block=True,
                         outline=True,
-                    )
+                    ),
+                    sm=12,
+                    md=12,
+                    lg=4,
+                    xl=4,
+                    className="mb-4",
                 ),
             ]
         ),
         dbc.Row(html.H3("World Map"), className="mt-5 justify-content-center"),
-        dbc.Row(dcc.Graph(id="metric-output"), className="mt-5 justify-content-center"),
-        dbc.Row(html.H3("Time Series"), className="mt-5 justify-content-center"),
+        dbc.Row(
+            dcc.Loading(dcc.Graph(id="metric-output"), id="map-loading"),
+            className="mt-5 justify-content-center",
+        ),
+        dbc.Row(
+            html.H3("Time Series"), className="mt-5 justify-content-center"
+        ),
         dbc.Row(
             [
-                dbc.Col(dcc.Graph(id="timeseries-output"), width=8),
+                dbc.Col(dcc.Loading(dcc.Graph(id="timeseries-output"), id="ts-loading"), sm=12, md=12, lg=6, xl=8),
                 dbc.Col(
                     [
-                        dbc.Container(
+                        html.Div(
                             [
                                 dbc.Row(html.H4("Yesterday"), className="ml-3 mt-2"),
                                 dbc.Row(html.H5(id="yesterday"), className="ml-3 mb-2"),
                             ],
                             className="bg-secondary rounded mt-3 p-3",
                         ),
-                        dbc.Container(
+                        html.Div(
                             [
                                 dbc.Row(html.H4("Last Week"), className="ml-3 mt-2"),
                                 dbc.Row(html.H5(id="lastweek"), className="ml-3 mb-2"),
                             ],
                             className="bg-secondary rounded mt-3 p-3",
                         ),
-                        dbc.Container(
+                        html.Div(
                             [
                                 dbc.Row(html.H4("Last Month"), className="ml-3 mt-2"),
                                 dbc.Row(html.H5(id="lastmonth"), className="ml-3 mb-2"),
@@ -240,16 +265,14 @@ global_page = html.Div(
                             className="bg-secondary rounded mt-3 p-3",
                         ),
                     ],
-                    width=4,
                     className="align-items-center",
+                    sm=12, md=12, lg=6, xl=4
                 ),
             ],
             className="mt-5 align-items-center",
         ),
         dbc.Row(html.H3("Animation"), className="mt-5 justify-content-center"),
-        dbc.Row(
-            dcc.Graph(id="animation-output"), className="m-5 justify-content-center"
-        ),
+        dbc.Row(dcc.Loading(dcc.Graph(id="animation-output"), id="animation-loading"), className="m-5 justify-content-center"),
     ],
     className="mt-5",
 )
@@ -421,7 +444,6 @@ def update_lastmonth(btn1, btn2, btn3):
         ts = animations.get_world_timeseries(confirmed_global)
         lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
         return prettify(lastmonth_cases)
-
 
 @app.callback(
     dash.dependencies.Output("page-content", "children"),

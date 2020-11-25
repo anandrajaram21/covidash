@@ -123,7 +123,7 @@ country_cases_sorted = country_cases.sort_values("confirmed", ascending=False)
 
 import map
 import animations
-import prophet
+# import prophet
 import app_vars as av
 
 # Main app starts here

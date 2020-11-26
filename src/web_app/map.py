@@ -87,7 +87,7 @@ def convert_df(df, cols):
 
 def create_hovertemplate(df, study, country):
     emoji = "💀" if study == "deaths" else "😷" if study == "recovered" else "🏥"
-    return f"{emoji}: {int(float(df.loc[(df['Study'] == study) & (df['Country'] == country), 'Count']))}"
+    return f"{emoji}: {format(int(float(df.loc[(df['Study'] == study) & (df['Country'] == country), 'Count'])),',d')}"
 
 
 def create_data(df, study, color):
@@ -98,16 +98,19 @@ def create_data(df, study, color):
     for country in countries:
         try:
             event_data = dict(
-                lat=df.loc[(df["Study"] == study) & (df["Country"] == country), "Lat"],
+                lat=df.loc[(df["Study"] == study) & (
+                    df["Country"] == country), "Lat"],
                 lon=df.loc[
-                    (df["Study"] == study) & (df["Country"] == country), "Long_"
+                    (df["Study"] == study) & (
+                        df["Country"] == country), "Long_"
                 ],
                 name=f"{country}",
                 marker={
                     "size": log(
                         float(
                             df.loc[
-                                (df["Study"] == study) & (df["Country"] == country),
+                                (df["Study"] == study) & (
+                                    df["Country"] == country),
                                 "Count",
                             ]
                         ),

@@ -85,6 +85,11 @@ def convert_df(df, cols):
     return df
 
 
+def create_hovertemplate(df, study, country):
+    emoji = "💀" if study == 'deaths' else "😷" if study == 'recovered' else "🏥"
+    return f"{emoji}: {int(float(df.loc[(df['Study'] == study) & (df['Country'] == country), 'Count']))}"
+
+
 def create_data(df, study, color):
     countries = list(df["Country"].value_counts().index)
     data = []
@@ -93,16 +98,19 @@ def create_data(df, study, color):
     for country in countries:
         try:
             event_data = dict(
-                lat=df.loc[(df["Study"] == study) & (df["Country"] == country), "Lat"],
+                lat=df.loc[(df["Study"] == study) & (
+                    df["Country"] == country), "Lat"],
                 lon=df.loc[
-                    (df["Study"] == study) & (df["Country"] == country), "Long_"
+                    (df["Study"] == study) & (
+                        df["Country"] == country), "Long_"
                 ],
-                name=f"{study}: {country}",
+                name=f"{country}",
                 marker={
                     "size": log(
                         float(
                             df.loc[
-                                (df["Study"] == study) & (df["Country"] == country),
+                                (df["Study"] == study) & (
+                                    df["Country"] == country),
                                 "Count",
                             ]
                         ),
@@ -112,7 +120,7 @@ def create_data(df, study, color):
                     "color": color,
                 },
                 type="scattermapbox",
-                hoverinfo="skip",
+                hovertemplate=create_hovertemplate(df, study, country)
             )
             data.append(event_data)
         except:
@@ -156,6 +164,15 @@ def update_layout(study, layout):
             "bgcolor": "black",
         }
     ]
+
+    layout["title"] = f"{study.capitalize()} Cases"
+    layout["annotations"] = annotations
+    layout["hoverlabel"] = dict(
+        font_size=16,
+        font_family="PT Sans Narrow"
+    )
+
+    return layout
 
     layout["title"] = f"{study.capitalize()} Cases"
     layout["annotations"] = annotations

@@ -39,6 +39,7 @@ cache = Cache(
     },
 )
 
+
 TIMEOUT = 3600
 
 
@@ -91,16 +92,32 @@ def collect_data():
 
     return (confirmed_global, deaths_global, recovered_global, country_cases)
 
+
+@cache.memoize(timeout=TIMEOUT)
 def get_today_and_yesterday_data():
     today_data = requests.get("https://corona.lmao.ninja/v2/all?yesterday")
     yesterday_data = requests.get("https://corona.lmao.ninja/v2/all?yesterday=1")
+    today_country_data = requests.get(
+        "https://corona.lmao.ninja/v2/countries?yesterday&sort"
+    )
+    yesterday_country_data = requests.get(
+        "https://corona.lmao.ninja/v2/countries?yesterday=1&sort"
+    )
 
     today_data = today_data.json()
     yesterday_data = yesterday_data.json()
+    today_country_data = today_country_data.json()
+    yesterday_country_data = yesterday_country_data.json()
 
-    return today_data, yesterday_data
+    return today_data, yesterday_data, today_country_data, yesterday_country_data
 
-today_data, yesterday_data = get_today_and_yesterday_data()
+
+(
+    today_data,
+    yesterday_data,
+    today_country_data,
+    yesterday_country_data,
+) = get_today_and_yesterday_data()
 
 (
     av.confirmed_global,
@@ -124,6 +141,11 @@ import animations
 import map
 import prophet
 
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+
 # Making the Graphs and Declaring the Variables Required for the Pages
 
 animations_figure = animations.animated_barchart(confirmed_global)
@@ -146,13 +168,18 @@ world_timeseries_confirmed = animations.get_world_timeseries(confirmed_global)
 world_timeseries_deaths = animations.get_world_timeseries(deaths_global)
 world_timeseries_recovered = animations.get_world_timeseries(recovered_global)
 
-confirmed_global_cases_today = format(today_data["cases"], ',d')
-confirmed_recovered_cases_today = format(today_data["deaths"], ',d')
-confirmed_deaths_cases_today = format(today_data["recovered"], ',d')
+confirmed_global_cases_today = format(today_data["cases"], ",d")
+confirmed_recovered_cases_today = format(today_data["deaths"], ",d")
+confirmed_deaths_cases_today = format(today_data["recovered"], ",d")
 
-confirmed_global_cases_yesterday = format(yesterday_data["cases"], ',d')
-confirmed_recovered_cases_yesterday = format(yesterday_data["deaths"], ',d')
-confirmed_deaths_cases_yesterday = format(yesterday_data["recovered"], ',d')
+confirmed_global_cases_yesterday = format(yesterday_data["cases"], ",d")
+confirmed_recovered_cases_yesterday = format(yesterday_data["deaths"], ",d")
+confirmed_deaths_cases_yesterday = format(yesterday_data["recovered"], ",d")
+
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
 
 # Making the Individual Pages
 
@@ -169,6 +196,11 @@ navbar = dbc.NavbarSimple(
     brand_href="/",
 )
 
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+
 home_page = dbc.Container(
     children=[
         html.Img(
@@ -180,6 +212,11 @@ home_page = dbc.Container(
     ],
     className="mt-5",
 )
+
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
 
 global_page = html.Div(
     children=[
@@ -254,11 +291,11 @@ global_page = html.Div(
                         html.Div(
                             [
                                 dbc.Row(html.H4("Today"), className="ml-3 mt-2"),
-                                dbc.Row(html.H5(id="today"), className="ml-3 mb-2")
+                                dbc.Row(html.H5(id="today"), className="ml-3 mb-2"),
                             ],
                             style={
                                 "borderRadius": "30px",
-                                "backgroundColor": "#4120e6",
+                                "backgroundColor": "#2f09ed",
                             },
                             className="mt-3 p-3",
                         ),
@@ -320,6 +357,11 @@ global_page = html.Div(
     className="m-5",
 )
 
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+
 country_page = html.Div(
     children=[
         dbc.Row(
@@ -331,7 +373,7 @@ country_page = html.Div(
                         for country_name in country_list
                     ],
                     value="India",
-                    style={"backgroundColor": "gray", "color": "black"},
+                    style={"color": "black"},
                 ),
             ),
             className="m-5",
@@ -412,6 +454,19 @@ country_page = html.Div(
                     [
                         html.Div(
                             [
+                                dbc.Row(html.H4("Today"), className="ml-3 mt-2"),
+                                dbc.Row(
+                                    html.H5(id="today-country"), className="ml-3 mb-2"
+                                ),
+                            ],
+                            style={
+                                "borderRadius": "30px",
+                                "backgroundColor": "#2f09ed",
+                            },
+                            className="mt-3 p-3",
+                        ),
+                        html.Div(
+                            [
                                 dbc.Row(html.H4("Yesterday"), className="ml-3 mt-2"),
                                 dbc.Row(
                                     html.H5(id="yesterday-country"),
@@ -466,6 +521,11 @@ country_page = html.Div(
     className="m-5",
 )
 
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+
 preventive_page = dbc.Container(
     children=[
         html.Img(
@@ -481,6 +541,11 @@ app.layout = html.Div(
     [dcc.Location(id="url", refresh=False), navbar, html.Div(id="page-content")]
 )
 
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+
 # Callbacks for the Global Situation Page
 
 
@@ -492,7 +557,6 @@ app.layout = html.Div(
         dash.dependencies.Input("deaths", "n_clicks"),
     ],
 )
-@cache.memoize(timeout=TIMEOUT)
 def update_graph(btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     if "confirmed" in changed_id:
@@ -513,7 +577,6 @@ def update_graph(btn1, btn2, btn3):
         dash.dependencies.Input("deaths", "n_clicks"),
     ],
 )
-@cache.memoize(timeout=TIMEOUT)
 def update_animation(btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     if "confirmed" in changed_id:
@@ -534,7 +597,6 @@ def update_animation(btn1, btn2, btn3):
         dash.dependencies.Input("deaths", "n_clicks"),
     ],
 )
-@cache.memoize(timeout=TIMEOUT)
 def update_timeseries(btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     if "confirmed" in changed_id:
@@ -546,6 +608,11 @@ def update_timeseries(btn1, btn2, btn3):
     else:
         return animations.plot_world_timeseries(confirmed_global, "confirmed")
 
+
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
 
 # Callbacks for the Country Analysis Page
 
@@ -559,7 +626,6 @@ def update_timeseries(btn1, btn2, btn3):
         dash.dependencies.Input("deaths-country", "n_clicks"),
     ],
 )
-@cache.memoize(timeout=TIMEOUT)
 def update_graph_country(value, btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     if "confirmed" in changed_id:
@@ -575,74 +641,98 @@ def update_graph_country(value, btn1, btn2, btn3):
 @app.callback(
     dash.dependencies.Output("timeseries-output-country", "figure"),
     [
+        dash.dependencies.Input("country-dropdown", "value"),
         dash.dependencies.Input("confirmed-country", "n_clicks"),
         dash.dependencies.Input("recoveries-country", "n_clicks"),
         dash.dependencies.Input("deaths-country", "n_clicks"),
     ],
 )
-@cache.memoize(timeout=TIMEOUT)
-def update_timeseries_country(btn1, btn2, btn3):
+def update_timeseries_country(value, btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     if "confirmed" in changed_id:
-        return animations.plot_world_timeseries(confirmed_global, "confirmed")
+        return animations.static_line(confirmed_global, "confirmed", value)
     elif "recoveries" in changed_id:
-        return animations.plot_world_timeseries(recovered_global, "recovered")
+        return animations.static_line(recovered_global, "recovered", value)
     elif "deaths" in changed_id:
-        return animations.plot_world_timeseries(deaths_global, "deaths")
+        return animations.static_line(deaths_global, "deaths", value)
     else:
-        return animations.plot_world_timeseries(confirmed_global, "confirmed")
+        return animations.static_line(confirmed_global, "confirmed", value)
+
 
 @app.callback(
-    dash.dependencies.Output("today", "children"),
+    dash.dependencies.Output("today-country", "children"),
     [
-        dash.dependencies.Input("confirmed", "n_clicks"),
-        dash.dependencies.Input("recoveries", "n_clicks"),
-        dash.dependencies.Input("deaths", "n_clicks"),
+        dash.dependencies.Input("country-dropdown", "value"),
+        dash.dependencies.Input("confirmed-country", "n_clicks"),
+        dash.dependencies.Input("recoveries-country", "n_clicks"),
+        dash.dependencies.Input("deaths-country", "n_clicks"),
     ],
 )
-def update_today(btn1, btn2, btn3):
+def update_today_country(value, btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
-    yesterday = today - timedelta(days=1)
+    cases = 0
+    recovered = 0
+    deaths = 0
+    for country in today_country_data:
+        if country["country"] == value:
+            cases = country["cases"]
+            recovered = country["recovered"]
+            deaths = country["deaths"]
+    cases = format(cases, ',d')
+    recovered = format(recovered, ',d')
+    deaths = format(deaths, ',d')
     if "confirmed" in changed_id:
-        return confirmed_global_cases_today
+        return cases
     elif "recoveries" in changed_id:
-        return confirmed_recovered_cases_today
+        return recovered
     elif "deaths" in changed_id:
-        return confirmed_deaths_cases_today
+        return deaths
     else:
-        return confirmed_global_cases_today
+        return cases
+
 
 @app.callback(
-    dash.dependencies.Output("yesterday", "children"),
+    dash.dependencies.Output("yesterday-country", "children"),
     [
-        dash.dependencies.Input("confirmed", "n_clicks"),
-        dash.dependencies.Input("recoveries", "n_clicks"),
-        dash.dependencies.Input("deaths", "n_clicks"),
+        dash.dependencies.Input("country-dropdown", "value"),
+        dash.dependencies.Input("confirmed-country", "n_clicks"),
+        dash.dependencies.Input("recoveries-country", "n_clicks"),
+        dash.dependencies.Input("deaths-country", "n_clicks"),
     ],
 )
-@cache.memoize(timeout=TIMEOUT)
-def update_yesterday(btn1, btn2, btn3):
+def update_yesterday_country(value, btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
-    yesterday = today - timedelta(days=1)
+    cases = 0
+    recovered = 0
+    deaths = 0
+    for country in yesterday_country_data:
+        if country["country"] == value:
+            cases = country["cases"]
+            recovered = country["recovered"]
+            deaths = country["deaths"]
+    cases = format(cases, ',d')
+    recovered = format(recovered, ',d')
+    deaths = format(deaths, ',d')
     if "confirmed" in changed_id:
-        return confirmed_global_cases_yesterday
+        return cases
     elif "recoveries" in changed_id:
-        return confirmed_recovered_cases_yesterday
+        return recovered
     elif "deaths" in changed_id:
-        return confirmed_deaths_cases_yesterday
+        return deaths
     else:
-        return confirmed_global_cases_yesterday
+        return cases
+
 
 @app.callback(
     dash.dependencies.Output("lastweek", "children"),
     [
-        dash.dependencies.Input("confirmed", "n_clicks"),
-        dash.dependencies.Input("recoveries", "n_clicks"),
-        dash.dependencies.Input("deaths", "n_clicks"),
+        dash.dependencies.Input("country-dropdown", "value"),
+        dash.dependencies.Input("confirmed-country", "n_clicks"),
+        dash.dependencies.Input("recoveries-country", "n_clicks"),
+        dash.dependencies.Input("deaths-country", "n_clicks"),
     ],
 )
-@cache.memoize(timeout=TIMEOUT)
-def update_lastweek(btn1, btn2, btn3):
+def update_lastweek_country(value, btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     lastweek = today - timedelta(weeks=1)
     if "confirmed" in changed_id:
@@ -670,13 +760,13 @@ def update_lastweek(btn1, btn2, btn3):
 @app.callback(
     dash.dependencies.Output("lastmonth", "children"),
     [
-        dash.dependencies.Input("confirmed", "n_clicks"),
-        dash.dependencies.Input("recoveries", "n_clicks"),
-        dash.dependencies.Input("deaths", "n_clicks"),
+        dash.dependencies.Input("country-dropdown", "value"),
+        dash.dependencies.Input("confirmed-country", "n_clicks"),
+        dash.dependencies.Input("recoveries-country", "n_clicks"),
+        dash.dependencies.Input("deaths-country", "n_clicks"),
     ],
 )
-@cache.memoize(timeout=TIMEOUT)
-def update_lastmonth(btn1, btn2, btn3):
+def update_lastmonth_country(value, btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     lastmonth = today - timedelta(days=30)
     if "confirmed" in changed_id:
@@ -705,7 +795,6 @@ def update_lastmonth(btn1, btn2, btn3):
     dash.dependencies.Output("page-content", "children"),
     [dash.dependencies.Input("url", "pathname")],
 )
-@cache.memoize(timeout=TIMEOUT)
 def display_page(pathname):
     if pathname == "/":
         return home_page

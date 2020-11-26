@@ -129,19 +129,42 @@ def create_comparison(df, *args):
     return plot_fig_compare(ff)
 
 
-def static_line(df, *args):
+def static_line(df, df_name, *args):
     df = compare(df, *args)
     ff = create_data(df)
-    fig = px.line(
-        ff,
-        x="Date",
-        y="Cases",
-        color="Country",
-        template="plotly_dark",
-        range_y=[0, ff["Cases"].max()],
-    )
-    fig.layout.update(hovermode="x")
-    return fig
+    if df_name == "confirmed":
+        fig = px.line(
+            ff,
+            x="Date",
+            y="Cases",
+            template="plotly_dark",
+            color_discrete_sequence=["blue"] * len(ff),
+            range_y=[0, ff["Cases"].max()],
+        )
+        fig.layout.update(hovermode="x")
+        return fig
+    elif df_name == "recovered":
+        fig = px.line(
+            ff,
+            x="Date",
+            y="Cases",
+            template="plotly_dark",
+            color_discrete_sequence=["green"] * len(ff),
+            range_y=[0, ff["Cases"].max()],
+        )
+        fig.layout.update(hovermode="x")
+        return fig
+    elif df_name == "deaths":
+        fig = px.line(
+            ff,
+            x="Date",
+            y="Cases",
+            template="plotly_dark",
+            color_discrete_sequence=["red"] * len(ff),
+            range_y=[0, ff["Cases"].max()],
+        )
+        fig.layout.update(hovermode="x")
+        return fig
 
 
 def line_comparison(country):

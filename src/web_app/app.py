@@ -15,25 +15,13 @@ import pyarrow as pa
 import redis
 from datetime import date
 from datetime import timedelta
-import re
 import plotly.io as pio
 
 pio.templates.default = "plotly_dark"
 
-external_stylesheets = [dbc.themes.DARKLY]
+external_stylesheets = [dbc.themes.CYBORG]
 
 r = redis.Redis()
-
-
-def prettify(amount, separator=","):
-    """Separate with predefined separator."""
-    orig = str(amount)
-    new = re.sub("^(-?\d+)(\d{3})", "\g<1>{0}\g<2>".format(separator), str(amount))
-    if orig == new:
-        return new
-    else:
-        return prettify(new)
-
 
 def collect_data():
     if (
@@ -153,6 +141,14 @@ country_list = confirmed_global["country"]
 
 today = date.today()
 
+world_timeseries_confirmed = animations.get_world_timeseries(confirmed_global)
+world_timeseries_confirmed = animations.get_world_timeseries(confirmed_global)
+world_timeseries_confirmed = animations.get_world_timeseries(recovered_global)
+
+ts = animations.get_world_timeseries(confirmed_global)
+lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
+format(lastweek_cases, ',d')
+
 # Making the Individual Pages
 
 navbar = dbc.NavbarSimple(
@@ -238,6 +234,18 @@ global_page = html.Div(
             ),
             className="mt-5 justify-content-center",
         ),
+        dbc.Row(
+            dbc.Col(
+                html.Div(
+                    [
+                        dbc.Row(html.H4("Confirmed Cases"), className="ml-3 mt-2"),
+                        dbc.Row(html.H5())
+                    ]
+                )
+            ),
+            dbc.Col(),
+            dbc.Col(),
+        ),
         dbc.Row(html.H3("Time Series"), className="mt-5 justify-content-center"),
         dbc.Row(
             [
@@ -315,13 +323,14 @@ country_page = html.Div(
                 dcc.Dropdown(
                     id="country-dropdown",
                     options=[
-                        {"label": country_name, "value": country_name} for country_name in country_list
+                        {"label": country_name, "value": country_name}
+                        for country_name in country_list
                     ],
                     value="India",
                     style={"backgroundColor": "gray", "color": "black"},
                 ),
             ),
-            className="m-5"
+            className="m-5",
         ),
         dbc.Row(
             children=[
@@ -375,7 +384,10 @@ country_page = html.Div(
         dbc.Row(html.H3("Map"), className="mt-5 justify-content-center"),
         dbc.Row(
             dbc.Col(
-                dcc.Loading(dcc.Graph(id="metric-output-country"), id="map-loading-country"), width=12
+                dcc.Loading(
+                    dcc.Graph(id="metric-output-country"), id="map-loading-country"
+                ),
+                width=12,
             ),
             className="mt-5 justify-content-center",
         ),
@@ -383,7 +395,10 @@ country_page = html.Div(
         dbc.Row(
             [
                 dbc.Col(
-                    dcc.Loading(dcc.Graph(id="timeseries-output-country"), id="ts-loading-country"),
+                    dcc.Loading(
+                        dcc.Graph(id="timeseries-output-country"),
+                        id="ts-loading-country",
+                    ),
                     sm=12,
                     md=12,
                     lg=8,
@@ -394,7 +409,10 @@ country_page = html.Div(
                         html.Div(
                             [
                                 dbc.Row(html.H4("Yesterday"), className="ml-3 mt-2"),
-                                dbc.Row(html.H5(id="yesterday-country"), className="ml-3 mb-2"),
+                                dbc.Row(
+                                    html.H5(id="yesterday-country"),
+                                    className="ml-3 mb-2",
+                                ),
                             ],
                             style={
                                 "borderRadius": "30px",
@@ -405,7 +423,10 @@ country_page = html.Div(
                         html.Div(
                             [
                                 dbc.Row(html.H4("Last Week"), className="ml-3 mt-2"),
-                                dbc.Row(html.H5(id="lastweek-country"), className="ml-3 mb-2"),
+                                dbc.Row(
+                                    html.H5(id="lastweek-country"),
+                                    className="ml-3 mb-2",
+                                ),
                             ],
                             style={
                                 "borderRadius": "30px",
@@ -416,7 +437,10 @@ country_page = html.Div(
                         html.Div(
                             [
                                 dbc.Row(html.H4("Last Month"), className="ml-3 mt-2"),
-                                dbc.Row(html.H5(id="lastmonth-country"), className="ml-3 mb-2"),
+                                dbc.Row(
+                                    html.H5(id="lastmonth-country"),
+                                    className="ml-3 mb-2",
+                                ),
                             ],
                             style={
                                 "borderRadius": "30px",
@@ -435,7 +459,7 @@ country_page = html.Div(
             className="mt-5 align-items-center",
         ),
     ],
-    className="m-5"
+    className="m-5",
 )
 
 preventive_page = dbc.Container(
@@ -456,6 +480,7 @@ app.layout = html.Div(
 # Defining the Callbacks
 
 # Callbacks for the Global Situation Page
+
 
 @app.callback(
     dash.dependencies.Output("metric-output", "figure"),
@@ -516,7 +541,9 @@ def update_timeseries(btn1, btn2, btn3):
     else:
         return animations.plot_world_timeseries(confirmed_global, "confirmed")
 
+
 # Callbacks for the Country Analysis Page
+
 
 @app.callback(
     dash.dependencies.Output("metric-output-country", "figure"),
@@ -538,6 +565,7 @@ def update_graph_country(value, btn1, btn2, btn3):
     else:
         return map.plot_study(country_cases_sorted, columns, confirmed, value)
 
+
 @app.callback(
     dash.dependencies.Output("timeseries-output-country", "figure"),
     [
@@ -557,6 +585,7 @@ def update_timeseries_country(btn1, btn2, btn3):
     else:
         return animations.plot_world_timeseries(confirmed_global, "confirmed")
 
+
 @app.callback(
     dash.dependencies.Output("yesterday", "children"),
     [
@@ -571,19 +600,19 @@ def update_yesterday(btn1, btn2, btn3):
     if "confirmed" in changed_id:
         ts = animations.get_world_timeseries(confirmed_global)
         yest_cases = ts.at[yesterday.strftime("%m/%d/%y"), "Cases"]
-        return prettify(yest_cases)
+        return format(yest_cases, ',d')
     elif "recoveries" in changed_id:
         ts = animations.get_world_timeseries(recovered_global)
         yest_cases = ts.at[yesterday.strftime("%m/%d/%y"), "Cases"]
-        return prettify(yest_cases)
+        return format(yest_cases, ',d')
     elif "deaths" in changed_id:
         ts = animations.get_world_timeseries(deaths_global)
         yest_cases = ts.at[yesterday.strftime("%m/%d/%y"), "Cases"]
-        return prettify(yest_cases)
+        return format(yest_cases, ',d')
     else:
         ts = animations.get_world_timeseries(confirmed_global)
         yest_cases = ts.at[yesterday.strftime("%m/%d/%y"), "Cases"]
-        return prettify(yest_cases)
+        return format(yest_cases, ',d')
 
 
 @app.callback(
@@ -600,19 +629,19 @@ def update_lastweek(btn1, btn2, btn3):
     if "confirmed" in changed_id:
         ts = animations.get_world_timeseries(confirmed_global)
         lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
-        return prettify(lastweek_cases)
+        return format(lastweek_cases, ',d')
     elif "recoveries" in changed_id:
         ts = animations.get_world_timeseries(recovered_global)
         lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
-        return prettify(lastweek_cases)
+        return format(lastweek_cases, ',d')
     elif "deaths" in changed_id:
         ts = animations.get_world_timeseries(deaths_global)
         lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
-        return prettify(lastweek_cases)
+        return format(lastweek_cases, ',d')
     else:
         ts = animations.get_world_timeseries(confirmed_global)
         lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
-        return prettify(lastweek_cases)
+        return format(lastweek_cases, ',d')
 
 
 @app.callback(
@@ -629,19 +658,19 @@ def update_lastmonth(btn1, btn2, btn3):
     if "confirmed" in changed_id:
         ts = animations.get_world_timeseries(confirmed_global)
         lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
-        return prettify(lastmonth_cases)
+        return format(lastmonth_cases, ',d')
     elif "recoveries" in changed_id:
         ts = animations.get_world_timeseries(recovered_global)
         lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
-        return prettify(lastmonth_cases)
+        return format(lastmonth_cases, ',d')
     elif "deaths" in changed_id:
         ts = animations.get_world_timeseries(deaths_global)
         lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
-        return prettify(lastmonth_cases)
+        return format(lastmonth_cases, ',d')
     else:
         ts = animations.get_world_timeseries(confirmed_global)
         lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
-        return prettify(lastmonth_cases)
+        return format(lastmonth_cases, ',d')
 
 
 @app.callback(

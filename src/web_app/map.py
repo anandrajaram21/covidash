@@ -21,12 +21,9 @@ import chart_studio
 from math import log
 from math import e
 from itertools import chain
-import pyarrow as pa
-import redis
+import app_vars as av
 
 pio.templates.default = "plotly_dark"
-
-r = redis.Redis()
 
 # Setting up credentials for the map
 chart_studio.tools.set_credentials_file(
@@ -36,10 +33,10 @@ mapbox_access_token = "pk.eyJ1IjoiY2hhcnRzdHVkaW91c2VyIiwiYSI6ImNrZXd3bTBoNTA4bn
 
 # Getting sorted country cases
 confirmed_global, deaths_global, recovered_global, country_cases = (
-    pa.deserialize(r.get("confirmed_global")),
-    pa.deserialize(r.get("deaths_global")),
-    pa.deserialize(r.get("recovered_global")),
-    pa.deserialize(r.get("country_cases")),
+    av.confirmed_global,
+    av.deaths_global,
+    av.recovered_global,
+    av.country_cases,
 )
 
 country_cases_sorted = country_cases.sort_values("confirmed", ascending=False)
@@ -98,19 +95,16 @@ def create_data(df, study, color):
     for country in countries:
         try:
             event_data = dict(
-                lat=df.loc[(df["Study"] == study) & (
-                    df["Country"] == country), "Lat"],
+                lat=df.loc[(df["Study"] == study) & (df["Country"] == country), "Lat"],
                 lon=df.loc[
-                    (df["Study"] == study) & (
-                        df["Country"] == country), "Long_"
+                    (df["Study"] == study) & (df["Country"] == country), "Long_"
                 ],
                 name=f"{country}",
                 marker={
                     "size": log(
                         float(
                             df.loc[
-                                (df["Study"] == study) & (
-                                    df["Country"] == country),
+                                (df["Study"] == study) & (df["Country"] == country),
                                 "Count",
                             ]
                         ),

@@ -6,18 +6,15 @@ This file contains beautiful animations that visualize the current COVID-19 situ
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import pyarrow as pa
-import redis
 from datetime import date
 from datetime import timedelta
-
-r = redis.Redis()
+import app_vars as av
 
 confirmed_global, deaths_global, recovered_global, country_cases = (
-    pa.deserialize(r.get("confirmed_global")),
-    pa.deserialize(r.get("deaths_global")),
-    pa.deserialize(r.get("recovered_global")),
-    pa.deserialize(r.get("country_cases")),
+    av.confirmed_global,
+    av.deaths_global,
+    av.recovered_global,
+    av.country_cases,
 )
 
 

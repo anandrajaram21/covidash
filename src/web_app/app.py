@@ -11,117 +11,118 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
-import pyarrow as pa
-import redis
 from datetime import date
+import requests
 from datetime import timedelta
 import plotly.io as pio
+import os
+from flask_caching import Cache
+import app_vars as av
 
 pio.templates.default = "plotly_dark"
 
 external_stylesheets = [dbc.themes.CYBORG]
-
-r = redis.Redis()
-
-def collect_data():
-    if (
-        r.exists("confirmed_global")
-        and r.exists("recovered_global")
-        and r.exists("deaths_global")
-    ):
-        return (
-            pa.deserialize(r.get("confirmed_global")),
-            pa.deserialize(r.get("deaths_global")),
-            pa.deserialize(r.get("recovered_global")),
-            pa.deserialize(r.get("country_cases")),
-        )
-
-    else:
-        filenames = [
-            "time_series_covid19_confirmed_global.csv",
-            "time_series_covid19_deaths_global.csv",
-            "time_series_covid19_recovered_global.csv",
-        ]
-
-        url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/"
-
-        confirmed_global = pd.read_csv(url + filenames[0])
-        deaths_global = pd.read_csv(url + filenames[1])
-        recovered_global = pd.read_csv(url + filenames[2])
-        country_cases = pd.read_csv(
-            "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/web-data/data/cases_country.csv"
-        )
-
-        confirmed_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
-        deaths_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
-        recovered_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
-        country_cases.drop(
-            columns=[
-                "Last_Update",
-                "Incident_Rate",
-                "People_Tested",
-                "People_Hospitalized",
-                "UID",
-            ],
-            inplace=True,
-        )
-
-        confirmed_global.rename(columns={"Country/Region": "country"}, inplace=True)
-        deaths_global.rename(columns={"Country/Region": "country"}, inplace=True)
-        recovered_global.rename(columns={"Country/Region": "country"}, inplace=True)
-
-        country_cases.rename(
-            columns={
-                "Country_Region": "country",
-                "Confirmed": "confirmed",
-                "Deaths": "deaths",
-                "Recovered": "recovered",
-                "Active": "active",
-                "Mortality_Rate": "mortality",
-            },
-            inplace=True,
-        )
-
-        confirmed_global = confirmed_global.groupby(["country"], as_index=False).sum()
-        deaths_global = deaths_global.groupby(["country"], as_index=False).sum()
-        recovered_global = recovered_global.groupby(["country"], as_index=False).sum()
-
-        confirmed_global.at[178, "5/20/20"] = 251667
-
-        r.set(
-            "confirmed_global", pa.serialize(confirmed_global).to_buffer().to_pybytes()
-        )
-        r.expire("confirmed_global", 3600)
-        r.set("deaths_global", pa.serialize(deaths_global).to_buffer().to_pybytes())
-        r.expire("deaths_global", 3600)
-        r.set(
-            "recovered_global", pa.serialize(recovered_global).to_buffer().to_pybytes()
-        )
-        r.expire("recovered_global", 3600)
-        r.set("country_cases", pa.serialize(country_cases).to_buffer().to_pybytes())
-        r.expire("country_cases", 3600)
-
-        return (confirmed_global, deaths_global, recovered_global, country_cases)
-
-
-confirmed_global, deaths_global, recovered_global, country_cases = collect_data()
-country_cases_sorted = country_cases.sort_values("confirmed", ascending=False)
-
-# Importing these modules later as they rely on having data stored in redis
-
-import app_vars as av
-import animations
-import map
-import prophet
-
-# Main app starts here
 
 app = dash.Dash(
     __name__,
     external_stylesheets=external_stylesheets,
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
 )
+
 server = app.server
+
+cache = Cache(
+    server,
+    config={
+        "CACHE_TYPE": "redis",
+        "CACHE_REDIS_URL": os.environ.get("REDIS_URL", "redis://localhost:6379"),
+    },
+)
+
+TIMEOUT = 3600
+
+
+@cache.memoize(timeout=TIMEOUT)
+def collect_data():
+    filenames = [
+        "time_series_covid19_confirmed_global.csv",
+        "time_series_covid19_deaths_global.csv",
+        "time_series_covid19_recovered_global.csv",
+    ]
+
+    url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/"
+
+    confirmed_global = pd.read_csv(url + filenames[0])
+    deaths_global = pd.read_csv(url + filenames[1])
+    recovered_global = pd.read_csv(url + filenames[2])
+    country_cases = pd.read_csv(
+        "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/web-data/data/cases_country.csv"
+    )
+
+    confirmed_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
+    deaths_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
+    recovered_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
+    country_cases.drop(
+        columns=[
+            "Last_Update",
+            "Incident_Rate",
+            "People_Tested",
+            "People_Hospitalized",
+            "UID",
+        ],
+        inplace=True,
+    )
+
+    confirmed_global.rename(columns={"Country/Region": "country"}, inplace=True)
+    deaths_global.rename(columns={"Country/Region": "country"}, inplace=True)
+    recovered_global.rename(columns={"Country/Region": "country"}, inplace=True)
+
+    country_cases.rename(
+        columns={
+            "Country_Region": "country",
+            "Confirmed": "confirmed",
+            "Deaths": "deaths",
+            "Recovered": "recovered",
+            "Active": "active",
+            "Mortality_Rate": "mortality",
+        },
+        inplace=True,
+    )
+
+    return (confirmed_global, deaths_global, recovered_global, country_cases)
+
+def get_today_and_yesterday_data():
+    today_data = requests.get("https://corona.lmao.ninja/v2/all?yesterday")
+    yesterday_data = requests.get("https://corona.lmao.ninja/v2/all?yesterday=1")
+
+    today_data = today_data.json()
+    yesterday_data = yesterday_data.json()
+
+    return today_data, yesterday_data
+
+today_data, yesterday_data = get_today_and_yesterday_data()
+
+(
+    av.confirmed_global,
+    av.deaths_global,
+    av.recovered_global,
+    av.country_cases,
+) = collect_data()
+
+confirmed_global, deaths_global, recovered_global, country_cases = (
+    av.confirmed_global,
+    av.deaths_global,
+    av.recovered_global,
+    av.country_cases,
+)
+
+country_cases_sorted = country_cases.sort_values("confirmed", ascending=False)
+
+# Importing these modules later as they rely on having data stored
+
+import animations
+import map
+import prophet
 
 # Making the Graphs and Declaring the Variables Required for the Pages
 
@@ -142,12 +143,16 @@ country_list = confirmed_global["country"]
 today = date.today()
 
 world_timeseries_confirmed = animations.get_world_timeseries(confirmed_global)
-world_timeseries_confirmed = animations.get_world_timeseries(confirmed_global)
-world_timeseries_confirmed = animations.get_world_timeseries(recovered_global)
+world_timeseries_deaths = animations.get_world_timeseries(deaths_global)
+world_timeseries_recovered = animations.get_world_timeseries(recovered_global)
 
-ts = animations.get_world_timeseries(confirmed_global)
-lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
-format(lastweek_cases, ',d')
+confirmed_global_cases_today = format(today_data["cases"], ',d')
+confirmed_recovered_cases_today = format(today_data["deaths"], ',d')
+confirmed_deaths_cases_today = format(today_data["recovered"], ',d')
+
+confirmed_global_cases_yesterday = format(yesterday_data["cases"], ',d')
+confirmed_recovered_cases_yesterday = format(yesterday_data["deaths"], ',d')
+confirmed_deaths_cases_yesterday = format(yesterday_data["recovered"], ',d')
 
 # Making the Individual Pages
 
@@ -234,18 +239,6 @@ global_page = html.Div(
             ),
             className="mt-5 justify-content-center",
         ),
-        dbc.Row(
-            dbc.Col(
-                html.Div(
-                    [
-                        dbc.Row(html.H4("Confirmed Cases"), className="ml-3 mt-2"),
-                        dbc.Row(html.H5())
-                    ]
-                )
-            ),
-            dbc.Col(),
-            dbc.Col(),
-        ),
         dbc.Row(html.H3("Time Series"), className="mt-5 justify-content-center"),
         dbc.Row(
             [
@@ -258,6 +251,17 @@ global_page = html.Div(
                 ),
                 dbc.Col(
                     [
+                        html.Div(
+                            [
+                                dbc.Row(html.H4("Today"), className="ml-3 mt-2"),
+                                dbc.Row(html.H5(id="today"), className="ml-3 mb-2")
+                            ],
+                            style={
+                                "borderRadius": "30px",
+                                "backgroundColor": "#4120e6",
+                            },
+                            className="mt-3 p-3",
+                        ),
                         html.Div(
                             [
                                 dbc.Row(html.H4("Yesterday"), className="ml-3 mt-2"),
@@ -477,8 +481,6 @@ app.layout = html.Div(
     [dcc.Location(id="url", refresh=False), navbar, html.Div(id="page-content")]
 )
 
-# Defining the Callbacks
-
 # Callbacks for the Global Situation Page
 
 
@@ -490,6 +492,7 @@ app.layout = html.Div(
         dash.dependencies.Input("deaths", "n_clicks"),
     ],
 )
+@cache.memoize(timeout=TIMEOUT)
 def update_graph(btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     if "confirmed" in changed_id:
@@ -510,6 +513,7 @@ def update_graph(btn1, btn2, btn3):
         dash.dependencies.Input("deaths", "n_clicks"),
     ],
 )
+@cache.memoize(timeout=TIMEOUT)
 def update_animation(btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     if "confirmed" in changed_id:
@@ -530,6 +534,7 @@ def update_animation(btn1, btn2, btn3):
         dash.dependencies.Input("deaths", "n_clicks"),
     ],
 )
+@cache.memoize(timeout=TIMEOUT)
 def update_timeseries(btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     if "confirmed" in changed_id:
@@ -554,6 +559,7 @@ def update_timeseries(btn1, btn2, btn3):
         dash.dependencies.Input("deaths-country", "n_clicks"),
     ],
 )
+@cache.memoize(timeout=TIMEOUT)
 def update_graph_country(value, btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     if "confirmed" in changed_id:
@@ -574,6 +580,7 @@ def update_graph_country(value, btn1, btn2, btn3):
         dash.dependencies.Input("deaths-country", "n_clicks"),
     ],
 )
+@cache.memoize(timeout=TIMEOUT)
 def update_timeseries_country(btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     if "confirmed" in changed_id:
@@ -585,6 +592,25 @@ def update_timeseries_country(btn1, btn2, btn3):
     else:
         return animations.plot_world_timeseries(confirmed_global, "confirmed")
 
+@app.callback(
+    dash.dependencies.Output("today", "children"),
+    [
+        dash.dependencies.Input("confirmed", "n_clicks"),
+        dash.dependencies.Input("recoveries", "n_clicks"),
+        dash.dependencies.Input("deaths", "n_clicks"),
+    ],
+)
+def update_today(btn1, btn2, btn3):
+    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    yesterday = today - timedelta(days=1)
+    if "confirmed" in changed_id:
+        return confirmed_global_cases_today
+    elif "recoveries" in changed_id:
+        return confirmed_recovered_cases_today
+    elif "deaths" in changed_id:
+        return confirmed_deaths_cases_today
+    else:
+        return confirmed_global_cases_today
 
 @app.callback(
     dash.dependencies.Output("yesterday", "children"),
@@ -594,26 +620,18 @@ def update_timeseries_country(btn1, btn2, btn3):
         dash.dependencies.Input("deaths", "n_clicks"),
     ],
 )
+@cache.memoize(timeout=TIMEOUT)
 def update_yesterday(btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     yesterday = today - timedelta(days=1)
     if "confirmed" in changed_id:
-        ts = animations.get_world_timeseries(confirmed_global)
-        yest_cases = ts.at[yesterday.strftime("%m/%d/%y"), "Cases"]
-        return format(yest_cases, ',d')
+        return confirmed_global_cases_yesterday
     elif "recoveries" in changed_id:
-        ts = animations.get_world_timeseries(recovered_global)
-        yest_cases = ts.at[yesterday.strftime("%m/%d/%y"), "Cases"]
-        return format(yest_cases, ',d')
+        return confirmed_recovered_cases_yesterday
     elif "deaths" in changed_id:
-        ts = animations.get_world_timeseries(deaths_global)
-        yest_cases = ts.at[yesterday.strftime("%m/%d/%y"), "Cases"]
-        return format(yest_cases, ',d')
+        return confirmed_deaths_cases_yesterday
     else:
-        ts = animations.get_world_timeseries(confirmed_global)
-        yest_cases = ts.at[yesterday.strftime("%m/%d/%y"), "Cases"]
-        return format(yest_cases, ',d')
-
+        return confirmed_global_cases_yesterday
 
 @app.callback(
     dash.dependencies.Output("lastweek", "children"),
@@ -623,25 +641,30 @@ def update_yesterday(btn1, btn2, btn3):
         dash.dependencies.Input("deaths", "n_clicks"),
     ],
 )
+@cache.memoize(timeout=TIMEOUT)
 def update_lastweek(btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     lastweek = today - timedelta(weeks=1)
     if "confirmed" in changed_id:
-        ts = animations.get_world_timeseries(confirmed_global)
-        lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
-        return format(lastweek_cases, ',d')
+        lastweek_cases = world_timeseries_confirmed.at[
+            lastweek.strftime("%m/%d/%y"), "Cases"
+        ]
+        return format(lastweek_cases, ",d")
     elif "recoveries" in changed_id:
-        ts = animations.get_world_timeseries(recovered_global)
-        lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
-        return format(lastweek_cases, ',d')
+        lastweek_cases = world_timeseries_recovered.at[
+            lastweek.strftime("%m/%d/%y"), "Cases"
+        ]
+        return format(lastweek_cases, ",d")
     elif "deaths" in changed_id:
-        ts = animations.get_world_timeseries(deaths_global)
-        lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
-        return format(lastweek_cases, ',d')
+        lastweek_cases = world_timeseries_deaths.at[
+            lastweek.strftime("%m/%d/%y"), "Cases"
+        ]
+        return format(lastweek_cases, ",d")
     else:
-        ts = animations.get_world_timeseries(confirmed_global)
-        lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
-        return format(lastweek_cases, ',d')
+        lastweek_cases = world_timeseries_confirmed.at[
+            lastweek.strftime("%m/%d/%y"), "Cases"
+        ]
+        return format(lastweek_cases, ",d")
 
 
 @app.callback(
@@ -652,31 +675,37 @@ def update_lastweek(btn1, btn2, btn3):
         dash.dependencies.Input("deaths", "n_clicks"),
     ],
 )
+@cache.memoize(timeout=TIMEOUT)
 def update_lastmonth(btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     lastmonth = today - timedelta(days=30)
     if "confirmed" in changed_id:
-        ts = animations.get_world_timeseries(confirmed_global)
-        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
-        return format(lastmonth_cases, ',d')
+        lastmonth_cases = world_timeseries_confirmed.at[
+            lastmonth.strftime("%m/%d/%y"), "Cases"
+        ]
+        return format(lastmonth_cases, ",d")
     elif "recoveries" in changed_id:
-        ts = animations.get_world_timeseries(recovered_global)
-        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
-        return format(lastmonth_cases, ',d')
+        lastmonth_cases = world_timeseries_recovered.at[
+            lastmonth.strftime("%m/%d/%y"), "Cases"
+        ]
+        return format(lastmonth_cases, ",d")
     elif "deaths" in changed_id:
-        ts = animations.get_world_timeseries(deaths_global)
-        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
-        return format(lastmonth_cases, ',d')
+        lastmonth_cases = world_timeseries_deaths.at[
+            lastmonth.strftime("%m/%d/%y"), "Cases"
+        ]
+        return format(lastmonth_cases, ",d")
     else:
-        ts = animations.get_world_timeseries(confirmed_global)
-        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
-        return format(lastmonth_cases, ',d')
+        lastmonth_cases = world_timeseries_confirmed.at[
+            lastmonth.strftime("%m/%d/%y"), "Cases"
+        ]
+        return format(lastmonth_cases, ",d")
 
 
 @app.callback(
     dash.dependencies.Output("page-content", "children"),
     [dash.dependencies.Input("url", "pathname")],
 )
+@cache.memoize(timeout=TIMEOUT)
 def display_page(pathname):
     if pathname == "/":
         return home_page

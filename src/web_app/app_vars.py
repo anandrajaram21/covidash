@@ -1,4 +1,9 @@
-#!/usr/bin/env python3
+confirmed_global, deaths_global, recovered_global, country_cases = (
+    None,
+    None,
+    None,
+    None,
+)
 
 covid_19 = """
     ## COVID-19

@@ -12,22 +12,20 @@ import plotly.io as pio
 import plotly
 from fbprophet import Prophet
 from fbprophet.diagnostics import cross_validation
-import redis
-import pyarrow as pa
 import time
+import app_vars as av
 
 pio.templates.default = "plotly_dark"
-r = redis.Redis()
 
 # Data Preprocessing Functions
 
 
 def get_data():
     confirmed_global, deaths_global, recovered_global, country_cases = (
-        pa.deserialize(r.get("confirmed_global")),
-        pa.deserialize(r.get("deaths_global")),
-        pa.deserialize(r.get("recovered_global")),
-        pa.deserialize(r.get("country_cases")),
+        av.confirmed_global,
+        av.deaths_global,
+        av.recovered_global,
+        av.country_cases,
     )
     recovered = recovered_global.groupby("country").sum().T
     deaths = deaths_global.groupby("country").sum().T

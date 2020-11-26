@@ -93,19 +93,16 @@ def create_data(df, study, color):
     for country in countries:
         try:
             event_data = dict(
-                lat=df.loc[(df["Study"] == study) & (
-                    df["Country"] == country), "Lat"],
+                lat=df.loc[(df["Study"] == study) & (df["Country"] == country), "Lat"],
                 lon=df.loc[
-                    (df["Study"] == study) & (
-                        df["Country"] == country), "Long_"
+                    (df["Study"] == study) & (df["Country"] == country), "Long_"
                 ],
                 name=f"{study}: {country}",
                 marker={
                     "size": log(
                         float(
                             df.loc[
-                                (df["Study"] == study) & (
-                                    df["Country"] == country),
+                                (df["Study"] == study) & (df["Country"] == country),
                                 "Count",
                             ]
                         ),

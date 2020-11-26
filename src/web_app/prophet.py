@@ -1,6 +1,7 @@
-#!/usr/bin/env python3
-
+"""
 # Facebook Prophet Model
+This file contains the source code required to forecast COVID-19 cases using a Facebook Prophet Model
+"""
 
 # Imports
 import pandas as pd
@@ -69,9 +70,6 @@ def create_data_frame(df_name="confirmed", country="US"):
 
 
 def build_model():
-    """
-    The return value is a fbprophet.forecaster.Prophet object
-    """
     prophet = (
         Prophet(
             growth="linear",
@@ -90,14 +88,6 @@ def build_model():
 
 
 def predict_future(prophet, data):
-    """
-    prophet: fbprophet.forecaster.Prophet object
-             Facebook Prophet Model
-    data: Data to be fit into the Model for analysis
-
-    The return value is a Series with a Pandas DatetimeIndex of the dates on which prediction occurs,
-    containing the predicted values
-    """
     prophet.fit(data)
     future = prophet.make_future_dataframe(freq="D", periods=14)
     forecast = prophet.predict(future)
@@ -114,17 +104,10 @@ def predict_future(prophet, data):
     return ftr
 
 
-# # Graphing Function
+# Graphing Function
 
 
 def plot_forecast(data, forecast):
-    """
-    Plot the forecasted values against the data at hand
-    data: Dataframe with columns 'ds','y' containing Dates and Values of the data at hand respectively
-    forecast: Series with a Pandas DatetimeIndex of the dates on which prediction occurs,
-              containing the predicted values
-    The return value is a plotly.graph_objs._figure.Figure which showcases predictions
-    """
     fig = go.Figure()
 
     fig.add_trace(
@@ -158,26 +141,14 @@ def plot_forecast(data, forecast):
 
 
 def mape(y_true, y_pred):
-    """Return the Mean Absolute Percentage Error between any 2 Series"""
     y_true, y_pred = np.array(y_true), np.array(y_pred)
     return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
 
 
-# # Main Function
-
-# In[8]:
+# Main Function
 
 
 def prophet_predict(df_name="confirmed", country="US"):
-    """
-    Predict for any Country
-    df_name: Choice of prediction: "recovered", "confirmed", "deaths"
-    country: Name of the country you wish to predict for
-    The return values are:
-    1)A plotly.graph_objs._figure.Figure which showcases predictions
-    2)Mean Absolute Error Percentage of the prediction
-    """
-
     data = create_data_frame(df_name, country)
     prophet = build_model()
     ftr = predict_future(prophet, data)
@@ -193,8 +164,4 @@ def prophet_predict(df_name="confirmed", country="US"):
         df_cv.yhat.values[i] = int(df_cv.yhat.values[i])
     end = time.time()
     error = mape(df_cv.y, df_cv.yhat)
-
     return fig, error
-
-
-# # Example

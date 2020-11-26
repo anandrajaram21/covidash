@@ -5,9 +5,6 @@ This file contains the source code for the web app made with plotly dash
 
 # Imports and data preprocessing
 
-import app_vars as av
-import animations
-import map
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -23,7 +20,7 @@ import plotly.io as pio
 
 pio.templates.default = "plotly_dark"
 
-external_stylesheets = [dbc.themes.CYBORG]
+external_stylesheets = [dbc.themes.DARKLY]
 
 r = redis.Redis()
 
@@ -31,8 +28,7 @@ r = redis.Redis()
 def prettify(amount, separator=","):
     """Separate with predefined separator."""
     orig = str(amount)
-    new = re.sub("^(-?\d+)(\d{3})",
-                 "\g<1>{0}\g<2>".format(separator), str(amount))
+    new = re.sub("^(-?\d+)(\d{3})", "\g<1>{0}\g<2>".format(separator), str(amount))
     if orig == new:
         return new
     else:
@@ -68,12 +64,9 @@ def collect_data():
             "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/web-data/data/cases_country.csv"
         )
 
-        confirmed_global.drop(
-            columns=["Province/State", "Lat", "Long"], inplace=True)
-        deaths_global.drop(
-            columns=["Province/State", "Lat", "Long"], inplace=True)
-        recovered_global.drop(
-            columns=["Province/State", "Lat", "Long"], inplace=True)
+        confirmed_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
+        deaths_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
+        recovered_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
         country_cases.drop(
             columns=[
                 "Last_Update",
@@ -85,12 +78,9 @@ def collect_data():
             inplace=True,
         )
 
-        confirmed_global.rename(
-            columns={"Country/Region": "country"}, inplace=True)
-        deaths_global.rename(
-            columns={"Country/Region": "country"}, inplace=True)
-        recovered_global.rename(
-            columns={"Country/Region": "country"}, inplace=True)
+        confirmed_global.rename(columns={"Country/Region": "country"}, inplace=True)
+        deaths_global.rename(columns={"Country/Region": "country"}, inplace=True)
+        recovered_global.rename(columns={"Country/Region": "country"}, inplace=True)
 
         country_cases.rename(
             columns={
@@ -104,30 +94,23 @@ def collect_data():
             inplace=True,
         )
 
-        confirmed_global = confirmed_global.groupby(
-            ["country"], as_index=False).sum()
-        deaths_global = deaths_global.groupby(
-            ["country"], as_index=False).sum()
-        recovered_global = recovered_global.groupby(
-            ["country"], as_index=False).sum()
+        confirmed_global = confirmed_global.groupby(["country"], as_index=False).sum()
+        deaths_global = deaths_global.groupby(["country"], as_index=False).sum()
+        recovered_global = recovered_global.groupby(["country"], as_index=False).sum()
 
         confirmed_global.at[178, "5/20/20"] = 251667
 
         r.set(
-            "confirmed_global", pa.serialize(
-                confirmed_global).to_buffer().to_pybytes()
+            "confirmed_global", pa.serialize(confirmed_global).to_buffer().to_pybytes()
         )
         r.expire("confirmed_global", 3600)
-        r.set("deaths_global", pa.serialize(
-            deaths_global).to_buffer().to_pybytes())
+        r.set("deaths_global", pa.serialize(deaths_global).to_buffer().to_pybytes())
         r.expire("deaths_global", 3600)
         r.set(
-            "recovered_global", pa.serialize(
-                recovered_global).to_buffer().to_pybytes()
+            "recovered_global", pa.serialize(recovered_global).to_buffer().to_pybytes()
         )
         r.expire("recovered_global", 3600)
-        r.set("country_cases", pa.serialize(
-            country_cases).to_buffer().to_pybytes())
+        r.set("country_cases", pa.serialize(country_cases).to_buffer().to_pybytes())
         r.expire("country_cases", 3600)
 
         return (confirmed_global, deaths_global, recovered_global, country_cases)
@@ -138,16 +121,17 @@ country_cases_sorted = country_cases.sort_values("confirmed", ascending=False)
 
 # Importing these modules later as they rely on having data stored in redis
 
-
-# import prophet
+import app_vars as av
+import animations
+import map
+import prophet
 
 # Main app starts here
 
 app = dash.Dash(
     __name__,
     external_stylesheets=external_stylesheets,
-    meta_tags=[{"name": "viewport",
-                "content": "width=device-width, initial-scale=1"}],
+    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
 )
 server = app.server
 
@@ -163,8 +147,9 @@ columns = ["country", ["deaths", "confirmed", "recovered"], "Lat", "Long_"]
 
 world_map = map.plot_study(country_cases_sorted, columns, confirmed)
 
-confirmed_timeseries = animations.plot_world_timeseries(
-    confirmed_global, "confirmed")
+confirmed_timeseries = animations.plot_world_timeseries(confirmed_global, "confirmed")
+
+country_list = confirmed_global["country"]
 
 today = date.today()
 
@@ -246,21 +231,18 @@ global_page = html.Div(
                 ),
             ]
         ),
-        dbc.Row(html.H3("Global Situation"),
-                className="mt-5 justify-content-center"),
+        dbc.Row(html.H3("Global Situation"), className="mt-5 justify-content-center"),
         dbc.Row(
             dbc.Col(
                 dcc.Loading(dcc.Graph(id="metric-output"), id="map-loading"), width=12
             ),
             className="mt-5 justify-content-center",
         ),
-        dbc.Row(html.H3("Time Series"),
-                className="mt-5 justify-content-center"),
+        dbc.Row(html.H3("Time Series"), className="mt-5 justify-content-center"),
         dbc.Row(
             [
                 dbc.Col(
-                    dcc.Loading(dcc.Graph(id="timeseries-output"),
-                                id="ts-loading"),
+                    dcc.Loading(dcc.Graph(id="timeseries-output"), id="ts-loading"),
                     sm=12,
                     md=12,
                     lg=8,
@@ -270,10 +252,8 @@ global_page = html.Div(
                     [
                         html.Div(
                             [
-                                dbc.Row(html.H4("Yesterday"),
-                                        className="ml-3 mt-2"),
-                                dbc.Row(html.H5(id="yesterday"),
-                                        className="ml-3 mb-2"),
+                                dbc.Row(html.H4("Yesterday"), className="ml-3 mt-2"),
+                                dbc.Row(html.H5(id="yesterday"), className="ml-3 mb-2"),
                             ],
                             style={
                                 "borderRadius": "30px",
@@ -283,10 +263,8 @@ global_page = html.Div(
                         ),
                         html.Div(
                             [
-                                dbc.Row(html.H4("Last Week"),
-                                        className="ml-3 mt-2"),
-                                dbc.Row(html.H5(id="lastweek"),
-                                        className="ml-3 mb-2"),
+                                dbc.Row(html.H4("Last Week"), className="ml-3 mt-2"),
+                                dbc.Row(html.H5(id="lastweek"), className="ml-3 mb-2"),
                             ],
                             style={
                                 "borderRadius": "30px",
@@ -296,10 +274,8 @@ global_page = html.Div(
                         ),
                         html.Div(
                             [
-                                dbc.Row(html.H4("Last Month"),
-                                        className="ml-3 mt-2"),
-                                dbc.Row(html.H5(id="lastmonth"),
-                                        className="ml-3 mb-2"),
+                                dbc.Row(html.H4("Last Month"), className="ml-3 mt-2"),
+                                dbc.Row(html.H5(id="lastmonth"), className="ml-3 mb-2"),
                             ],
                             style={
                                 "borderRadius": "30px",
@@ -320,8 +296,7 @@ global_page = html.Div(
         dbc.Row(html.H3("Animation"), className="mt-5 justify-content-center"),
         dbc.Row(
             dbc.Col(
-                dcc.Loading(dcc.Graph(id="animation-output"),
-                            id="animation-loading"),
+                dcc.Loading(dcc.Graph(id="animation-output"), id="animation-loading"),
                 sm=12,
                 md=12,
                 lg=12,
@@ -333,8 +308,134 @@ global_page = html.Div(
     className="m-5",
 )
 
-country_page = dbc.Container(
-    children=[html.H1("This is the individual country analysis page")]
+country_page = html.Div(
+    children=[
+        dbc.Row(
+            dbc.Col(
+                dcc.Dropdown(
+                    id="country-dropdown",
+                    options=[
+                        {"label": country_name, "value": country_name} for country_name in country_list
+                    ],
+                    value="India",
+                    style={"backgroundColor": "gray", "color": "black"},
+                ),
+            ),
+            className="m-5"
+        ),
+        dbc.Row(
+            children=[
+                dbc.Col(
+                    dbc.Button(
+                        "Confirmed Cases",
+                        size="lg",
+                        id="confirmed-country",
+                        color="primary",
+                        block=True,
+                        outline=True,
+                    ),
+                    sm=12,
+                    md=12,
+                    lg=4,
+                    xl=4,
+                    className="mb-4",
+                ),
+                dbc.Col(
+                    dbc.Button(
+                        "Recoveries",
+                        size="lg",
+                        id="recoveries-country",
+                        color="success",
+                        block=True,
+                        outline=True,
+                    ),
+                    sm=12,
+                    md=12,
+                    lg=4,
+                    xl=4,
+                    className="mb-4",
+                ),
+                dbc.Col(
+                    dbc.Button(
+                        "Deaths",
+                        size="lg",
+                        id="deaths-country",
+                        color="danger",
+                        block=True,
+                        outline=True,
+                    ),
+                    sm=12,
+                    md=12,
+                    lg=4,
+                    xl=4,
+                    className="mb-4",
+                ),
+            ]
+        ),
+        dbc.Row(html.H3("Map"), className="mt-5 justify-content-center"),
+        dbc.Row(
+            dbc.Col(
+                dcc.Loading(dcc.Graph(id="metric-output-country"), id="map-loading-country"), width=12
+            ),
+            className="mt-5 justify-content-center",
+        ),
+        dbc.Row(html.H3("Time Series"), className="mt-5 justify-content-center"),
+        dbc.Row(
+            [
+                dbc.Col(
+                    dcc.Loading(dcc.Graph(id="timeseries-output-country"), id="ts-loading-country"),
+                    sm=12,
+                    md=12,
+                    lg=8,
+                    xl=8,
+                ),
+                dbc.Col(
+                    [
+                        html.Div(
+                            [
+                                dbc.Row(html.H4("Yesterday"), className="ml-3 mt-2"),
+                                dbc.Row(html.H5(id="yesterday-country"), className="ml-3 mb-2"),
+                            ],
+                            style={
+                                "borderRadius": "30px",
+                                "backgroundColor": "#4d37ba",
+                            },
+                            className="mt-3 p-3",
+                        ),
+                        html.Div(
+                            [
+                                dbc.Row(html.H4("Last Week"), className="ml-3 mt-2"),
+                                dbc.Row(html.H5(id="lastweek-country"), className="ml-3 mb-2"),
+                            ],
+                            style={
+                                "borderRadius": "30px",
+                                "backgroundColor": "#7156d6",
+                            },
+                            className="mt-3 p-3",
+                        ),
+                        html.Div(
+                            [
+                                dbc.Row(html.H4("Last Month"), className="ml-3 mt-2"),
+                                dbc.Row(html.H5(id="lastmonth-country"), className="ml-3 mb-2"),
+                            ],
+                            style={
+                                "borderRadius": "30px",
+                                "backgroundColor": "#8e6ee6",
+                            },
+                            className="mt-3 p-3",
+                        ),
+                    ],
+                    className="align-items-center",
+                    sm=12,
+                    md=12,
+                    lg=4,
+                    xl=4,
+                ),
+            ],
+            className="mt-5 align-items-center",
+        ),
+    ],
+    className="m-5"
 )
 
 preventive_page = dbc.Container(
@@ -349,12 +450,12 @@ preventive_page = dbc.Container(
 )
 
 app.layout = html.Div(
-    [dcc.Location(id="url", refresh=False), navbar,
-     html.Div(id="page-content")]
+    [dcc.Location(id="url", refresh=False), navbar, html.Div(id="page-content")]
 )
 
 # Defining the Callbacks
 
+# Callbacks for the Global Situation Page
 
 @app.callback(
     dash.dependencies.Output("metric-output", "figure"),
@@ -415,6 +516,46 @@ def update_timeseries(btn1, btn2, btn3):
     else:
         return animations.plot_world_timeseries(confirmed_global, "confirmed")
 
+# Callbacks for the Country Analysis Page
+
+@app.callback(
+    dash.dependencies.Output("metric-output-country", "figure"),
+    [
+        dash.dependencies.Input("country-dropdown", "value"),
+        dash.dependencies.Input("confirmed-country", "n_clicks"),
+        dash.dependencies.Input("recoveries-country", "n_clicks"),
+        dash.dependencies.Input("deaths-country", "n_clicks"),
+    ],
+)
+def update_graph_country(value, btn1, btn2, btn3):
+    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    if "confirmed" in changed_id:
+        return map.plot_study(country_cases_sorted, columns, confirmed, value)
+    elif "recoveries" in changed_id:
+        return map.plot_study(country_cases_sorted, columns, recovered, value)
+    elif "deaths" in changed_id:
+        return map.plot_study(country_cases_sorted, columns, deaths, value)
+    else:
+        return map.plot_study(country_cases_sorted, columns, confirmed, value)
+
+@app.callback(
+    dash.dependencies.Output("timeseries-output-country", "figure"),
+    [
+        dash.dependencies.Input("confirmed-country", "n_clicks"),
+        dash.dependencies.Input("recoveries-country", "n_clicks"),
+        dash.dependencies.Input("deaths-country", "n_clicks"),
+    ],
+)
+def update_timeseries_country(btn1, btn2, btn3):
+    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    if "confirmed" in changed_id:
+        return animations.plot_world_timeseries(confirmed_global, "confirmed")
+    elif "recoveries" in changed_id:
+        return animations.plot_world_timeseries(recovered_global, "recovered")
+    elif "deaths" in changed_id:
+        return animations.plot_world_timeseries(deaths_global, "deaths")
+    else:
+        return animations.plot_world_timeseries(confirmed_global, "confirmed")
 
 @app.callback(
     dash.dependencies.Output("yesterday", "children"),

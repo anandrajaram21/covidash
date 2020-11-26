@@ -165,17 +165,12 @@ def update_layout(study, layout):
         }
     ]
 
-    layout["title"] = f"{study.capitalize()} Cases"
+    layout["title"] = f"{study.capitalize()}"
     layout["annotations"] = annotations
     layout["hoverlabel"] = dict(
-        font_size=16,
-        font_family="PT Sans Narrow"
+        font_size=25,
+        font_family="Rockwell"
     )
-
-    return layout
-
-    layout["title"] = f"{study.capitalize()} Cases"
-    layout["annotations"] = annotations
 
     return layout
 

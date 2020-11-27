@@ -527,6 +527,25 @@ country_page = html.Div(
             ],
             className="mt-5 align-items-center",
         ),
+        dbc.Row(
+            html.H3("Predictions for the Following Week"),
+            className="mt-5 justify-content-center",
+        ),
+        dbc.Row(
+            children=[
+                dbc.Col(
+                    dcc.Loading(
+                        dcc.Graph(id="predictions-output-graph"),
+                        id="predictions-loading-graph",
+                    ),
+                    sm=12,
+                    md=12,
+                    lg=8,
+                    xl=8,
+                ),
+                dbc.Col(sm=12, md=12, lg=4, xl=4, id="predictions-output-error"),
+            ]
+        ),
     ],
     className="m-5",
 )
@@ -974,6 +993,20 @@ def update_lastmonth_country_diff(value, btn1, btn2, btn3):
             lastmonth.strftime("%m/%d/%y"), "confirmed"
         ]
         return "-" + format(country_stats["confirmed"] - lastmonth_cases, ",d")
+
+
+@app.callback(
+    dash.dependencies.Output("predictions-output-graph", "figure"),
+    dash.dependencies.Output("predictions-output-error", "children"),
+    dash.dependencies.Input("country-dropdown", "value"),
+    dash.dependencies.Input("confirmed-country", "n_clicks"),
+    dash.dependencies.Input("recoveries-country", "n_clicks"),
+    dash.dependencies.Input("deaths-country", "n_clicks"),
+)
+def update_predictions_country(value, btn1, btn2, btn3):
+    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    fig, err = prophet.prophet_predict()
+    return fig, err
 
 
 @app.callback(

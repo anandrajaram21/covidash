@@ -96,27 +96,19 @@ def collect_data():
 @cache.memoize(timeout=TIMEOUT)
 def get_today_and_yesterday_data():
     today_data = requests.get("https://corona.lmao.ninja/v2/all?yesterday")
-    yesterday_data = requests.get("https://corona.lmao.ninja/v2/all?yesterday=1")
     today_country_data = requests.get(
         "https://corona.lmao.ninja/v2/countries?yesterday&sort"
     )
-    yesterday_country_data = requests.get(
-        "https://corona.lmao.ninja/v2/countries?yesterday=1&sort"
-    )
 
     today_data = today_data.json()
-    yesterday_data = yesterday_data.json()
     today_country_data = today_country_data.json()
-    yesterday_country_data = yesterday_country_data.json()
 
-    return today_data, yesterday_data, today_country_data, yesterday_country_data
+    return today_data, today_country_data
 
 
 (
     today_data,
-    yesterday_data,
     today_country_data,
-    yesterday_country_data,
 ) = get_today_and_yesterday_data()
 
 (
@@ -171,10 +163,6 @@ world_timeseries_recovered = animations.get_world_timeseries(recovered_global)
 confirmed_global_cases_today = format(today_data["cases"], ",d")
 confirmed_recovered_cases_today = format(today_data["deaths"], ",d")
 confirmed_deaths_cases_today = format(today_data["recovered"], ",d")
-
-confirmed_global_cases_yesterday = format(yesterday_data["cases"], ",d")
-confirmed_recovered_cases_yesterday = format(yesterday_data["deaths"], ",d")
-confirmed_deaths_cases_yesterday = format(yesterday_data["recovered"], ",d")
 
 # ----------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
@@ -301,19 +289,16 @@ global_page = html.Div(
                         ),
                         html.Div(
                             [
-                                dbc.Row(html.H4("Yesterday"), className="ml-3 mt-2"),
-                                dbc.Row(html.H5(id="yesterday"), className="ml-3 mb-2"),
-                            ],
-                            style={
-                                "borderRadius": "30px",
-                                "backgroundColor": "#4d37ba",
-                            },
-                            className="mt-3 p-3",
-                        ),
-                        html.Div(
-                            [
                                 dbc.Row(html.H4("Last Week"), className="ml-3 mt-2"),
-                                dbc.Row(html.H5(id="lastweek"), className="ml-3 mb-2"),
+                                dbc.Row(
+                                    [
+                                        html.H5(id="lastweek"),
+                                        html.Span(
+                                            id="lastweek-diff", style={"color": "red"}
+                                        ),
+                                    ],
+                                    className="ml-3 mb-2",
+                                ),
                             ],
                             style={
                                 "borderRadius": "30px",
@@ -324,7 +309,15 @@ global_page = html.Div(
                         html.Div(
                             [
                                 dbc.Row(html.H4("Last Month"), className="ml-3 mt-2"),
-                                dbc.Row(html.H5(id="lastmonth"), className="ml-3 mb-2"),
+                                dbc.Row(
+                                    [
+                                        html.H5(id="lastmonth"),
+                                        html.Span(
+                                            id="lastmonth-diff", style={"color": "red"}
+                                        ),
+                                    ],
+                                    className="ml-3 mb-2",
+                                ),
                             ],
                             style={
                                 "borderRadius": "30px",
@@ -467,23 +460,15 @@ country_page = html.Div(
                         ),
                         html.Div(
                             [
-                                dbc.Row(html.H4("Yesterday"), className="ml-3 mt-2"),
-                                dbc.Row(
-                                    html.H5(id="yesterday-country"),
-                                    className="ml-3 mb-2",
-                                ),
-                            ],
-                            style={
-                                "borderRadius": "30px",
-                                "backgroundColor": "#4d37ba",
-                            },
-                            className="mt-3 p-3",
-                        ),
-                        html.Div(
-                            [
                                 dbc.Row(html.H4("Last Week"), className="ml-3 mt-2"),
                                 dbc.Row(
-                                    html.H5(id="lastweek-country"),
+                                    [
+                                        html.H5(id="lastweek-country"),
+                                        html.Span(
+                                            id="lastweek-country-diff",
+                                            style={"color": "red"},
+                                        ),
+                                    ],
                                     className="ml-3 mb-2",
                                 ),
                             ],
@@ -497,7 +482,13 @@ country_page = html.Div(
                             [
                                 dbc.Row(html.H4("Last Month"), className="ml-3 mt-2"),
                                 dbc.Row(
-                                    html.H5(id="lastmonth-country"),
+                                    [
+                                        html.H5(id="lastmonth-country"),
+                                        html.Span(
+                                            id="lastmonth-country-diff",
+                                            style={"color": "red"},
+                                        ),
+                                    ],
                                     className="ml-3 mb-2",
                                 ),
                             ],
@@ -609,6 +600,142 @@ def update_timeseries(btn1, btn2, btn3):
         return animations.plot_world_timeseries(confirmed_global, "confirmed")
 
 
+@app.callback(
+    dash.dependencies.Output("today", "children"),
+    [
+        dash.dependencies.Input("confirmed", "n_clicks"),
+        dash.dependencies.Input("recoveries", "n_clicks"),
+        dash.dependencies.Input("deaths", "n_clicks"),
+    ],
+)
+def update_today(btn1, btn2, btn3):
+    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    if "confirmed" in changed_id:
+        return confirmed_global_cases_today
+    elif "recoveries" in changed_id:
+        return confirmed_recovered_cases_today
+    elif "deaths" in changed_id:
+        return confirmed_deaths_cases_today
+    else:
+        return confirmed_global_cases_today
+
+
+@app.callback(
+    dash.dependencies.Output("lastweek", "children"),
+    [
+        dash.dependencies.Input("confirmed", "n_clicks"),
+        dash.dependencies.Input("recoveries", "n_clicks"),
+        dash.dependencies.Input("deaths", "n_clicks"),
+    ],
+)
+def update_lastweek(btn1, btn2, btn3):
+    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    lastweek = today - timedelta(weeks=1)
+    if "confirmed" in changed_id:
+        ts = animations.get_world_timeseries(confirmed_global)
+        lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
+        return format(lastweek_cases, ",d")
+    elif "recoveries" in changed_id:
+        ts = animations.get_world_timeseries(recovered_global)
+        lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
+        return format(lastweek_cases, ",d")
+    elif "deaths" in changed_id:
+        ts = animations.get_world_timeseries(deaths_global)
+        lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
+        return format(lastweek_cases, ",d")
+    else:
+        ts = animations.get_world_timeseries(confirmed_global)
+        lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
+        return format(lastweek_cases, ",d")
+
+
+@app.callback(
+    dash.dependencies.Output("lastweek-diff", "children"),
+    [
+        dash.dependencies.Input("confirmed", "n_clicks"),
+        dash.dependencies.Input("recoveries", "n_clicks"),
+        dash.dependencies.Input("deaths", "n_clicks"),
+    ],
+)
+def update_lastweek_diff(btn1, btn2, btn3):
+    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    lastweek = today - timedelta(weeks=1)
+    if "confirmed" in changed_id:
+        ts = animations.get_world_timeseries(confirmed_global)
+        lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
+        return format(today_data["cases"] - lastweek_cases, ",d")
+    elif "recoveries" in changed_id:
+        ts = animations.get_world_timeseries(recovered_global)
+        lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
+        return format(today_data["recovered"] - lastweek_cases, ",d")
+    elif "deaths" in changed_id:
+        ts = animations.get_world_timeseries(deaths_global)
+        lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
+        return format(today_data["deaths"] - lastweek_cases, ",d")
+    else:
+        ts = animations.get_world_timeseries(confirmed_global)
+        lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
+        return format(today_data["cases"] - lastweek_cases, ",d")
+
+
+@app.callback(
+    dash.dependencies.Output("lastmonth", "children"),
+    [
+        dash.dependencies.Input("confirmed", "n_clicks"),
+        dash.dependencies.Input("recoveries", "n_clicks"),
+        dash.dependencies.Input("deaths", "n_clicks"),
+    ],
+)
+def update_lastmonth(btn1, btn2, btn3):
+    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    lastmonth = today - timedelta(days=30)
+    if "confirmed" in changed_id:
+        ts = animations.get_world_timeseries(confirmed_global)
+        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
+        return format(lastmonth_cases, ",d")
+    elif "recoveries" in changed_id:
+        ts = animations.get_world_timeseries(recovered_global)
+        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
+        return format(lastmonth_cases, ",d")
+    elif "deaths" in changed_id:
+        ts = animations.get_world_timeseries(deaths_global)
+        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
+        return format(lastmonth_cases, ",d")
+    else:
+        ts = animations.get_world_timeseries(confirmed_global)
+        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
+        return format(lastmonth_cases, ",d")
+
+
+@app.callback(
+    dash.dependencies.Output("lastmonth-diff", "children"),
+    [
+        dash.dependencies.Input("confirmed", "n_clicks"),
+        dash.dependencies.Input("recoveries", "n_clicks"),
+        dash.dependencies.Input("deaths", "n_clicks"),
+    ],
+)
+def update_lastmonth_diff(btn1, btn2, btn3):
+    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    lastmonth = today - timedelta(days=30)
+    if "confirmed" in changed_id:
+        ts = animations.get_world_timeseries(confirmed_global)
+        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
+        return format(today_data["cases"] - lastmonth_cases, ",d")
+    elif "recoveries" in changed_id:
+        ts = animations.get_world_timeseries(recovered_global)
+        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
+        return format(today_data["recovered"] - lastmonth_cases, ",d")
+    elif "deaths" in changed_id:
+        ts = animations.get_world_timeseries(deaths_global)
+        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
+        return format(today_data["deaths"] - lastmonth_cases, ",d")
+    else:
+        ts = animations.get_world_timeseries(confirmed_global)
+        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
+        return format(today_data["cases"] - lastmonth_cases, ",d")
+
+
 # ----------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
@@ -678,9 +805,9 @@ def update_today_country(value, btn1, btn2, btn3):
             cases = country["cases"]
             recovered = country["recovered"]
             deaths = country["deaths"]
-    cases = format(cases, ',d')
-    recovered = format(recovered, ',d')
-    deaths = format(deaths, ',d')
+    cases = format(cases, ",d")
+    recovered = format(recovered, ",d")
+    deaths = format(deaths, ",d")
     if "confirmed" in changed_id:
         return cases
     elif "recoveries" in changed_id:
@@ -692,39 +819,7 @@ def update_today_country(value, btn1, btn2, btn3):
 
 
 @app.callback(
-    dash.dependencies.Output("yesterday-country", "children"),
-    [
-        dash.dependencies.Input("country-dropdown", "value"),
-        dash.dependencies.Input("confirmed-country", "n_clicks"),
-        dash.dependencies.Input("recoveries-country", "n_clicks"),
-        dash.dependencies.Input("deaths-country", "n_clicks"),
-    ],
-)
-def update_yesterday_country(value, btn1, btn2, btn3):
-    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
-    cases = 0
-    recovered = 0
-    deaths = 0
-    for country in yesterday_country_data:
-        if country["country"] == value:
-            cases = country["cases"]
-            recovered = country["recovered"]
-            deaths = country["deaths"]
-    cases = format(cases, ',d')
-    recovered = format(recovered, ',d')
-    deaths = format(deaths, ',d')
-    if "confirmed" in changed_id:
-        return cases
-    elif "recoveries" in changed_id:
-        return recovered
-    elif "deaths" in changed_id:
-        return deaths
-    else:
-        return cases
-
-
-@app.callback(
-    dash.dependencies.Output("lastweek", "children"),
+    dash.dependencies.Output("lastweek-country", "children"),
     [
         dash.dependencies.Input("country-dropdown", "value"),
         dash.dependencies.Input("confirmed-country", "n_clicks"),
@@ -735,30 +830,30 @@ def update_yesterday_country(value, btn1, btn2, btn3):
 def update_lastweek_country(value, btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     lastweek = today - timedelta(weeks=1)
+    country_time_series = animations.line_comparison_data(value)
+    country_time_series.index = country_time_series["dates"]
     if "confirmed" in changed_id:
-        lastweek_cases = world_timeseries_confirmed.at[
-            lastweek.strftime("%m/%d/%y"), "Cases"
+        lastweek_cases = country_time_series.at[
+            lastweek.strftime("%m/%d/%y"), "confirmed"
         ]
         return format(lastweek_cases, ",d")
     elif "recoveries" in changed_id:
-        lastweek_cases = world_timeseries_recovered.at[
-            lastweek.strftime("%m/%d/%y"), "Cases"
+        lastweek_cases = country_time_series.at[
+            lastweek.strftime("%m/%d/%y"), "recovered"
         ]
         return format(lastweek_cases, ",d")
     elif "deaths" in changed_id:
-        lastweek_cases = world_timeseries_deaths.at[
-            lastweek.strftime("%m/%d/%y"), "Cases"
-        ]
+        lastweek_cases = country_time_series.at[lastweek.strftime("%m/%d/%y"), "deaths"]
         return format(lastweek_cases, ",d")
     else:
-        lastweek_cases = world_timeseries_confirmed.at[
-            lastweek.strftime("%m/%d/%y"), "Cases"
+        lastweek_cases = country_time_series.at[
+            lastweek.strftime("%m/%d/%y"), "confirmed"
         ]
         return format(lastweek_cases, ",d")
 
 
 @app.callback(
-    dash.dependencies.Output("lastmonth", "children"),
+    dash.dependencies.Output("lastmonth-country", "children"),
     [
         dash.dependencies.Input("country-dropdown", "value"),
         dash.dependencies.Input("confirmed-country", "n_clicks"),
@@ -769,24 +864,26 @@ def update_lastweek_country(value, btn1, btn2, btn3):
 def update_lastmonth_country(value, btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     lastmonth = today - timedelta(days=30)
+    country_time_series = animations.line_comparison_data(value)
+    country_time_series.index = country_time_series["dates"]
     if "confirmed" in changed_id:
-        lastmonth_cases = world_timeseries_confirmed.at[
-            lastmonth.strftime("%m/%d/%y"), "Cases"
+        lastmonth_cases = country_time_series.at[
+            lastmonth.strftime("%m/%d/%y"), "confirmed"
         ]
         return format(lastmonth_cases, ",d")
     elif "recoveries" in changed_id:
-        lastmonth_cases = world_timeseries_recovered.at[
-            lastmonth.strftime("%m/%d/%y"), "Cases"
+        lastmonth_cases = country_time_series.at[
+            lastmonth.strftime("%m/%d/%y"), "recovered"
         ]
         return format(lastmonth_cases, ",d")
     elif "deaths" in changed_id:
-        lastmonth_cases = world_timeseries_deaths.at[
-            lastmonth.strftime("%m/%d/%y"), "Cases"
+        lastmonth_cases = country_time_series.at[
+            lastmonth.strftime("%m/%d/%y"), "deaths"
         ]
         return format(lastmonth_cases, ",d")
     else:
-        lastmonth_cases = world_timeseries_confirmed.at[
-            lastmonth.strftime("%m/%d/%y"), "Cases"
+        lastmonth_cases = country_time_series.at[
+            lastmonth.strftime("%m/%d/%y"), "confirmed"
         ]
         return format(lastmonth_cases, ",d")
 

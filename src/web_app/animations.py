@@ -166,8 +166,7 @@ def static_line(df, df_name, *args):
         fig.layout.update(hovermode="x")
         return fig
 
-
-def line_comparison(country):
+def line_comparison_data(country):
     whole_df = pd.DataFrame()
     whole_df["dates"] = list(confirmed_global.columns[1:])
     whole_df["confirmed"] = list(
@@ -183,6 +182,10 @@ def line_comparison(country):
             1:
         ]
     )
+    return whole_df
+
+def line_comparison(country):
+    whole_df = line_comparison_data(country)
 
     fig = go.Figure()
 
@@ -216,11 +219,12 @@ def line_comparison(country):
 
     return fig
 
+line_comparison_data("India")
 
 """
 Example:
 
-line_comparison("India")
+line_comparison_data("India")
 static_line(recovered_global,"India","New Zealand","US")
 create_comparison(confirmed_global,"India","US","Australia")
 animated_barchart(confirmed_global)

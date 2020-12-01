@@ -89,6 +89,10 @@ def collect_data():
         inplace=True,
     )
 
+    confirmed_global = confirmed_global.groupby(["country"], as_index=False).sum()
+    deaths_global = deaths_global.groupby(["country"], as_index=False).sum()
+    recovered_global = recovered_global.groupby(["country"], as_index=False).sum()
+
     return (confirmed_global, deaths_global, recovered_global, country_cases)
 
 

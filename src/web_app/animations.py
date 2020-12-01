@@ -221,6 +221,7 @@ def line_comparison(country):
 
     return fig
 
+
 """
 Example:
 

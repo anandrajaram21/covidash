@@ -207,6 +207,7 @@ def get_country_wise_data():
 def choose_country(array, country):
     return [i for i in array if (i["country"] == country)]
 
+
 def get_country_frame(country):
     def get(string, country):
         return [i[string] for i in country]
@@ -228,6 +229,7 @@ def get_country_frame(country):
     df = df[df["Provinces"] != "Unknown"]
     return df
 
+
 def plot_country(Country, data, study):
     country = choose_country(data, Country)
     df = get_country_frame(country)
@@ -244,6 +246,7 @@ def plot_country(Country, data, study):
         longitude=get_lat_long(Country)[1],
     )
     return figure
+
 
 """
 Example:

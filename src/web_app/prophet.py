@@ -162,5 +162,9 @@ def prophet_predict(df_name="confirmed", country="US"):
         df_cv.yhat.values[i] = int(df_cv.yhat.values[i])
     print(ftr)
     print(type(ftr))
+    dates = ftr.index
+    dates = list(map(lambda x: x.strftime("%m/%d/%y"), dates))
+    cases = list(map(lambda x: format(int(x), ',d'), ftr))
+    predictions = pd.DataFrame(data={"Date": dates, "Cases": cases})
     error = mape(df_cv.y, df_cv.yhat)
-    return fig, error
+    return fig, error, predictions.iloc[:8, :]

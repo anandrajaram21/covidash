@@ -213,7 +213,7 @@ home_page = dbc.Container(
             height="35%",
             width="80%",
         ),
-        dcc.Markdown(av.covid_19, className="mt-5"),
+        dcc.Markdown(av.covid_19, className="m-5"),
     ],
     className="mt-5",
 )
@@ -452,22 +452,22 @@ country_page = html.Div(
             className="mt-5 justify-content-center",
         ),
         dbc.Row(html.H3("Province Analysis"), className="mt-5 justify-content-center"),
-        dbc.Row(
-            [
-                dbc.Col(
-                    dcc.Loading(
-                        dcc.Graph(id="graph-table-graph-output"),
-                        id="graph-table-loading",
-                    ),
-                    sm=12,
-                    md=12,
-                    lg=10,
-                    xl=10,
-                ),
-                dbc.Col(id="graph-table-table-output"),
-            ],
-            className="mt-5 justify-content-center",
-        ),
+        # dbc.Row(
+        #     [
+        #         dbc.Col(
+        #             dcc.Loading(
+        #                 dcc.Graph(id="graph-table-graph-output"),
+        #                 id="graph-table-loading",
+        #             ),
+        #             sm=12,
+        #             md=12,
+        #             lg=10,
+        #             xl=10,
+        #         ),
+        #         dbc.Col(id="graph-table-table-output"),
+        #     ],
+        #     className="mt-5 justify-content-center",
+        # ),
         dbc.Row(html.H3("Time Series"), className="mt-5 justify-content-center"),
         dbc.Row(
             [
@@ -562,23 +562,24 @@ country_page = html.Div(
             ],
             className="mt-5 justify-content-center",
         ),
-        # dbc.Row(
-        #     children=[
-        #         dbc.Col(
-        #             dcc.Loading(
-        #                 dcc.Graph(id="predictions-output-graph"),
-        #                 id="predictions-loading-graph",
-        #             ),
-        #             sm=12,
-        #             md=12,
-        #             lg=8,
-        #             xl=8,
-        #         ),
-        #         dbc.Col(html.H1(id="predictions-output-error")),
-        #     ],
-        #     className="mt-5",
-        # ),
-        dbc.Row("Prediction stuff here"),
+        dbc.Row([
+            dbc.Col(
+                id="predictions-table",
+                sm=12,
+                md=12,
+                lg=4,
+                xl=4,
+            ),
+            dbc.Col(
+                dcc.Loading(dcc.Graph(id="predictions-graph"), id="predictions-graph-loading"),
+                id="predictions-graph-container",
+                sm=12,
+                md=12,
+                lg=8,
+                xl=8,
+            )
+        ]),
+        dbc.Row(html.H6(id="predictions-error"))
     ],
     className="m-5",
 )
@@ -591,7 +592,7 @@ country_page = html.Div(
 preventive_page = dbc.Container(
     children=[
         html.Img(
-            src="https://images.pexels.com/photos/3735769/pexels-photo-3735769.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+            src="https://images.pexels.com/photos/3735769/pexels-photo-3735769.jpeg?auto=comfpress&cs=tinysrgb&dpr=2&h=750&w=1260",
             height="35%",
             width="80%",
         ),
@@ -745,22 +746,22 @@ def update_graphs_country(value, btn1, btn2, btn3):
 
     if "confirmed" in changed_id:
         return (
-            nmf.plot_country(value, today_country_data, "confirmed"),
+            map.plot_study(country_cases_sorted, columns, confirmed, value),
             animations.static_line(confirmed_global, "confirmed", value),
         )
     elif "recoveries" in changed_id:
         return (
-            nmf.plot_country(value, today_country_data, "recoveries"),
+            map.plot_study(country_cases_sorted, columns, recovered, value),
             animations.static_line(recovered_global, "recovered", value),
         )
     elif "deaths" in changed_id:
         return (
-            nmf.plot_country(value, today_country_data, "deaths"),
+            map.plot_study(country_cases_sorted, columns, deaths, value),
             animations.static_line(deaths_global, "deaths", value),
         )
     else:
         return (
-            nmf.plot_country(value, today_country_data, "confirmed"),
+            map.plot_study(country_cases_sorted, columns, confirmed, value),
             animations.static_line(confirmed_global, "confirmed", value),
         )
 
@@ -847,6 +848,30 @@ def update_cases_country(value, btn1, btn2, btn3):
             "-" + format(country_stats["confirmed"] - lastmonth_cases, ",d"),
         )
 
+@app.callback(
+    dash.dependencies.Output("predictions-graph", "figure"),
+    dash.dependencies.Output("predictions-error", "children"),
+    dash.dependencies.Output("predictions-table", "children"),
+    dash.dependencies.Input("country-dropdown", "value"),
+    dash.dependencies.Input("confirmed-country", "n_clicks"),
+    dash.dependencies.Input("recoveries-country", "n_clicks"),
+    dash.dependencies.Input("deaths-country", "n_clicks"),
+)
+def predict_country(value, btn1, btn2, btn3):
+    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+
+    if "confirmed" in changed_id:
+        fig, error, predictions = prophet.prophet_predict("confirmed", value)
+        return fig, error, dbc.Table.from_dataframe(predictions, striped=True, bordered=True, hover=True)
+    elif "recovered" in changed_id:
+        fig, error, predictions = prophet.prophet_predict("recovered", value)
+        return fig, error, dbc.Table.from_dataframe(predictions, striped=True, bordered=True, hover=True)
+    elif "deaths" in changed_id:
+        fig, error, predictions = prophet.prophet_predict("deaths", value)
+        return fig, error, dbc.Table.from_dataframe(predictions, striped=True, bordered=True, hover=True)
+    else:
+        fig, error, predictions = prophet.prophet_predict("confirmed", value)
+        return fig, error, dbc.Table.from_dataframe(predictions, striped=True, bordered=True, hover=True)
 
 @app.callback(
     dash.dependencies.Output("page-content", "children"),

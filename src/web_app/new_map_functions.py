@@ -232,7 +232,6 @@ def get_country_frame(country):
     df = df[df["Provinces"] != "Unknown"]
     return df
 
-
 def plot_country(Country, data, study):
     country = choose_country(data, Country)
     df = get_country_frame(country)

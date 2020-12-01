@@ -221,7 +221,6 @@ def line_comparison(country):
 
     return fig
 
-print(confirmed_global)
 """
 Example:
 

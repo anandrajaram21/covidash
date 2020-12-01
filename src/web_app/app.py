@@ -691,22 +691,22 @@ def update_lastweek(btn1, btn2, btn3):
     lastweek = today - timedelta(weeks=1)
     if "confirmed" in changed_id:
         lastweek_cases = world_timeseries_confirmed.at[
-            lastweek.strftime("%m/%d/%y"), "Cases"
+            lastweek.strftime("%-m/%-d/%y"), "Cases"
         ]
         return format(lastweek_cases, ",d")
     elif "recoveries" in changed_id:
         lastweek_cases = world_timeseries_recovered.at[
-            lastweek.strftime("%m/%d/%y"), "Cases"
+            lastweek.strftime("%-m/%-d/%y"), "Cases"
         ]
         return format(lastweek_cases, ",d")
     elif "deaths" in changed_id:
         lastweek_cases = world_timeseries_deaths.at[
-            lastweek.strftime("%m/%d/%y"), "Cases"
+            lastweek.strftime("%-m/%-d/%y"), "Cases"
         ]
         return format(lastweek_cases, ",d")
     else:
         lastweek_cases = world_timeseries_confirmed.at[
-            lastweek.strftime("%m/%d/%y"), "Cases"
+            lastweek.strftime("%-m/%-d/%y"), "Cases"
         ]
         return format(lastweek_cases, ",d")
 
@@ -724,19 +724,19 @@ def update_lastweek_diff(btn1, btn2, btn3):
     lastweek = today - timedelta(weeks=1)
     if "confirmed" in changed_id:
         ts = animations.get_world_timeseries(confirmed_global)
-        lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
+        lastweek_cases = ts.at[lastweek.strftime("%-m/%-d/%y"), "Cases"]
         return "-" + format(today_data["cases"] - lastweek_cases, ",d")
     elif "recoveries" in changed_id:
         ts = animations.get_world_timeseries(recovered_global)
-        lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
+        lastweek_cases = ts.at[lastweek.strftime("%-m/%-d/%y"), "Cases"]
         return "-" + format(today_data["recovered"] - lastweek_cases, ",d")
     elif "deaths" in changed_id:
         ts = animations.get_world_timeseries(deaths_global)
-        lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
+        lastweek_cases = ts.at[lastweek.strftime("%-m/%-d/%y"), "Cases"]
         return "-" + format(today_data["deaths"] - lastweek_cases, ",d")
     else:
         ts = animations.get_world_timeseries(confirmed_global)
-        lastweek_cases = ts.at[lastweek.strftime("%m/%d/%y"), "Cases"]
+        lastweek_cases = ts.at[lastweek.strftime("%-m/%-d/%y"), "Cases"]
         return "-" + format(today_data["cases"] - lastweek_cases, ",d")
 
 
@@ -753,19 +753,19 @@ def update_lastmonth(btn1, btn2, btn3):
     lastmonth = today - timedelta(days=30)
     if "confirmed" in changed_id:
         ts = animations.get_world_timeseries(confirmed_global)
-        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
+        lastmonth_cases = ts.at[lastmonth.strftime("%-m/%-d/%y"), "Cases"]
         return format(lastmonth_cases, ",d")
     elif "recoveries" in changed_id:
         ts = animations.get_world_timeseries(recovered_global)
-        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
+        lastmonth_cases = ts.at[lastmonth.strftime("%-m/%-d/%y"), "Cases"]
         return format(lastmonth_cases, ",d")
     elif "deaths" in changed_id:
         ts = animations.get_world_timeseries(deaths_global)
-        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
+        lastmonth_cases = ts.at[lastmonth.strftime("%-m/%-d/%y"), "Cases"]
         return format(lastmonth_cases, ",d")
     else:
         ts = animations.get_world_timeseries(confirmed_global)
-        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
+        lastmonth_cases = ts.at[lastmonth.strftime("%-m/%-d/%y"), "Cases"]
         return format(lastmonth_cases, ",d")
 
 
@@ -782,19 +782,19 @@ def update_lastmonth_diff(btn1, btn2, btn3):
     lastmonth = today - timedelta(days=30)
     if "confirmed" in changed_id:
         ts = animations.get_world_timeseries(confirmed_global)
-        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
+        lastmonth_cases = ts.at[lastmonth.strftime("%-m/%-d/%y"), "Cases"]
         return "-" + format(today_data["cases"] - lastmonth_cases, ",d")
     elif "recoveries" in changed_id:
         ts = animations.get_world_timeseries(recovered_global)
-        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
+        lastmonth_cases = ts.at[lastmonth.strftime("%-m/%-d/%y"), "Cases"]
         return "-" + format(today_data["recovered"] - lastmonth_cases, ",d")
     elif "deaths" in changed_id:
         ts = animations.get_world_timeseries(deaths_global)
-        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
+        lastmonth_cases = ts.at[lastmonth.strftime("%-m/%-d/%y"), "Cases"]
         return "-" + format(today_data["deaths"] - lastmonth_cases, ",d")
     else:
         ts = animations.get_world_timeseries(confirmed_global)
-        lastmonth_cases = ts.at[lastmonth.strftime("%m/%d/%y"), "Cases"]
+        lastmonth_cases = ts.at[lastmonth.strftime("%-m/%-d/%y"), "Cases"]
         return "-" + format(today_data["cases"] - lastmonth_cases, ",d")
 
 
@@ -889,20 +889,20 @@ def update_lastweek_country(value, btn1, btn2, btn3):
     country_time_series.index = country_time_series["dates"]
     if "confirmed" in changed_id:
         lastweek_cases = country_time_series.at[
-            lastweek.strftime("%m/%d/%y"), "confirmed"
+            lastweek.strftime("%-m/%-d/%y"), "confirmed"
         ]
         return format(lastweek_cases, ",d")
     elif "recoveries" in changed_id:
         lastweek_cases = country_time_series.at[
-            lastweek.strftime("%m/%d/%y"), "recovered"
+            lastweek.strftime("%-m/%-d/%y"), "recovered"
         ]
         return format(lastweek_cases, ",d")
     elif "deaths" in changed_id:
-        lastweek_cases = country_time_series.at[lastweek.strftime("%m/%d/%y"), "deaths"]
+        lastweek_cases = country_time_series.at[lastweek.strftime("%-m/%-d/%y"), "deaths"]
         return format(lastweek_cases, ",d")
     else:
         lastweek_cases = country_time_series.at[
-            lastweek.strftime("%m/%d/%y"), "confirmed"
+            lastweek.strftime("%-m/%-d/%y"), "confirmed"
         ]
         return format(lastweek_cases, ",d")
 
@@ -924,20 +924,20 @@ def update_lastweek_country_diff(value, btn1, btn2, btn3):
     country_time_series.index = country_time_series["dates"]
     if "confirmed" in changed_id:
         lastweek_cases = country_time_series.at[
-            lastweek.strftime("%m/%d/%y"), "confirmed"
+            lastweek.strftime("%-m/%-d/%y"), "confirmed"
         ]
         return "-" + format(country_stats["confirmed"] - lastweek_cases, ",d")
     elif "recoveries" in changed_id:
         lastweek_cases = country_time_series.at[
-            lastweek.strftime("%m/%d/%y"), "recovered"
+            lastweek.strftime("%-m/%-d/%y"), "recovered"
         ]
         return "-" + format(country_stats["recovered"] - lastweek_cases, ",d")
     elif "deaths" in changed_id:
-        lastweek_cases = country_time_series.at[lastweek.strftime("%m/%d/%y"), "deaths"]
+        lastweek_cases = country_time_series.at[lastweek.strftime("%-m/%-d/%y"), "deaths"]
         return "-" + format(country_stats["deaths"] - lastweek_cases, ",d")
     else:
         lastweek_cases = country_time_series.at[
-            lastweek.strftime("%m/%d/%y"), "confirmed"
+            lastweek.strftime("%-m/%-d/%y"), "confirmed"
         ]
         return "-" + format(country_stats["confirmed"] - lastweek_cases, ",d")
 
@@ -958,22 +958,22 @@ def update_lastmonth_country(value, btn1, btn2, btn3):
     country_time_series.index = country_time_series["dates"]
     if "confirmed" in changed_id:
         lastmonth_cases = country_time_series.at[
-            lastmonth.strftime("%m/%d/%y"), "confirmed"
+            lastmonth.strftime("%-m/%-d/%y"), "confirmed"
         ]
         return format(lastmonth_cases, ",d")
     elif "recoveries" in changed_id:
         lastmonth_cases = country_time_series.at[
-            lastmonth.strftime("%m/%d/%y"), "recovered"
+            lastmonth.strftime("%-m/%-d/%y"), "recovered"
         ]
         return format(lastmonth_cases, ",d")
     elif "deaths" in changed_id:
         lastmonth_cases = country_time_series.at[
-            lastmonth.strftime("%m/%d/%y"), "deaths"
+            lastmonth.strftime("%-m/%-d/%y"), "deaths"
         ]
         return format(lastmonth_cases, ",d")
     else:
         lastmonth_cases = country_time_series.at[
-            lastmonth.strftime("%m/%d/%y"), "confirmed"
+            lastmonth.strftime("%-m/%-d/%y"), "confirmed"
         ]
         return format(lastmonth_cases, ",d")
 
@@ -995,22 +995,22 @@ def update_lastmonth_country_diff(value, btn1, btn2, btn3):
     country_time_series.index = country_time_series["dates"]
     if "confirmed" in changed_id:
         lastmonth_cases = country_time_series.at[
-            lastmonth.strftime("%m/%d/%y"), "confirmed"
+            lastmonth.strftime("%-m/%-d/%y"), "confirmed"
         ]
         return "-" + format(country_stats["confirmed"] - lastmonth_cases, ",d")
     elif "recoveries" in changed_id:
         lastmonth_cases = country_time_series.at[
-            lastmonth.strftime("%m/%d/%y"), "recovered"
+            lastmonth.strftime("%-m/%-d/%y"), "recovered"
         ]
         return "-" + format(country_stats["recovered"] - lastmonth_cases, ",d")
     elif "deaths" in changed_id:
         lastmonth_cases = country_time_series.at[
-            lastmonth.strftime("%m/%d/%y"), "deaths"
+            lastmonth.strftime("%-m/%-d/%y"), "deaths"
         ]
         return "-" + format(country_stats["deaths"] - lastmonth_cases, ",d")
     else:
         lastmonth_cases = country_time_series.at[
-            lastmonth.strftime("%m/%d/%y"), "confirmed"
+            lastmonth.strftime("%-m/%-d/%y"), "confirmed"
         ]
         return "-" + format(country_stats["confirmed"] - lastmonth_cases, ",d")
 

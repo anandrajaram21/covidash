@@ -34,8 +34,7 @@ server = app.server
 cache = Cache(
     server,
     config={
-        "CACHE_TYPE": "redis",
-        "CACHE_REDIS_URL": os.environ.get("REDIS_URL", "redis://localhost:6379"),
+        "CACHE_TYPE": "simple",
     },
 )
 
@@ -144,6 +143,7 @@ country_cases_sorted = country_cases.sort_values("confirmed", ascending=False)
 
 import animations
 import map
+import new_map_functions as nmf
 import prophet
 
 # ----------------------------------------------------------------------------------------------------
@@ -447,6 +447,16 @@ country_page = html.Div(
             ),
             className="mt-5 justify-content-center",
         ),
+        dbc.Row(html.H3("Province Analysis"), className="mt-5 justify-content-center"),
+        dbc.Row(
+            dbc.Col(
+                dcc.Loading(
+                    dcc.Graph(id="graph-table-output"),
+                    id="graph-table-loading"
+                )
+            ),
+            className="mt-5 justify-content-center"
+        ),
         dbc.Row(html.H3("Time Series"), className="mt-5 justify-content-center"),
         dbc.Row(
             [
@@ -528,24 +538,34 @@ country_page = html.Div(
             className="mt-5 align-items-center",
         ),
         dbc.Row(
-            html.H3("Predictions for the Following Week"),
+            [
+                html.H3("Predictions for the Following Week"),
+            ],
             className="mt-5 justify-content-center",
         ),
         dbc.Row(
-            children=[
-                dbc.Col(
-                    dcc.Loading(
-                        dcc.Graph(id="predictions-output-graph"),
-                        id="predictions-loading-graph",
-                    ),
-                    sm=12,
-                    md=12,
-                    lg=8,
-                    xl=8,
-                ),
-                dbc.Col(sm=12, md=12, lg=4, xl=4, id="predictions-output-error"),
-            ]
+            [
+                html.H5("The predictions can take upto 1 minute to show up, so please be patient :)"),
+            ],
+            className="mt-5 justify-content-center",
         ),
+        # dbc.Row(
+        #     children=[
+        #         dbc.Col(
+        #             dcc.Loading(
+        #                 dcc.Graph(id="predictions-output-graph"),
+        #                 id="predictions-loading-graph",
+        #             ),
+        #             sm=12,
+        #             md=12,
+        #             lg=8,
+        #             xl=8,
+        #         ),
+        #         dbc.Col(html.H1(id="predictions-output-error")),
+        #     ],
+        #     className="mt-5",
+        # ),
+        dbc.Row("Prediction stuff here")
     ],
     className="m-5",
 )
@@ -798,13 +818,13 @@ def update_lastmonth_diff(btn1, btn2, btn3):
 def update_graph_country(value, btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     if "confirmed" in changed_id:
-        return map.plot_study(country_cases_sorted, columns, confirmed, value)
+        return nmf.plot_country(value, today_country_data, "confirmed")
     elif "recoveries" in changed_id:
-        return map.plot_study(country_cases_sorted, columns, recovered, value)
+        return nmf.plot_country(value, today_country_data, "recoveries")
     elif "deaths" in changed_id:
-        return map.plot_study(country_cases_sorted, columns, deaths, value)
+        return nmf.plot_country(value, today_country_data, "deaths")
     else:
-        return map.plot_study(country_cases_sorted, columns, confirmed, value)
+        return nmf.plot_country(value, today_country_data, "confirmed")
 
 
 @app.callback(
@@ -995,18 +1015,31 @@ def update_lastmonth_country_diff(value, btn1, btn2, btn3):
         return "-" + format(country_stats["confirmed"] - lastmonth_cases, ",d")
 
 
-@app.callback(
-    dash.dependencies.Output("predictions-output-graph", "figure"),
-    dash.dependencies.Output("predictions-output-error", "children"),
-    dash.dependencies.Input("country-dropdown", "value"),
-    dash.dependencies.Input("confirmed-country", "n_clicks"),
-    dash.dependencies.Input("recoveries-country", "n_clicks"),
-    dash.dependencies.Input("deaths-country", "n_clicks"),
-)
-def update_predictions_country(value, btn1, btn2, btn3):
-    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
-    fig, err = prophet.prophet_predict()
-    return fig, err
+# @app.callback(
+#     dash.dependencies.Output("predictions-output-graph", "figure"),
+#     dash.dependencies.Output("predictions-output-error", "children"),
+#     dash.dependencies.Input("country-dropdown", "value"),
+#     dash.dependencies.Input("confirmed-country", "n_clicks"),
+#     dash.dependencies.Input("recoveries-country", "n_clicks"),
+#     dash.dependencies.Input("deaths-country", "n_clicks"),
+# )
+# @cache.memoize(timeout=TIMEOUT)
+# def update_predictions_country(value, btn1, btn2, btn3):
+#     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+#     # if "confirmed" in changed_id:
+#     #     fig, err = prophet.prophet_predict("confirmed", value)
+#     #     return fig, err
+#     # elif "recovered" in changed_id:
+#     #     fig, err = prophet.prophet_predict("recovered", value)
+#     #     return fig, err
+#     # elif "deaths" in changed_id:
+#     #     fig, err = prophet.prophet_predict("deaths", value)
+#     #     return fig, err
+#     # else:
+#     #     fig, err = prophet.prophet_predict("confirmed", value)
+#     #     return fig, err
+#     fig, err = prophet.prophet_predict()
+#     return fig, err
 
 
 @app.callback(

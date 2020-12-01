@@ -166,6 +166,7 @@ def static_line(df, df_name, *args):
         fig.layout.update(hovermode="x")
         return fig
 
+
 def line_comparison_data(country):
     whole_df = pd.DataFrame()
     whole_df["dates"] = list(confirmed_global.columns[1:])
@@ -183,6 +184,7 @@ def line_comparison_data(country):
         ]
     )
     return whole_df
+
 
 def line_comparison(country):
     whole_df = line_comparison_data(country)
@@ -219,8 +221,7 @@ def line_comparison(country):
 
     return fig
 
-line_comparison_data("India")
-
+print(confirmed_global)
 """
 Example:
 

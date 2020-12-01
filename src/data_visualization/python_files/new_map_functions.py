@@ -45,7 +45,7 @@ country_cases_sorted.index = [x for x in range(len(country_cases_sorted))]
 
 
 def chainer(s):
-    return list(chain.from_iterable(s.str.split(',')))
+    return list(chain.from_iterable(s.str.split(",")))
 
 
 # Data Preprocessing
@@ -56,26 +56,29 @@ def convert_df(df, cols):
 
     L = []
     for i in range(len(df)):
-        string = ''
+        string = ""
         for j in range(len(cols[1])):
             if j != (len(cols[1]) - 1):
-                string = string + str(df[cols[1][j]].values[i]) + ','
+                string = string + str(df[cols[1][j]].values[i]) + ","
             else:
                 string = string + str(df[cols[1][j]].values[i])
 
         L.append(string)
 
-    df['New'] = L
-    lens = df['New'].str.split(',').map(len)
+    df["New"] = L
+    lens = df["New"].str.split(",").map(len)
 
-    df = pd.DataFrame({
-        'Country': np.repeat(df[cols[0]], lens),
-        'Lat': np.repeat(df[cols[-2]], lens),
-        'Long_': np.repeat(df[cols[-1]], lens),
-        'Count': chainer(df['New'])
-    })
-    df['Study'] = [cols[1][i]
-                   for i in range(len(cols[1]))] * (len(df.index) // len(cols[1]))
+    df = pd.DataFrame(
+        {
+            "Country": np.repeat(df[cols[0]], lens),
+            "Lat": np.repeat(df[cols[-2]], lens),
+            "Long_": np.repeat(df[cols[-1]], lens),
+            "Count": chainer(df["New"]),
+        }
+    )
+    df["Study"] = [cols[1][i] for i in range(len(cols[1]))] * (
+        len(df.index) // len(cols[1])
+    )
 
     return df
 
@@ -93,19 +96,16 @@ def create_data(df, study, color):
     for country in countries:
         try:
             event_data = dict(
-                lat=df.loc[(df["Study"] == study) & (
-                    df["Country"] == country), "Lat"],
+                lat=df.loc[(df["Study"] == study) & (df["Country"] == country), "Lat"],
                 lon=df.loc[
-                    (df["Study"] == study) & (
-                        df["Country"] == country), "Long_"
+                    (df["Study"] == study) & (df["Country"] == country), "Long_"
                 ],
                 name=f"{country}",
                 marker={
                     "size": log(
                         float(
                             df.loc[
-                                (df["Study"] == study) & (
-                                    df["Country"] == country),
+                                (df["Study"] == study) & (df["Country"] == country),
                                 "Count",
                             ]
                         ),
@@ -179,7 +179,15 @@ def get_lat_long(country, coord_df=country_cases_sorted):
     return lat, long
 
 
-def plot_study(starting_df, cols, study_dict, location="global", zoom=2, latitude=20.59, longitude=78.96):
+def plot_study(
+    starting_df,
+    cols,
+    study_dict,
+    location="global",
+    zoom=2,
+    latitude=20.59,
+    longitude=78.96,
+):
     color = study_dict["color"]
     study = study_dict["study"]
     df = convert_df(starting_df, cols)
@@ -202,25 +210,37 @@ def choose_country(array, country):
 
 def plot_country(Country, data, study):
     country = choose_country(data, Country)
-    def get(string, country): return [i[string] for i in country]
+
+    def get(string, country):
+        return [i[string] for i in country]
+
     coords = get("coordinates", country)
     stats = get("stats", country)
     names = get("province", country)
-    def make_column(string, main): return [i[string] for i in main]
+
+    def make_column(string, main):
+        return [i[string] for i in main]
+
     df = pd.DataFrame()
     df["Provinces"] = names
-    df["lat"] = make_column('latitude', coords)
-    df["lon"] = make_column('longitude', coords)
-    df["Confirmed"] = make_column('confirmed', stats)
-    df["Recoveries"] = make_column('recovered', stats)
-    df["Deaths"] = make_column('deaths', stats)
-    df = df[df['Provinces'] != 'Unknown']
-    columns = ["Provinces", ["Confirmed",
-                             "Recoveries", "Deaths"], "lat", "lon"]
+    df["lat"] = make_column("latitude", coords)
+    df["lon"] = make_column("longitude", coords)
+    df["Confirmed"] = make_column("confirmed", stats)
+    df["Recoveries"] = make_column("recovered", stats)
+    df["Deaths"] = make_column("deaths", stats)
+    df = df[df["Provinces"] != "Unknown"]
+    columns = ["Provinces", ["Confirmed", "Recoveries", "Deaths"], "lat", "lon"]
     color = "blue" if study == "confirmed" else "red" if study == "deaths" else "green"
     d = dict(study=study.title(), color=color)
-    figure = plot_study(df, columns, d, country, zoom=4.5, latitude=get_lat_long(
-        Country)[0], longitude=get_lat_long(Country)[1])
+    figure = plot_study(
+        df,
+        columns,
+        d,
+        country,
+        zoom=4.5,
+        latitude=get_lat_long(Country)[0],
+        longitude=get_lat_long(Country)[1],
+    )
     return figure
 
 

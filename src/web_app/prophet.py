@@ -160,5 +160,7 @@ def prophet_predict(df_name="confirmed", country="US"):
     )
     for i in range(len(df_cv)):
         df_cv.yhat.values[i] = int(df_cv.yhat.values[i])
+    print(ftr)
+    print(type(ftr))
     error = mape(df_cv.y, df_cv.yhat)
     return fig, error

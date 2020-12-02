@@ -451,7 +451,7 @@ country_page = html.Div(
             ),
             className="mt-5 justify-content-center",
         ),
-        dbc.Row(html.H3("Province Analysis"), className="mt-5 justify-content-center"),
+        dbc.Row(html.H3("Statistics"), className="mt-5 justify-content-center"),
         # dbc.Row(
         #     [
         #         dbc.Col(
@@ -557,7 +557,7 @@ country_page = html.Div(
         dbc.Row(
             [
                 html.H5(
-                    "The predictions can take upto 1 minute to show up, so please be patient :)"
+                    "Wait for our bots to calculate the predictions (It can take upto 1 minute)"
                 ),
             ],
             className="mt-5 justify-content-center",

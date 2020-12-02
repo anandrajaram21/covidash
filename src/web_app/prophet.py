@@ -160,8 +160,6 @@ def prophet_predict(df_name="confirmed", country="US"):
     )
     for i in range(len(df_cv)):
         df_cv.yhat.values[i] = int(df_cv.yhat.values[i])
-    print(ftr)
-    print(type(ftr))
     dates = ftr.index
     dates = list(map(lambda x: x.strftime("%m/%d/%y"), dates))
     cases = list(map(lambda x: format(int(x), ',d'), ftr))

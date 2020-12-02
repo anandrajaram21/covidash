@@ -18,6 +18,7 @@ import plotly.io as pio
 import os
 from flask_caching import Cache
 import app_vars as av
+import datetime
 
 pio.templates.default = "plotly_dark"
 
@@ -274,7 +275,7 @@ global_page = html.Div(
                 ),
             ]
         ),
-        dbc.Row(html.H3("Global Situation"), className="mt-5 justify-content-center"),
+        dbc.Row(html.H3(id="global-message"), className="mt-5 justify-content-center"),
         dbc.Row(
             dbc.Col(
                 dcc.Loading(dcc.Graph(id="metric-output"), id="map-loading"), width=12
@@ -562,24 +563,31 @@ country_page = html.Div(
             ],
             className="mt-5 justify-content-center",
         ),
-        dbc.Row([
-            dbc.Col(
-                id="predictions-table",
-                sm=12,
-                md=12,
-                lg=4,
-                xl=4,
-            ),
-            dbc.Col(
-                dcc.Loading(dcc.Graph(id="predictions-graph"), id="predictions-graph-loading"),
-                id="predictions-graph-container",
-                sm=12,
-                md=12,
-                lg=8,
-                xl=8,
-            )
-        ]),
-        dbc.Row(html.H6(id="predictions-error"))
+        dbc.Row(
+            [
+                dbc.Col(
+                    id="predictions-table",
+                    sm=12,
+                    md=12,
+                    lg=4,
+                    xl=4,
+                    className="align-items-center",
+                ),
+                dbc.Col(
+                    dcc.Loading(
+                        dcc.Graph(id="predictions-graph"),
+                        id="predictions-graph-loading",
+                    ),
+                    id="predictions-graph-container",
+                    sm=12,
+                    md=12,
+                    lg=8,
+                    xl=8,
+                ),
+            ],
+            className="mt-5 justify-content-center",
+        ),
+        dbc.Row(html.H6(id="predictions-error"), className="mt-5"),
     ],
     className="m-5",
 )
@@ -611,6 +619,26 @@ app.layout = html.Div(
 
 # Callbacks for the Global Situation Page
 
+@app.callback(
+    dash.dependencies.Output("global-message", "children"),
+    dash.dependencies.Input("confirmed", "n_clicks"),
+    dash.dependencies.Input("recoveries", "n_clicks"),
+    dash.dependencies.Input("deaths", "n_clicks"),
+)
+def update_message(btn1, btn2, btn3):
+    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    time_updated = datetime.datetime.fromtimestamp(today_data['updated']/1000).strftime("%H:%M")
+    date_updated = datetime.datetime.fromtimestamp(today_data['updated']/1000).strftime("%d %B %Y")
+    output_str = "Globally, as of {time}, {date}, there have been {cases} {res_str} of COVID-19"
+    
+    if "confirmed" in changed_id:
+        return output_str.format(time=time_updated, date=date_updated, cases=format(today_data['cases'], ',d'), res_str="confirmed cases")
+    elif "recoveries" in changed_id:
+        return output_str.format(time=time_updated, date=date_updated, cases=format(today_data['recovered'], ',d'), res_str="recoveries")
+    elif "deaths" in changed_id:
+        return output_str.format(time=time_updated, date=date_updated, cases=format(today_data['deaths'], ',d'), res_str="deaths")
+    else:
+        return output_str.format(time=time_updated, date=date_updated, cases=format(today_data['cases'], ',d'), res_str="confirmed cases")
 
 @app.callback(
     dash.dependencies.Output("metric-output", "figure"),
@@ -848,6 +876,7 @@ def update_cases_country(value, btn1, btn2, btn3):
             "-" + format(country_stats["confirmed"] - lastmonth_cases, ",d"),
         )
 
+
 @app.callback(
     dash.dependencies.Output("predictions-graph", "figure"),
     dash.dependencies.Output("predictions-error", "children"),
@@ -862,16 +891,41 @@ def predict_country(value, btn1, btn2, btn3):
 
     if "confirmed" in changed_id:
         fig, error, predictions = prophet.prophet_predict("confirmed", value)
-        return fig, error, dbc.Table.from_dataframe(predictions, striped=True, bordered=True, hover=True)
+        return (
+            fig,
+            error,
+            dbc.Table.from_dataframe(
+                predictions, striped=True, bordered=True, hover=True
+            ),
+        )
     elif "recovered" in changed_id:
         fig, error, predictions = prophet.prophet_predict("recovered", value)
-        return fig, error, dbc.Table.from_dataframe(predictions, striped=True, bordered=True, hover=True)
+        return (
+            fig,
+            error,
+            dbc.Table.from_dataframe(
+                predictions, striped=True, bordered=True, hover=True
+            ),
+        )
     elif "deaths" in changed_id:
         fig, error, predictions = prophet.prophet_predict("deaths", value)
-        return fig, error, dbc.Table.from_dataframe(predictions, striped=True, bordered=True, hover=True)
+        return (
+            fig,
+            error,
+            dbc.Table.from_dataframe(
+                predictions, striped=True, bordered=True, hover=True
+            ),
+        )
     else:
         fig, error, predictions = prophet.prophet_predict("confirmed", value)
-        return fig, error, dbc.Table.from_dataframe(predictions, striped=True, bordered=True, hover=True)
+        return (
+            fig,
+            error,
+            dbc.Table.from_dataframe(
+                predictions, striped=True, bordered=True, hover=True
+            ),
+        )
+
 
 @app.callback(
     dash.dependencies.Output("page-content", "children"),

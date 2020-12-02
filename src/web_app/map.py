@@ -137,7 +137,7 @@ def create_basic_layout(latitude, longitude, zoom):
             "center": {"lat": latitude, "lon": longitude},
             "pitch": 0,
             "zoom": zoom,
-            "style": "satellite-streets",
+            "style": "dark",
         },
     }
     return layout

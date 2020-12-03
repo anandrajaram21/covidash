@@ -42,7 +42,7 @@ gunicorn --bind :8050 --workers 2 --threads 8 app:server # Change the number of 
 cd <path of the cloned folder>
 conda env create -f windows.yml
 conda activate covid
-python .\src\web_app\app.py # or change directory to web_app and run app.py
+python .\src\web_app\app.py # or change directory to web_app and run python app.py
 ```
 If any errors are faced in the installation of pystan, follow the docs as provided here : https://pystan.readthedocs.io/en/latest/windows.html
 ### Technologies Used

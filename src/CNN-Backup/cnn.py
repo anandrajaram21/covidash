@@ -1,22 +1,22 @@
 
 """
-CNN model to predict covid cases : deaths, confirmed and recovered -> JHU
+CNN model to predict covid cases : deaths, confirmed and recovered 
 
 STATS:
 
 --> Accuracy:
-avg MAPE : 0.5
-best MAPE (yet) : 0.04
-worst MAPE (yet) : 1.16
+Avg MAPE : 0.7
+best MAPE : 0.04
+worst MAPE : 1.16
 
 --> Time:
-avg time taken : 95 seconds 
+avg time taken : 86 seconds 
 best time : 76.31 seconds
-worst time : 96.55 seconds 
+worst time : 107.49 seconds 
 
 
 --> Downward Cumulative Cases : {
-                                1.Tanzania - Confirmed : 4/10 times (stagnant 5/10, increases - 1/10)
+                                1.Tanzania - Confirmed : 2/10 times (stagnant 7/10, increases - 1/10)
                                 }
 """
 # %%

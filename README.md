@@ -34,6 +34,17 @@ cd src/web_app/
 gunicorn --bind :8050 --workers 2 --threads 8 app:server # Change the number of workers and threads to your liking
 ```
 - Open a browser and navigate to 0.0.0.0:8050, and you will see the dashboard
+
+#### 2. On Windows
+##### a. If you have Anaconda installed (recommended for easy installation)
+- Run the following commands in Anaconda Prompt
+```
+cd <path of the cloned folder>
+conda env create -f windows.yml
+conda activate covid
+python .\src\web_app\app.py # or change directory to web_app and run app.py
+```
+If any errors are faced in the installation of pystan, follow the docs as provided here : https://pystan.readthedocs.io/en/latest/windows.html
 ### Technologies Used
 - Python is the primary programming language used
 - Plotly Dash is the framework used to build the web app. (Plotly Dash uses Flask in its underlying implementation, so its very fast)

@@ -11,7 +11,7 @@ worst MAPE (yet) : 1.16
 
 --> Time:
 avg time taken : 95 seconds 
-best time : 86.71 seconds
+best time : 76.31 seconds
 worst time : 96.55 seconds 
 
 

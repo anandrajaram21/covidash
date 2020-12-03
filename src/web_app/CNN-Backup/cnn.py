@@ -15,7 +15,9 @@ best time : 86.71 seconds
 worst time : 96.55 seconds 
 
 
---> Downward Cumulative Cases : [Nil]
+--> Downward Cumulative Cases : {
+                                1.Tanzania - Confirmed : 4/10 times (stagnant 5/10, increases - 1/10)
+                                }
 """
 # %%
 import pandas as pd

@@ -33,6 +33,12 @@ cd src/web_app/
 gunicorn --bind :8050 --workers 2 --threads 8 app:server # Change the number of workers and threads to your liking
 ```
 - Open a browser and navigate to 0.0.0.0:8050, and you will see the dashboard
+### Technologies Used
+- Python is the primary programming language used
+- Plotly Dash is the framework used to build the web app. (Plotly Dash uses Flask in its underlying implementation, so its very fast)
+- Facebook Prophet is the main library used to make the model that forecasts the cases. Some other libraries like Scikitlearn and Tensorflow were also used, but none of them provided as good a speed to accuracy ratio as Facebook Prophet. 
+- Plotly is the library used for all the data visualizations and graphs that you see on the dashboard.
+- Jupyter Notebooks were used widely for testing our models and our visualizations.
 ### TODO
 - Add setup instructions for Windows distributions
 - Add the basic usage instructions

@@ -1,23 +1,34 @@
 
 """
-CNN model to predict covid cases : deaths, confirmed and recovered 
+CNN model to predict covid cases : deaths, confirmed and recovered
 
-STATS:
+STATS: (Number of trials = 54)
 
 --> Accuracy:
-Avg MAPE : 0.7
-best MAPE : 0.04
-worst MAPE : 1.16
+Avg MAPE : 1.12
+Best MAPE : 0.01 (Tanzania Confirmed)
+Worst MAPE : 7.74 (Botswana Recovered) 
+
+Studies which do not show good MAPEs (i.e > 2) -> 
+{  
+    1.Botswana :Reason => Erratic data and small numbers
+}
 
 --> Time:
-avg time taken : 86 seconds 
-best time : 76.31 seconds
-worst time : 107.49 seconds 
+Avg time taken : 90.34 s
+Best time : 73.63 s
+Worst time : 98.45 s
 
 
---> Downward Cumulative Cases : {
-                                1.Tanzania - Confirmed : 2/10 times (stagnant 7/10, increases - 1/10)
-                                }
+--> Downward Cumulative Cases ->
+{
+    1. Tanzania Confirmed : drop = 2/11, stagnant = 8/11, increase = 1/11
+}
+
+#! 90-10 pipeline for recovered as it doesnt match with that of confirmed and death
+# TODO : Try cross validation (but best option for recovered is fbp)
+
+#? Reason : Erratic nature of recovered, example : oct 25, Botswana 927 rec, oct 26 4438 rec, remained as such till 29th and then again spiked up (4676)
 """
 # %%
 import pandas as pd
@@ -128,8 +139,15 @@ def create_param_grid():
 
     return grid
 
+# %%
+
+
+def create_rec_pg():
+    return None
 
 # %%
+
+
 def compile_model(p):
 
     model = Sequential()
@@ -259,11 +277,14 @@ def plot_graph(data, pred):
 
 
 # %%
-def cnn_predict(df_name, country):
+def predict(df_name, country):
 
     data, data_diff, X, y = make_series(df_name, country, 14)
     grid = create_param_grid()
-    n = len(data_diff)*4//5
+    if df_name == "recovered":
+        n = len(data_diff)*9//10
+    else:
+        n = len(data_diff)*4//5
     X_train, X_test, y_train, y_test = X[:n], X[n:], y[:n], y[n:]
     parameters = hyperparameter_tuning(grid, X_train, y_train)
     p = get_best_params(parameters)

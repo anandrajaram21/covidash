@@ -305,7 +305,7 @@ global_page = html.Div(
                             ],
                             style={
                                 "borderRadius": "30px",
-                                "backgroundColor": "#2f09ed",
+                                "backgroundColor": "#5a1791",
                             },
                             className="mt-3 p-3",
                         ),
@@ -326,7 +326,7 @@ global_page = html.Div(
                             ],
                             style={
                                 "borderRadius": "30px",
-                                "backgroundColor": "#7156d6",
+                                "backgroundColor": "#732abd",
                             },
                             className="mt-3 p-3",
                         ),
@@ -347,7 +347,7 @@ global_page = html.Div(
                             ],
                             style={
                                 "borderRadius": "30px",
-                                "backgroundColor": "#8e6ee6",
+                                "backgroundColor": "#8634eb",
                             },
                             className="mt-3 p-3",
                         ),
@@ -571,7 +571,7 @@ country_page = html.Div(
         dbc.Row(
             [
                 html.H5(
-                    "It can take upto 1 minute for our bots to generate the predictions. Please be patient",
+                    "It can take upto 1 minute for our bots to generate the predictions.",
                     id="generate-message"
                 ),
             ],
@@ -649,7 +649,7 @@ def update_message(btn1, btn2, btn3):
         today_data["updated"] / 1000
     ).strftime("%d %B %Y")
     output_str = (
-        "Globally, as of {time}, {date}, there have been {cases} {res_str} of COVID-19"
+        "Globally, as of {time}, {date}, there have been {cases} {res_str}"
     )
 
     if "confirmed" in changed_id:
@@ -817,7 +817,7 @@ def update_country_message(value, btn1, btn2, btn3):
     date_obj = datetime.datetime.strptime(country_stats["updatedAt"][0], "%Y-%m-%d %H:%M:%S")
     time_updated = date_obj.strftime("%H:%M")
     date_updated = date_obj.strftime("%d %B %Y")
-    output_str = "In {country_name}, as of {time}, {date}, there have been {cases} {res_str} of COVID-19"
+    output_str = "In {country_name}, as of {time}, {date}, there have been {cases} {res_str}"
 
     if "confirmed" in changed_id:
         return output_str.format(
@@ -987,41 +987,41 @@ def predict_country(value, n_clicks):
             fig, error, predictions = prophet.prophet_predict("confirmed", value)
             return (
                 dcc.Graph(figure=fig),
-                f"Allow an error upto {error}%",
+                f"Allow an error upto {round(error,2)}%",
                 dbc.Table.from_dataframe(
                     predictions, striped=True, bordered=True, hover=True
                 ),
-                "Our bots have generated the predictions",
+                "The predictions have been generated!",
             )
         elif "recovered" == study_to_show:
             fig, error, predictions = prophet.prophet_predict("recovered", value)
             return (
                 dcc.Graph(figure=fig),
-                f"Allow an error upto {error}%",
+                f"Allow an error upto {round(error,2)}%",
                 dbc.Table.from_dataframe(
                     predictions, striped=True, bordered=True, hover=True
                 ),
-                "Our bots have generated the predictions",
+                "The predictions have been generated!",
             )
         elif "deaths" == study_to_show:
             fig, error, predictions = prophet.prophet_predict("deaths", value)
             return (
                 dcc.Graph(figure=fig), 
-                f"Allow an error upto {error}%",
+                f"Allow an error upto {round(error,2)}%",
                 dbc.Table.from_dataframe(
                     predictions, striped=True, bordered=True, hover=True
                 ),
-                "Our bots have generated the predictions",
+                "The predictions have been generated!",
             )
         else:
             fig, error, predictions = prophet.prophet_predict("confirmed", value)
             return ( 
                 dcc.Graph(figure=fig),
-                f"Allow an error upto {error}%",
+                f"Allow an error upto {round(error,2)}%",
                 dbc.Table.from_dataframe(
                     predictions, striped=True, bordered=True, hover=True
                 ),
-                "Our bots have generated the predictions",
+                "The predictions have been generated!",
             )
     else:
         return

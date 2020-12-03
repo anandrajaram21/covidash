@@ -18,6 +18,7 @@ import plotly.io as pio
 import os
 from flask_caching import Cache
 import app_vars as av
+import time
 import datetime
 
 pio.templates.default = "plotly_dark"
@@ -109,10 +110,11 @@ def get_today_data():
 
 
 def cases_object(array):
-    return {
+    obj1 = {
         study: sum([(i["stats"][study]) for i in array])
         for study in ["confirmed", "deaths", "recovered"]
     }
+    return {**obj1, "updatedAt": [i["updatedAt"] for i in array]}
 
 
 def choose_country(array, country):
@@ -181,6 +183,8 @@ world_timeseries_recovered = animations.get_world_timeseries(recovered_global)
 confirmed_global_cases_today = format(today_data["cases"], ",d")
 confirmed_recovered_cases_today = format(today_data["recovered"], ",d")
 confirmed_deaths_cases_today = format(today_data["deaths"], ",d")
+
+study_to_show = "confirmed"
 
 # ----------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
@@ -442,7 +446,7 @@ country_page = html.Div(
                 ),
             ]
         ),
-        dbc.Row(html.H3("Map"), className="mt-5 justify-content-center"),
+        dbc.Row(html.H3(id="country-message"), className="mt-5 justify-content-center"),
         dbc.Row(
             dbc.Col(
                 dcc.Loading(
@@ -555,18 +559,29 @@ country_page = html.Div(
             ],
             className="mt-5 justify-content-center",
         ),
+        dbc.Row( 
+                dbc.Button(
+                    "Generate predictions",
+                    id="generate-predictions",
+                    size="lg",
+                    color="primary",
+                ),
+                className="mt-5 justify-content-center"
+        ),
         dbc.Row(
             [
                 html.H5(
-                    "Wait for our bots to calculate the predictions (It can take upto 1 minute)"
+                    "It can take upto 1 minute for our bots to generate the predictions. Please be patient",
+                    id="generate-message"
                 ),
             ],
             className="mt-5 justify-content-center",
         ),
         dbc.Row(
             [
-                dbc.Col(
-                    id="predictions-table",
+                dbc.Col([
+                    dcc.Loading(id="predictions-table"), html.H5(id="predictions-error")],
+                    id="predictions-table-container",
                     sm=12,
                     md=12,
                     lg=4,
@@ -575,8 +590,7 @@ country_page = html.Div(
                 ),
                 dbc.Col(
                     dcc.Loading(
-                        dcc.Graph(id="predictions-graph"),
-                        id="predictions-graph-loading",
+                        id="predictions-graph",
                     ),
                     id="predictions-graph-container",
                     sm=12,
@@ -587,7 +601,6 @@ country_page = html.Div(
             ],
             className="mt-5 justify-content-center",
         ),
-        dbc.Row(html.H6(id="predictions-error"), className="mt-5"),
     ],
     className="m-5",
 )
@@ -617,7 +630,9 @@ app.layout = html.Div(
 # ----------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
 
+
 # Callbacks for the Global Situation Page
+
 
 @app.callback(
     dash.dependencies.Output("global-message", "children"),
@@ -627,18 +642,45 @@ app.layout = html.Div(
 )
 def update_message(btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
-    time_updated = datetime.datetime.fromtimestamp(today_data['updated']/1000).strftime("%H:%M")
-    date_updated = datetime.datetime.fromtimestamp(today_data['updated']/1000).strftime("%d %B %Y")
-    output_str = "Globally, as of {time}, {date}, there have been {cases} {res_str} of COVID-19"
-    
+    time_updated = datetime.datetime.fromtimestamp(
+        today_data["updated"] / 1000
+    ).strftime("%H:%M")
+    date_updated = datetime.datetime.fromtimestamp(
+        today_data["updated"] / 1000
+    ).strftime("%d %B %Y")
+    output_str = (
+        "Globally, as of {time}, {date}, there have been {cases} {res_str} of COVID-19"
+    )
+
     if "confirmed" in changed_id:
-        return output_str.format(time=time_updated, date=date_updated, cases=format(today_data['cases'], ',d'), res_str="confirmed cases")
+        return output_str.format(
+            time=time_updated,
+            date=date_updated,
+            cases=format(today_data["cases"], ",d"),
+            res_str="confirmed cases",
+        )
     elif "recoveries" in changed_id:
-        return output_str.format(time=time_updated, date=date_updated, cases=format(today_data['recovered'], ',d'), res_str="recoveries")
+        return output_str.format(
+            time=time_updated,
+            date=date_updated,
+            cases=format(today_data["recovered"], ",d"),
+            res_str="recoveries",
+        )
     elif "deaths" in changed_id:
-        return output_str.format(time=time_updated, date=date_updated, cases=format(today_data['deaths'], ',d'), res_str="deaths")
+        return output_str.format(
+            time=time_updated,
+            date=date_updated,
+            cases=format(today_data["deaths"], ",d"),
+            res_str="deaths",
+        )
     else:
-        return output_str.format(time=time_updated, date=date_updated, cases=format(today_data['cases'], ',d'), res_str="confirmed cases")
+        return output_str.format(
+            time=time_updated,
+            date=date_updated,
+            cases=format(today_data["cases"], ",d"),
+            res_str="confirmed cases",
+        )
+
 
 @app.callback(
     dash.dependencies.Output("metric-output", "figure"),
@@ -762,6 +804,56 @@ def update_cases(btn1, btn2, btn3):
 
 
 @app.callback(
+    dash.dependencies.Output("country-message", "children"),
+    dash.dependencies.Input("country-dropdown", "value"),
+    dash.dependencies.Input("confirmed-country", "n_clicks"),
+    dash.dependencies.Input("recoveries-country", "n_clicks"),
+    dash.dependencies.Input("deaths-country", "n_clicks"),
+)
+def update_country_message(value, btn1, btn2, btn3):
+    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    country_stats = get_final_object(value, today_country_data)
+    print(country_stats)
+    date_obj = datetime.datetime.strptime(country_stats["updatedAt"][0], "%Y-%m-%d %H:%M:%S")
+    time_updated = date_obj.strftime("%H:%M")
+    date_updated = date_obj.strftime("%d %B %Y")
+    output_str = "In {country_name}, as of {time}, {date}, there have been {cases} {res_str} of COVID-19"
+
+    if "confirmed" in changed_id:
+        return output_str.format(
+            country_name=value,
+            time=time_updated,
+            date=date_updated,
+            cases=format(country_stats["confirmed"], ",d"),
+            res_str="confirmed cases",
+        )
+    elif "recovered" in changed_id:
+        return output_str.format(
+            country_name=value,
+            time=time_updated,
+            date=date_updated,
+            cases=format(country_stats["recovered"], ",d"),
+            res_str="recoveries",
+        )
+    elif "deaths" in changed_id:
+        return output_str.format(
+            country_name=value,
+            time=time_updated,
+            date=date_updated,
+            cases=format(country_stats["deaths"], ",d"),
+            res_str="deaths",
+        )
+    else:
+        return output_str.format(
+            country_name=value,
+            time=time_updated,
+            date=date_updated,
+            cases=format(country_stats["confirmed"], ",d"),
+            res_str="confirmed cases",
+        )
+
+
+@app.callback(
     dash.dependencies.Output("metric-output-country", "figure"),
     dash.dependencies.Output("timeseries-output-country", "figure"),
     dash.dependencies.Input("country-dropdown", "value"),
@@ -773,21 +865,25 @@ def update_graphs_country(value, btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
 
     if "confirmed" in changed_id:
+        study_to_show = "confirmed"
         return (
             map.plot_study(country_cases_sorted, columns, confirmed, value),
             animations.static_line(confirmed_global, "confirmed", value),
         )
     elif "recoveries" in changed_id:
+        study_to_show = "recoveries"
         return (
             map.plot_study(country_cases_sorted, columns, recovered, value),
             animations.static_line(recovered_global, "recovered", value),
         )
     elif "deaths" in changed_id:
+        study_to_show = "deaths"
         return (
             map.plot_study(country_cases_sorted, columns, deaths, value),
             animations.static_line(deaths_global, "deaths", value),
         )
     else:
+        study_to_show = "confirmed"
         return (
             map.plot_study(country_cases_sorted, columns, confirmed, value),
             animations.static_line(confirmed_global, "confirmed", value),
@@ -878,53 +974,58 @@ def update_cases_country(value, btn1, btn2, btn3):
 
 
 @app.callback(
-    dash.dependencies.Output("predictions-graph", "figure"),
+    dash.dependencies.Output("predictions-graph", "children"),
     dash.dependencies.Output("predictions-error", "children"),
     dash.dependencies.Output("predictions-table", "children"),
+    dash.dependencies.Output("generate-message", "children"),
     dash.dependencies.Input("country-dropdown", "value"),
-    dash.dependencies.Input("confirmed-country", "n_clicks"),
-    dash.dependencies.Input("recoveries-country", "n_clicks"),
-    dash.dependencies.Input("deaths-country", "n_clicks"),
+    dash.dependencies.Input("generate-predictions", "n_clicks")
 )
-def predict_country(value, btn1, btn2, btn3):
-    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
-
-    if "confirmed" in changed_id:
-        fig, error, predictions = prophet.prophet_predict("confirmed", value)
-        return (
-            fig,
-            error,
-            dbc.Table.from_dataframe(
-                predictions, striped=True, bordered=True, hover=True
-            ),
-        )
-    elif "recovered" in changed_id:
-        fig, error, predictions = prophet.prophet_predict("recovered", value)
-        return (
-            fig,
-            error,
-            dbc.Table.from_dataframe(
-                predictions, striped=True, bordered=True, hover=True
-            ),
-        )
-    elif "deaths" in changed_id:
-        fig, error, predictions = prophet.prophet_predict("deaths", value)
-        return (
-            fig,
-            error,
-            dbc.Table.from_dataframe(
-                predictions, striped=True, bordered=True, hover=True
-            ),
-        )
+def predict_country(value, n_clicks):
+    if n_clicks > 0:
+        if "confirmed" == study_to_show:
+            fig, error, predictions = prophet.prophet_predict("confirmed", value)
+            return (
+                dcc.Graph(figure=fig),
+                f"Allow an error upto {error}%",
+                dbc.Table.from_dataframe(
+                    predictions, striped=True, bordered=True, hover=True
+                ),
+                "Our bots have generated the predictions",
+            )
+        elif "recovered" == study_to_show:
+            fig, error, predictions = prophet.prophet_predict("recovered", value)
+            return (
+                dcc.Graph(figure=fig),
+                f"Allow an error upto {error}%",
+                dbc.Table.from_dataframe(
+                    predictions, striped=True, bordered=True, hover=True
+                ),
+                "Our bots have generated the predictions",
+            )
+        elif "deaths" == study_to_show:
+            fig, error, predictions = prophet.prophet_predict("deaths", value)
+            return (
+                dcc.Graph(figure=fig), 
+                f"Allow an error upto {error}%",
+                dbc.Table.from_dataframe(
+                    predictions, striped=True, bordered=True, hover=True
+                ),
+                "Our bots have generated the predictions",
+            )
+        else:
+            fig, error, predictions = prophet.prophet_predict("confirmed", value)
+            return ( 
+                dcc.Graph(figure=fig),
+                f"Allow an error upto {error}%",
+                dbc.Table.from_dataframe(
+                    predictions, striped=True, bordered=True, hover=True
+                ),
+                "Our bots have generated the predictions",
+            )
     else:
-        fig, error, predictions = prophet.prophet_predict("confirmed", value)
-        return (
-            fig,
-            error,
-            dbc.Table.from_dataframe(
-                predictions, striped=True, bordered=True, hover=True
-            ),
-        )
+        return
+
 
 
 @app.callback(

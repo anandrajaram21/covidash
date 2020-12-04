@@ -10,6 +10,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
 from datetime import date
 import requests
@@ -123,6 +124,38 @@ def choose_country(array, country):
 
 def get_final_object(country, array):
     return cases_object(choose_country(array, country))
+
+
+def plot_province(data, metric, metric_name):
+    fig = go.Figure()
+
+    fig.add_trace(
+        go.Scatter(x=data["Provinces"], y=data[metric], mode="lines", name=metric_name)
+    )
+
+    fig.update_layout(
+        title={
+            "text": "Province Details",
+            "y": 0.9,
+            "x": 0.5,
+            "xanchor": "center",
+            "yanchor": "top",
+        },
+        template="plotly_dark",
+        xaxis_title="Province",
+        yaxis_title="Cases",
+    )
+
+    return fig
+
+
+def table_province_data(data, metric):
+    df = pd.DataFrame(data={"Provinces": data["Provinces"], metric: data[metric]})
+    df[metric] = df[metric].map(lambda x: format(x, ",d"))
+    if len(df) <= 1:
+        return
+    else:
+        return df
 
 
 (
@@ -456,6 +489,37 @@ country_page = html.Div(
             className="mt-5 justify-content-center",
         ),
         dbc.Row(html.H3("Statistics"), className="mt-5 justify-content-center"),
+        dbc.Row(
+            [
+                dbc.Col(
+                    dcc.Loading(id="stats-graph", className="justify-content-center"),
+                    sm=12,
+                    md=12,
+                    lg=12,
+                    xl=12,
+                    className="justify-content-center align-items-center",
+                ),
+            ],
+            className="mt-5 justify-content-center",
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Loading(
+                            id="stats-table", className="justify-content-center"
+                        ),
+                    ],
+                    id="stats-table-container",
+                    sm=12,
+                    md=12,
+                    lg=12,
+                    xl=12,
+                    className="justify-content-center align-items-center",
+                ),
+            ],
+            className="mt-5 justify-content-center",
+        ),
         dbc.Row(html.H3("Time Series"), className="mt-5 justify-content-center"),
         dbc.Row(
             [
@@ -853,7 +917,6 @@ def update_cases(btn1, btn2, btn3):
 def update_country_message(value, btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     country_stats = get_final_object(value, today_country_data)
-    print(country_stats)
     date_obj = datetime.datetime.strptime(
         country_stats["updatedAt"][0], "%Y-%m-%d %H:%M:%S"
     )
@@ -863,7 +926,7 @@ def update_country_message(value, btn1, btn2, btn3):
         "In {country_name}, as of {time}, {date}, there have been {cases} {res_str}"
     )
 
-    if "confirmed" in changed_id:
+    if "confirmed-country" in changed_id:
         return output_str.format(
             country_name=value,
             time=time_updated,
@@ -871,7 +934,7 @@ def update_country_message(value, btn1, btn2, btn3):
             cases=format(country_stats["confirmed"], ",d"),
             res_str="confirmed cases",
         )
-    elif "recoveries" in changed_id:
+    elif "recoveries-country" in changed_id:
         return output_str.format(
             country_name=value,
             time=time_updated,
@@ -879,7 +942,7 @@ def update_country_message(value, btn1, btn2, btn3):
             cases=format(country_stats["recovered"], ",d"),
             res_str="recoveries",
         )
-    elif "deaths" in changed_id:
+    elif "deaths-country" in changed_id:
         return output_str.format(
             country_name=value,
             time=time_updated,
@@ -908,33 +971,33 @@ def update_country_message(value, btn1, btn2, btn3):
 def update_graphs_country(value, btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
 
-    if "confirmed" in changed_id:
+    if "confirmed-country" in changed_id:
         try:
             return (
                 nmf.plot_country(value, today_country_data, "confirmed"),
-                animations.static_line(confirmed_global, "confirmed", value)
+                animations.static_line(confirmed_global, "confirmed", value),
             )
         except:
             return (
                 map.plot_study(country_cases_sorted, columns, confirmed, value),
                 animations.static_line(confirmed_global, "confirmed", value),
             )
-    elif "recoveries" in changed_id:
+    elif "recoveries-country" in changed_id:
         try:
             return (
-                nmf.plot_country(value, today_country_data, "recovered"),
-                animations.static_line(confirmed_global, "recovered", value)
+                nmf.plot_country(value, today_country_data, "recoveries"),
+                animations.static_line(confirmed_global, "recovered", value),
             )
         except:
             return (
                 map.plot_study(country_cases_sorted, columns, recovered, value),
                 animations.static_line(confirmed_global, "recovered", value),
             )
-    elif "deaths" in changed_id:
+    elif "deaths-country" in changed_id:
         try:
             return (
                 nmf.plot_country(value, today_country_data, "deaths"),
-                animations.static_line(confirmed_global, "deaths", value)
+                animations.static_line(confirmed_global, "deaths", value),
             )
         except:
             return (
@@ -945,7 +1008,7 @@ def update_graphs_country(value, btn1, btn2, btn3):
         try:
             return (
                 nmf.plot_country(value, today_country_data, "confirmed"),
-                animations.static_line(confirmed_global, "confirmed", value)
+                animations.static_line(confirmed_global, "confirmed", value),
             )
         except:
             return (
@@ -979,7 +1042,7 @@ def update_cases_country(value, btn1, btn2, btn3):
     lastweek = today - timedelta(weeks=1)
     lastmonth = today - timedelta(days=30)
 
-    if "confirmed" in changed_id:
+    if "confirmed-country" in changed_id:
         lastweek_cases = country_time_series.at[
             lastweek.strftime("%-m/%-d/%y"), "confirmed"
         ]
@@ -993,7 +1056,7 @@ def update_cases_country(value, btn1, btn2, btn3):
             format(lastmonth_cases, ",d"),
             "-" + format(country_stats["confirmed"] - lastmonth_cases, ",d"),
         )
-    elif "recoveries" in changed_id:
+    elif "recoveries-country" in changed_id:
         lastweek_cases = country_time_series.at[
             lastweek.strftime("%-m/%-d/%y"), "recovered"
         ]
@@ -1007,7 +1070,7 @@ def update_cases_country(value, btn1, btn2, btn3):
             format(lastmonth_cases, ",d"),
             "-" + format(country_stats["recovered"] - lastmonth_cases, ",d"),
         )
-    elif "deaths" in changed_id:
+    elif "deaths-country" in changed_id:
         lastweek_cases = country_time_series.at[
             lastweek.strftime("%-m/%-d/%y"), "deaths"
         ]
@@ -1037,52 +1100,75 @@ def update_cases_country(value, btn1, btn2, btn3):
         )
 
 
+@app.callback(
+    dash.dependencies.Output("stats-graph", "children"),
+    dash.dependencies.Output("stats-table", "children"),
+    dash.dependencies.Input("country-dropdown", "value"),
+    dash.dependencies.Input("confirmed-country", "n_clicks"),
+    dash.dependencies.Input("recoveries-country", "n_clicks"),
+    dash.dependencies.Input("deaths-country", "n_clicks"),
+)
+def update_stats(value, btn1, btn2, btn3):
+    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    country_stats = nmf.get_country_frame(nmf.choose_country(today_country_data, value))
+
+    try:
+        if "confirmed-country" in changed_id:
+            return (
+                dcc.Graph(
+                    figure=plot_province(country_stats, "Confirmed", "Confirmed Cases")
+                ),
+                dbc.Table.from_dataframe(
+                    table_province_data(country_stats, "Confirmed"),
+                    striped=True,
+                    bordered=True,
+                    hover=True,
+                ),
+            )
+        elif "recoveries-country" in changed_id:
+            return (
+                dcc.Graph(
+                    figure=plot_province(country_stats, "Recoveries", "Recoveries")
+                ),
+                dbc.Table.from_dataframe(
+                    table_province_data(country_stats, "Recoveries"),
+                    striped=True,
+                    bordered=True,
+                    hover=True,
+                ),
+            )
+        elif "deaths-country" in changed_id:
+            return (
+                dcc.Graph(figure=plot_province(country_stats, "Deaths", "Deaths")),
+                dbc.Table.from_dataframe(
+                    table_province_data(country_stats, "Deaths"),
+                    striped=True,
+                    bordered=True,
+                    hover=True,
+                ),
+            )
+        else:
+            return (
+                dcc.Graph(
+                    figure=plot_province(country_stats, "Confirmed", "Confirmed Cases")
+                ),
+                dbc.Table.from_dataframe(
+                    table_province_data(country_stats, "Confirmed"),
+                    striped=True,
+                    bordered=True,
+                    hover=True,
+                ),
+            )
+    except:
+        return (html.H3("Insufficient Data"), html.H3("Insufficient Data"))
+
+
 # ----------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
 
 # Callbacks for the Forecasts Page
-
-# @app.callback(
-#    dash.dependencies.Output("predictions-graph", "children"),
-#    dash.dependencies.Output("predictions-table", "children"),
-#    dash.dependencies.Input("country-dropdown-prediction", "value"),
-# )
-# def predict_country(value):
-#    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
-#    if "confirmed" in changed_id:
-#        fig, error, predictions = prophet.prophet_predict("confirmed", value)
-#        return (
-#            dcc.Graph(figure=fig),
-#            dbc.Table.from_dataframe(
-#                predictions, striped=True, bordered=True, hover=True
-#            ),
-#        )
-#    elif "recovered" in changed_id:
-#        fig, error, predictions = prophet.prophet_predict("recovered", value)
-#        return (
-#            dcc.Graph(figure=fig),
-#            dbc.Table.from_dataframe(
-#                predictions, striped=True, bordered=True, hover=True
-#            ),
-#        )
-#    elif "deaths" in changed_id:
-#        fig, error, predictions = prophet.prophet_predict("deaths", value)
-#        return (
-#            dcc.Graph(figure=fig),
-#            dbc.Table.from_dataframe(
-#                predictions, striped=True, bordered=True, hover=True
-#            ),
-#        )
-#    else:
-#        fig, error, predictions = prophet.prophet_predict("confirmed", value)
-#        return (
-#            dcc.Graph(figure=fig),
-#            dbc.Table.from_dataframe(
-#                predictions, striped=True, bordered=True, hover=True
-#            ),
-#        )
 
 
 @app.callback(

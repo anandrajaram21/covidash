@@ -96,19 +96,16 @@ def create_data(df, study, color):
     for country in countries:
         try:
             event_data = dict(
-                lat=df.loc[(df["Study"] == study) & (
-                    df["Country"] == country), "Lat"],
+                lat=df.loc[(df["Study"] == study) & (df["Country"] == country), "Lat"],
                 lon=df.loc[
-                    (df["Study"] == study) & (
-                        df["Country"] == country), "Long_"
+                    (df["Study"] == study) & (df["Country"] == country), "Long_"
                 ],
                 name=f"{country}",
                 marker={
                     "size": log(
                         float(
                             df.loc[
-                                (df["Study"] == study) & (
-                                    df["Country"] == country),
+                                (df["Study"] == study) & (df["Country"] == country),
                                 "Count",
                             ]
                         ),
@@ -232,11 +229,11 @@ def get_country_frame(country):
     df = df[df["Provinces"] != "Unknown"]
     return df
 
+
 def plot_country(Country, data, study):
     country = choose_country(data, Country)
     df = get_country_frame(country)
-    columns = ["Provinces", ["Confirmed",
-                             "Recoveries", "Deaths"], "lat", "lon"]
+    columns = ["Provinces", ["Confirmed", "Recoveries", "Deaths"], "lat", "lon"]
     color = "blue" if study == "confirmed" else "red" if study == "deaths" else "green"
     d = dict(study=study.title(), color=color)
     figure = plot_study(

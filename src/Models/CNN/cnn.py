@@ -1,4 +1,3 @@
-
 """
 CNN model to predict covid cases 
 
@@ -64,10 +63,8 @@ def get_data():
     confirmed = confirmed_global.groupby("country").sum().T
 
     deaths.index = pd.to_datetime(deaths.index, infer_datetime_format=True)
-    recovered.index = pd.to_datetime(
-        recovered.index, infer_datetime_format=True)
-    confirmed.index = pd.to_datetime(
-        confirmed.index, infer_datetime_format=True)
+    recovered.index = pd.to_datetime(recovered.index, infer_datetime_format=True)
+    confirmed.index = pd.to_datetime(confirmed.index, infer_datetime_format=True)
 
     return deaths, recovered, confirmed
 
@@ -77,17 +74,20 @@ def create_data_frame(dataframe, country):
 
     deaths, recovered, confirmed = get_data()
 
-    if dataframe == 'deaths':
-        data = pd.DataFrame(index=deaths.index,
-                            data=deaths[country].values, columns=["Total"])
+    if dataframe == "deaths":
+        data = pd.DataFrame(
+            index=deaths.index, data=deaths[country].values, columns=["Total"]
+        )
 
-    elif dataframe == 'recovered':
-        data = pd.DataFrame(index=recovered.index,
-                            data=recovered[country].values, columns=["Total"])
+    elif dataframe == "recovered":
+        data = pd.DataFrame(
+            index=recovered.index, data=recovered[country].values, columns=["Total"]
+        )
 
-    elif dataframe == 'confirmed':
-        data = pd.DataFrame(index=confirmed.index,
-                            data=confirmed[country].values, columns=["Total"])
+    elif dataframe == "confirmed":
+        data = pd.DataFrame(
+            index=confirmed.index, data=confirmed[country].values, columns=["Total"]
+        )
 
     data = data[(data != 0).all(1)]
 
@@ -112,7 +112,7 @@ def make_series(df_name, country, steps):
         end = i + steps
         if end > len(series) - 1:
             break
-        x_sample, y_sample = series[i: end], series[end]
+        x_sample, y_sample = series[i:end], series[end]
         X.append(x_sample)
         y.append(y_sample)
 
@@ -128,15 +128,17 @@ def mase(y_true, y_pred):
 # %%
 def create_param_grid():
 
-    param_grid = {"filters": (60, 70),
-                  "nodes": (60, 70),
-                  "epochs": (60, 70),
-                  "activation1": ("swish", "relu", "tanh"),
-                  "activation2": ("swish", "relu", "tanh")
-                  }
+    param_grid = {
+        "filters": (60, 70),
+        "nodes": (60, 70),
+        "epochs": (60, 70),
+        "activation1": ("swish", "relu", "tanh"),
+        "activation2": ("swish", "relu", "tanh"),
+    }
     grid = ParameterGrid(param_grid)
 
     return grid
+
 
 # %%
 
@@ -144,8 +146,14 @@ def create_param_grid():
 def compile_model(p):
 
     model = Sequential()
-    model.add(Conv1D(filters=p["filters"], kernel_size=2,
-                     activation=p["activation1"], input_shape=(14, 1)))
+    model.add(
+        Conv1D(
+            filters=p["filters"],
+            kernel_size=2,
+            activation=p["activation1"],
+            input_shape=(14, 1),
+        )
+    )
     model.add(MaxPooling1D(pool_size=2))
     model.add(Flatten())
     model.add(Dense(p["nodes"], activation=p["activation2"]))
@@ -173,7 +181,8 @@ def hyperparameter_tuning(grid, X_train, y_train):
 
         MASE = mase(y_train, predictions)
         parameters = parameters.append(
-            {'MASE': MASE, 'Parameters': p}, ignore_index=True)
+            {"MASE": MASE, "Parameters": p}, ignore_index=True
+        )
 
     return parameters
 
@@ -206,14 +215,14 @@ def test_model(p, X_train, X_test, y_train, y_test, data):
 
     # Taking the cumulative of the predictions step wise
     # Start is the value just before the test_set, which is used to begin taking the cumulative
-    start = data["Total"][-len(y_test)-1]
+    start = data["Total"][-len(y_test) - 1]
     predictions_cumulative = []
     for i in predictions:
         start = start + i
         predictions_cumulative.append(start)
 
     # The actual cumulative values
-    y_test_cumulative = data["Total"][-len(y_test):]
+    y_test_cumulative = data["Total"][-len(y_test) :]
 
     MASE = mase(y_test_cumulative, predictions_cumulative)
 
@@ -239,7 +248,7 @@ def forecast(data_diff, data, n, model):
 
     for i in range(n):
         l = len(forecast)
-        inp = (list(data_diff["Total"][-(n-l):])) + forecast
+        inp = (list(data_diff["Total"][-(n - l) :])) + forecast
         inp = np.array(inp)
         inp = inp.reshape(1, 14, 1)
         future = model.predict(inp, verbose=0)
@@ -260,13 +269,14 @@ def plot_graph(data, pred):
     datelist = pd.date_range(data.index[-1], periods=15).tolist()
     datelist = datelist[1:]
     fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=data.index, y=data["Total"], mode='lines', name='Up till now'))
-    fig.add_trace(go.Scatter(x=datelist, y=pred,
-                             mode='lines', name='Predictions*'))
+    fig.add_trace(
+        go.Scatter(x=data.index, y=data["Total"], mode="lines", name="Up till now")
+    )
+    fig.add_trace(go.Scatter(x=datelist, y=pred, mode="lines", name="Predictions*"))
     fig.update_layout(template="plotly_dark")
 
     return fig
+
 
 # %%
 
@@ -274,26 +284,30 @@ def plot_graph(data, pred):
 def naive_forecast(study, country):
     df, _ = create_data_frame(study, country)
     datelist = pd.date_range(df.index[-1], periods=15).tolist()[1:]
-    predictions = [df.Total[-1]]*14
+    predictions = [df.Total[-1]] * 14
     fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=df.index, y=df["Total"], mode='lines', name='Up till now'))
-    fig.add_trace(go.Scatter(x=datelist, y=predictions,
-                             mode='lines', name='Predictions*'))
+    fig.add_trace(
+        go.Scatter(x=df.index, y=df["Total"], mode="lines", name="Up till now")
+    )
+    fig.add_trace(
+        go.Scatter(x=datelist, y=predictions, mode="lines", name="Predictions*")
+    )
     fig.update_layout(template="plotly_dark")
     return 1, fig, predictions
+
+
 # %%
 
 
 def check_slope(x, y):
-    return np.mean(np.dff(y)/np.diff(x)) > 0
+    return np.mean(np.dff(y) / np.diff(x)) > 0
 
 
 def cnn_predict(df_name, country):
 
     data, data_diff, X, y = make_series(df_name, country, 14)
     grid = create_param_grid()
-    n = len(data_diff)*17//20
+    n = len(data_diff) * 17 // 20
     X_train, X_test, y_train, y_test = X[:n], X[n:], y[:n], y[n:]
     parameters = hyperparameter_tuning(grid, X_train, y_train)
     p = get_best_params(parameters)

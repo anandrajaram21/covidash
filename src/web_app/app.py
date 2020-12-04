@@ -909,25 +909,49 @@ def update_graphs_country(value, btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
 
     if "confirmed" in changed_id:
-        return (
-            map.plot_study(country_cases_sorted, columns, confirmed, value),
-            animations.static_line(confirmed_global, "confirmed", value),
-        )
+        try:
+            return (
+                nmf.plot_country(value, today_country_data, "confirmed"),
+                animations.static_line(confirmed_global, "confirmed", value)
+            )
+        except:
+            return (
+                map.plot_study(country_cases_sorted, columns, confirmed, value),
+                animations.static_line(confirmed_global, "confirmed", value),
+            )
     elif "recoveries" in changed_id:
-        return (
-            map.plot_study(country_cases_sorted, columns, recovered, value),
-            animations.static_line(recovered_global, "recovered", value),
-        )
+        try:
+            return (
+                nmf.plot_country(value, today_country_data, "recovered"),
+                animations.static_line(confirmed_global, "recovered", value)
+            )
+        except:
+            return (
+                map.plot_study(country_cases_sorted, columns, recovered, value),
+                animations.static_line(confirmed_global, "recovered", value),
+            )
     elif "deaths" in changed_id:
-        return (
-            map.plot_study(country_cases_sorted, columns, deaths, value),
-            animations.static_line(deaths_global, "deaths", value),
-        )
+        try:
+            return (
+                nmf.plot_country(value, today_country_data, "deaths"),
+                animations.static_line(confirmed_global, "deaths", value)
+            )
+        except:
+            return (
+                map.plot_study(country_cases_sorted, columns, deaths, value),
+                animations.static_line(confirmed_global, "deaths", value),
+            )
     else:
-        return (
-            map.plot_study(country_cases_sorted, columns, confirmed, value),
-            animations.static_line(confirmed_global, "confirmed", value),
-        )
+        try:
+            return (
+                nmf.plot_country(value, today_country_data, "confirmed"),
+                animations.static_line(confirmed_global, "confirmed", value)
+            )
+        except:
+            return (
+                map.plot_study(country_cases_sorted, columns, confirmed, value),
+                animations.static_line(confirmed_global, "confirmed", value),
+            )
 
 
 @app.callback(

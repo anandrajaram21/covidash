@@ -1,43 +1,43 @@
 """
 CNN model to predict covid cases 
 
-STATS: (Number of trials = 58)
+STATS: (Number of trials = 75)
 
---> Error (MASE):
+--> Error (MASE):   
 
-As we are using MASE with CNN and a naive model, the maximum possible error can be fixed (current error cap = 1)
+As we are using MASE with CNN and a naive model, the maximum possible error can be fixed (current error cap = 1 (but not strict))
 
-# TODO : Reduce the average MASE with the CNN as much as possible (So fine tune it weekly)
+# TODO : Reduce the average MASE with the CNN  (needs fine tuning weekly)
 
 Countries: (MASE in the order confirmed,deaths,recovered)
 {
-    1.India (0.7,,)
-    2.US (0.58,0.53,0.76)
-    3.Germany (,,)
-    4.Tanzania (,,)
-    5.Ethiopia (,,)
-    6.Brazil (,,)
-    7.Italy (,,)
-    8.Botswana (,,)
-    9.Japan (,,) 
-    10.China (,,)  
-    11.New Zealand  (,,)
-    12.Canada (,,)
+    1.India -> [0.3, 0.78, 0.32]
+    2.US -> [0.37, 0.56, 0.5]
+    3.Italy -> [1.8, 0.29, 2.76]
+    4.Australia -> [3.4, 1, 2.87]
+    5.Tanzania -> [1, 1, 1]
+    6.Japan -> [2.1, 1.28, 4.01]
+    7.China -> [5.34, 1, 1.38]
+    8.Canada -> [0.43, 0.38, 2.82]
+    9.Brazil -> [2.04, 1.63, 3.95]
+    10.Botswana -> [1, 1, 1]
 }
 
 --> Runtime:
-Avg time taken -> 97.45 seconds
-Least time -> 72.18 seconds
-Highest time -> 104.98 seconds
+Avg time taken -> 94.79 seconds
+Least time -> 71.88 seconds
+Highest time -> 106.63 seconds
 
 
---> Downward Cumulative Cases : N/A - observed in 0/58 trials 
+--> Downward Cumulative Cases : N/A
+- observed in 0/75 trials 
 
 """
 # %%
 import pandas as pd
 
 import numpy as np
+from collections import Counter
 
 from TSErrors import FindErrors
 
@@ -300,7 +300,8 @@ def naive_forecast(study, country):
 
 
 def check_slope(x, y):
-    return np.mean(np.dff(y) / np.diff(x)) > 0
+    c = Counter(np.diff(y)/np.diff(x))
+    return (0 not in [i[0] for i in c.most_common(1)])
 
 
 def cnn_predict(df_name, country):
@@ -312,7 +313,7 @@ def cnn_predict(df_name, country):
     parameters = hyperparameter_tuning(grid, X_train, y_train)
     p = get_best_params(parameters)
     MASE = (test_model(p, X_train, X_test, y_train, y_test, data)).round(2)
-    if MASE <= 1 or check_slope([1, 2, 3, 4, 5, 6, 7], data.Total[-7:]):
+    if (MASE <= 1 or check_slope([1, 2, 3, 4, 5], data.Total[-5:])):
         cnn = make_final_model(p, X, y)
         f = forecast(data_diff, data, 14, cnn)
         f = list(map(int, f))
@@ -325,5 +326,5 @@ def cnn_predict(df_name, country):
 
 """
 # EXAMPLE
-pred,MASE,figure = predict("confirmed","India")
+pred,MASE,figure = cnn_predict("confirmed","India")
 """

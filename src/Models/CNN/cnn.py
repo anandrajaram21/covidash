@@ -1,34 +1,39 @@
 
 """
-CNN model to predict covid cases : deaths, confirmed and recovered
+CNN model to predict covid cases 
 
-STATS: (Number of trials = 54)
+STATS: (Number of trials = 58)
 
---> Accuracy:
-Avg MAPE : 1.12
-Best MAPE : 0.01 (Tanzania Confirmed)
-Worst MAPE : 7.74 (Botswana Recovered) 
+--> Error (MASE):
 
-Studies which do not show good MAPEs (i.e > 2) -> 
-{  
-    1.Botswana :Reason => Erratic data and small numbers
-}
+As we are using MASE with CNN and a naive model, the maximum possible error can be fixed (current error cap = 1)
 
---> Time:
-Avg time taken : 90.34 s
-Best time : 73.63 s
-Worst time : 98.45 s
+# TODO : Reduce the average MASE with the CNN as much as possible (So fine tune it weekly)
 
-
---> Downward Cumulative Cases ->
+Countries: (MASE in the order confirmed,deaths,recovered)
 {
-    1. Tanzania Confirmed : drop = 2/11, stagnant = 8/11, increase = 1/11
+    1.India (0.7,,)
+    2.US (0.58,0.53,0.76)
+    3.Germany (,,)
+    4.Tanzania (,,)
+    5.Ethiopia (,,)
+    6.Brazil (,,)
+    7.Italy (,,)
+    8.Botswana (,,)
+    9.Japan (,,) 
+    10.China (,,)  
+    11.New Zealand  (,,)
+    12.Canada (,,)
 }
 
-#! 90-10 pipeline for recovered as it doesnt match with that of confirmed and death
-# TODO : Try cross validation (but best option for recovered is fbp)
+--> Runtime:
+Avg time taken -> 97.45 seconds
+Least time -> 72.18 seconds
+Highest time -> 104.98 seconds
 
-#? Reason : Erratic nature of recovered, example : oct 25, Botswana 927 rec, oct 26 4438 rec, remained as such till 29th and then again spiked up (4676)
+
+--> Downward Cumulative Cases : N/A - observed in 0/58 trials 
+
 """
 # %%
 import pandas as pd
@@ -52,7 +57,7 @@ import main
 # %%
 def get_data():
 
-    confirmed_global, deaths_global, recovered_global, country_cases = main.collect_data()
+    confirmed_global, deaths_global, recovered_global, _ = main.collect_data()
 
     recovered = recovered_global.groupby("country").sum().T
     deaths = deaths_global.groupby("country").sum().T
@@ -115,12 +120,6 @@ def make_series(df_name, country, steps):
 
 
 # %%
-def mape(y_true, y_pred):
-    er = FindErrors(y_true, y_pred)
-    return er.mape()
-
-
-# %%
 def mase(y_true, y_pred):
     er = FindErrors(y_true, y_pred)
     return er.mase()
@@ -138,12 +137,6 @@ def create_param_grid():
     grid = ParameterGrid(param_grid)
 
     return grid
-
-# %%
-
-
-def create_rec_pg():
-    return None
 
 # %%
 
@@ -175,7 +168,7 @@ def hyperparameter_tuning(grid, X_train, y_train):
         model.fit(X_train, y_train, epochs=p["epochs"], verbose=0)
         predictions = model.predict(X_train, verbose=0)
 
-        # flattening the predictions to a 1D array to calculate the MAPE
+        # flattening the predictions to a 1D array to calculate the MASE
         predictions = predictions.flatten()
 
         MASE = mase(y_train, predictions)
@@ -222,9 +215,9 @@ def test_model(p, X_train, X_test, y_train, y_test, data):
     # The actual cumulative values
     y_test_cumulative = data["Total"][-len(y_test):]
 
-    MAPE = mape(y_test_cumulative, predictions_cumulative)
+    MASE = mase(y_test_cumulative, predictions_cumulative)
 
-    return MAPE
+    return MASE
 
 
 # %%
@@ -275,29 +268,48 @@ def plot_graph(data, pred):
 
     return fig
 
-
 # %%
-def predict(df_name, country):
+
+
+def naive_forecast(study, country):
+    df, _ = create_data_frame(study, country)
+    datelist = pd.date_range(df.index[-1], periods=15).tolist()[1:]
+    predictions = [df.Total[-1]]*14
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=df.index, y=df["Total"], mode='lines', name='Up till now'))
+    fig.add_trace(go.Scatter(x=datelist, y=predictions,
+                             mode='lines', name='Predictions*'))
+    fig.update_layout(template="plotly_dark")
+    return 1, fig, predictions
+# %%
+
+
+def check_slope(x, y):
+    return np.mean(np.dff(y)/np.diff(x)) > 0
+
+
+def cnn_predict(df_name, country):
 
     data, data_diff, X, y = make_series(df_name, country, 14)
     grid = create_param_grid()
-    if df_name == "recovered":
-        n = len(data_diff)*9//10
-    else:
-        n = len(data_diff)*4//5
+    n = len(data_diff)*17//20
     X_train, X_test, y_train, y_test = X[:n], X[n:], y[:n], y[n:]
     parameters = hyperparameter_tuning(grid, X_train, y_train)
     p = get_best_params(parameters)
-    MAPE = test_model(p, X_train, X_test, y_train, y_test, data)
-    cnn = make_final_model(p, X, y)
-    f = forecast(data_diff, data, 14, cnn)
-    f = list(map(int, f))
-    fig = plot_graph(data, f)
+    MASE = (test_model(p, X_train, X_test, y_train, y_test, data)).round(2)
+    if MASE <= 1 or check_slope([1, 2, 3, 4, 5, 6, 7], data.Total[-7:]):
+        cnn = make_final_model(p, X, y)
+        f = forecast(data_diff, data, 14, cnn)
+        f = list(map(int, f))
+        fig = plot_graph(data, f)
+    else:
+        MASE, fig, f = naive_forecast(df_name, country)
 
-    return f, MAPE.round(2), fig
+    return f, MASE, fig
 
 
 """
 # EXAMPLE
-pred,MAPE,figure = cnn_predict("confirmed","India")
+pred,MASE,figure = predict("confirmed","India")
 """

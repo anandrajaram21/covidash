@@ -300,8 +300,8 @@ def naive_forecast(study, country):
 
 
 def check_slope(x, y):
-    c = Counter(np.diff(y)/np.diff(x))
-    return (0 not in [i[0] for i in c.most_common(1)])
+    c = Counter(np.diff(y) / np.diff(x))
+    return 0 not in [i[0] for i in c.most_common(1)]
 
 
 def cnn_predict(df_name, country):
@@ -313,7 +313,7 @@ def cnn_predict(df_name, country):
     parameters = hyperparameter_tuning(grid, X_train, y_train)
     p = get_best_params(parameters)
     MASE = (test_model(p, X_train, X_test, y_train, y_test, data)).round(2)
-    if (MASE <= 1 or check_slope([1, 2, 3, 4, 5], data.Total[-5:])):
+    if MASE <= 1 or check_slope([1, 2, 3, 4, 5], data.Total[-5:]):
         cnn = make_final_model(p, X, y)
         f = forecast(data_diff, data, 14, cnn)
         f = list(map(int, f))

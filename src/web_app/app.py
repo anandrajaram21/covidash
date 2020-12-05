@@ -544,7 +544,7 @@ country_page = html.Div(
                             ],
                             style={
                                 "borderRadius": "30px",
-                                "backgroundColor": "#2f09ed",
+                                "backgroundColor": "#5a1791",
                             },
                             className="mt-3 p-3",
                         ),
@@ -565,7 +565,7 @@ country_page = html.Div(
                             ],
                             style={
                                 "borderRadius": "30px",
-                                "backgroundColor": "#7156d6",
+                                "backgroundColor": "#732abd",
                             },
                             className="mt-3 p-3",
                         ),
@@ -586,7 +586,7 @@ country_page = html.Div(
                             ],
                             style={
                                 "borderRadius": "30px",
-                                "backgroundColor": "#8e6ee6",
+                                "backgroundColor": "#8634eb",
                             },
                             className="mt-3 p-3",
                         ),
@@ -1160,7 +1160,7 @@ def update_stats(value, btn1, btn2, btn3):
                 ),
             )
     except:
-        return (html.H3("Insufficient Data"), html.H3("Insufficient Data"))
+        return (html.H2("Sorry! Unfortunately we do no have sufficient data at the moment."), html.H2("Sorry! Unfortunately we do no have sufficient data at the moment."))
 
 
 # ----------------------------------------------------------------------------------------------------

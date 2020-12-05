@@ -144,7 +144,7 @@ def plot_province(data, metric, metric_name):
     fig = go.Figure()
 
     fig.add_trace(
-        go.Scatter(x=data["Provinces"], y=data[metric], mode="lines", name=metric_name)
+        go.Bar(x=data["Provinces"], y=data[metric])
     )
 
     fig.update_layout(
@@ -1175,12 +1175,13 @@ def update_stats(value, btn1, btn2, btn3):
             )
     except:
         return (
-            html.H2(
+            html.H5(
                 "Sorry! Unfortunately we do no have sufficient data at the moment."
             ),
-            html.H2(
-                "Sorry! Unfortunately we do no have sufficient data at the moment."
-            ),
+            None
+            # html.H4(
+            #     "Sorry! Unfortunately we do no have sufficient data at the moment."
+            # ),
         )
 
 

@@ -41,7 +41,7 @@ module.exports = {
             },
             {
               label: 'Getting Started',
-              to: 'docs/doc2/',
+              to: 'docs/gettingstarted/',
             },
           ],
         },
@@ -76,7 +76,7 @@ module.exports = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Covidash, Inc. Built with Docusaurus.`,
     },
   },
   presets: [

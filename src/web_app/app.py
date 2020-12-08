@@ -198,7 +198,8 @@ country_cases_sorted = country_cases.sort_values("confirmed", ascending=False)
 import animations
 import map
 import new_map_functions as nmf
-import prophet
+import cnn
+import cnn
 
 # ----------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
@@ -1205,19 +1206,19 @@ def update_stats(value, btn1, btn2, btn3):
 def forecast_cases(btn1, btn2, btn3, value):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     if "forecast-confirmed" in changed_id:
-        fig, err, preds = prophet.prophet_predict("confirmed", value)
+        fig, err, preds = cnn.cnn_predict("confirmed", value)
         return (
             dcc.Graph(figure=fig),
             dbc.Table.from_dataframe(preds, striped=True, bordered=True, hover=True),
         )
     elif "forecast-recoveries" in changed_id:
-        fig, err, preds = prophet.prophet_predict("recovered", value)
+        fig, err, preds = cnn.cnn_predict("recovered", value)
         return (
             dcc.Graph(figure=fig),
             dbc.Table.from_dataframe(preds, striped=True, bordered=True, hover=True),
         )
     elif "forecast-deaths" in changed_id:
-        fig, err, preds = prophet.prophet_predict("deaths", value)
+        fig, err, preds = cnn.cnn_predict("deaths", value)
         return (
             dcc.Graph(figure=fig),
             dbc.Table.from_dataframe(preds, striped=True, bordered=True, hover=True),

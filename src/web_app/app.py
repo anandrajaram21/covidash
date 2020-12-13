@@ -100,10 +100,17 @@ def collect_data():
             deaths_global = deaths_global.groupby(["country"], as_index=False).sum()
             recovered_global = recovered_global.groupby(["country"], as_index=False).sum()
 
+<<<<<<< HEAD
             confirmed_global.to_csv("confirmed_global.csv")
             deaths_global.to_csv("deaths_global.csv")
             recovered_global.to_csv("recovered_global.csv")
             country_cases.to_csv("country_cases.csv")
+=======
+        confirmed_global.to_csv("confirmed_global.csv")
+        deaths_global.to_csv("deaths_global.csv")
+        recovered_global.to_csv("recovered_global.csv")
+        country_cases.to_csv("country_cases.csv")
+>>>>>>> parent of b53ac53... remmoved indexes from the stored csvs as that causes errors
 
             return (confirmed_global, deaths_global, recovered_global, country_cases)
 

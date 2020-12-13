@@ -97,10 +97,10 @@ def collect_data():
         deaths_global = deaths_global.groupby(["country"], as_index=False).sum()
         recovered_global = recovered_global.groupby(["country"], as_index=False).sum()
 
-        confirmed_global.to_csv("confirmed_global.csv")
-        deaths_global.to_csv("deaths_global.csv")
-        recovered_global.to_csv("recovered_global.csv")
-        country_cases.to_csv("country_cases.csv")
+        confirmed_global.to_csv("confirmed_global.csv",index = False)
+        deaths_global.to_csv("deaths_global.csv",index = False)
+        recovered_global.to_csv("recovered_global.csv",index = False)
+        country_cases.to_csv("country_cases.csv",index = False)
 
         return (confirmed_global, deaths_global, recovered_global, country_cases)
 

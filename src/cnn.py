@@ -52,6 +52,7 @@ import plotly.io as pio
 
 # module required to get confirmed_global, deaths_global, recovered_global
 import app_vars as av
+import main
 
 pio.templates.default = "plotly_dark"
 
@@ -64,10 +65,15 @@ def get_data():
         av.deaths_global,
         av.recovered_global,
     )
-
-    recovered = recovered_global.groupby("country").sum().T
-    deaths = deaths_global.groupby("country").sum().T
-    confirmed = confirmed_global.groupby("country").sum().T
+    try:
+        recovered = recovered_global.groupby("country").sum().T
+        deaths = deaths_global.groupby("country").sum().T
+        confirmed = confirmed_global.groupby("country").sum().T
+    except:
+        confirmed_global, deaths_global, recovered_global, _ = main.collect_data()
+        recovered = recovered_global.groupby("country").sum().T
+        deaths = deaths_global.groupby("country").sum().T
+        confirmed = confirmed_global.groupby("country").sum().T
 
     deaths.index = pd.to_datetime(deaths.index, infer_datetime_format=True)
     recovered.index = pd.to_datetime(

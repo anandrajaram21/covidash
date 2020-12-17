@@ -46,78 +46,78 @@ TIMEOUT = 3600
 
 @cache.memoize(timeout=TIMEOUT)
 def collect_data():
-    try:
-        filenames = [
-            "time_series_covid19_confirmed_global.csv",
-            "time_series_covid19_deaths_global.csv",
-            "time_series_covid19_recovered_global.csv",
-        ]
-        url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/"
-        confirmed_global = pd.read_csv(url + filenames[0])
+    # try:
+    filenames = [
+        "time_series_covid19_confirmed_global.csv",
+        "time_series_covid19_deaths_global.csv",
+        "time_series_covid19_recovered_global.csv",
+    ]
+    url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/"
+    confirmed_global = pd.read_csv(url + filenames[0])
 
-        deaths_global = pd.read_csv(url + filenames[1])
+    deaths_global = pd.read_csv(url + filenames[1])
 
-        recovered_global = pd.read_csv(url + filenames[2])
+    recovered_global = pd.read_csv(url + filenames[2])
 
-        country_cases = pd.read_csv(
-            "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/web-data/data/cases_country.csv"
-        )
-
-
-        confirmed_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
-
-        deaths_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
-
-        recovered_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
-
-        country_cases.drop(
-            columns=[
-                "Last_Update",
-                "Incident_Rate",
-                "People_Tested",
-                "People_Hospitalized",
-                "UID",
-            ],
-            inplace=True,
-        )
+    country_cases = pd.read_csv(
+        "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/web-data/data/cases_country.csv"
+    )
 
 
-        confirmed_global.rename(columns={"Country/Region": "country"}, inplace=True)
-        deaths_global.rename(columns={"Country/Region": "country"}, inplace=True)
-        recovered_global.rename(columns={"Country/Region": "country"}, inplace=True)
+    confirmed_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
 
-        country_cases.rename(
-            columns={
-                "Country_Region": "country",
-                "Confirmed": "confirmed",
-                "Deaths": "deaths",
-                "Recovered": "recovered",
-                "Active": "active",
-                "Mortality_Rate": "mortality",
-            },
-            inplace=True,
-        )
- 
+    deaths_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
 
-        confirmed_global = confirmed_global.groupby(["country"], as_index=False).sum()
-        deaths_global = deaths_global.groupby(["country"], as_index=False).sum()
-        recovered_global = recovered_global.groupby(["country"], as_index=False).sum()
- 
-        confirmed_global.to_csv("confirmed_global.csv",index = False)
-        deaths_global.to_csv("deaths_global.csv",index = False)
-        recovered_global.to_csv("recovered_global.csv",index = False)
-        country_cases.to_csv("country_cases.csv",index = False)
+    recovered_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
 
-        return (confirmed_global, deaths_global, recovered_global, country_cases)
+    country_cases.drop(
+        columns=[
+            "Last_Update",
+            "Incident_Rate",
+            "People_Tested",
+            "People_Hospitalized",
+            "UID",
+        ],
+        inplace=True,
+    )
 
-    except:
-        #pass
-        return (
-                pd.read_csv("confirmed_global.csv"),
-                pd.read_csv("deaths_global.csv"),
-                pd.read_csv("recovered_global.csv"),
-                pd.read_csv("country_cases.csv")
-            )
+
+    confirmed_global.rename(columns={"Country/Region": "country"}, inplace=True)
+    deaths_global.rename(columns={"Country/Region": "country"}, inplace=True)
+    recovered_global.rename(columns={"Country/Region": "country"}, inplace=True)
+
+    country_cases.rename(
+        columns={
+            "Country_Region": "country",
+            "Confirmed": "confirmed",
+            "Deaths": "deaths",
+            "Recovered": "recovered",
+            "Active": "active",
+            "Mortality_Rate": "mortality",
+        },
+        inplace=True,
+    )
+
+
+    confirmed_global = confirmed_global.groupby(["country"], as_index=False).sum()
+    deaths_global = deaths_global.groupby(["country"], as_index=False).sum()
+    recovered_global = recovered_global.groupby(["country"], as_index=False).sum()
+
+    # confirmed_global.to_csv("confirmed_global.csv",index = False)
+    # deaths_global.to_csv("deaths_global.csv",index = False)
+    # recovered_global.to_csv("recovered_global.csv",index = False)
+    # country_cases.to_csv("country_cases.csv",index = False)
+
+    return (confirmed_global, deaths_global, recovered_global, country_cases)
+
+    # except:
+        # #pass
+        # return (
+                # pd.read_csv("confirmed_global.csv"),
+                # pd.read_csv("deaths_global.csv"),
+                # pd.read_csv("recovered_global.csv"),
+                # pd.read_csv("country_cases.csv")
+            # )
 
 @cache.memoize(timeout=TIMEOUT)           
 def get_today_data():

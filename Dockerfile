@@ -2,7 +2,7 @@ FROM python:3.8
 
 COPY requirements.txt app/
 
-COPY src/web_app/ app/
+COPY src/ app/
 
 WORKDIR /app
 

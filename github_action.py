@@ -1,39 +1,3 @@
-"""
-CNN model to predict covid cases 
-
-STATS: (Number of trials = 75)
-
---> Error (MASE):   
-
-As we are using MASE with CNN and a naive model, the maximum possible error can be fixed (current error cap = 1 (but not strict))
-
-# TODO : Reduce the average MASE with the CNN  (needs fine tuning weekly)
-
-Countries: (MASE in the order confirmed,deaths,recovered)
-{
-    1.India -> [0.3, 0.78, 0.32]
-    2.US -> [0.37, 0.56, 0.5]
-    3.Italy -> [1.8, 0.29, 2.76]
-    4.Australia -> [3.4, 1, 2.87]
-    5.Tanzania -> [1, 1, 1]
-    6.Japan -> [2.1, 1.28, 4.01]
-    7.China -> [5.34, 1, 1.38]
-    8.Canada -> [0.43, 0.38, 2.82]
-    9.Brazil -> [2.04, 1.63, 3.95]
-    10.Botswana -> [1, 1, 1]
-}
-
---> Runtime:
-Avg time taken -> 94.79 seconds
-Least time -> 71.88 seconds
-Highest time -> 106.63 seconds
-
-
---> Downward Cumulative Cases : N/A
-- observed in 0/75 trials 
-
-"""
-# %%
 import pandas as pd
 
 import numpy as np
@@ -49,21 +13,67 @@ from keras.layers import Dense, Flatten
 
 import plotly.graph_objects as go
 import plotly.io as pio
-
-# module required to get confirmed_global, deaths_global, recovered_global
-import app_vars as av
+import pickle
+import os
 
 pio.templates.default = "plotly_dark"
 
-
-# %%
 def get_data():
+    filenames = [
+        "time_series_covid19_confirmed_global.csv",
+        "time_series_covid19_deaths_global.csv",
+        "time_series_covid19_recovered_global.csv",
+    ]
+    url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/"
+    confirmed_global = pd.read_csv(url + filenames[0])
 
-    confirmed_global, deaths_global, recovered_global = (
-        av.confirmed_global,
-        av.deaths_global,
-        av.recovered_global,
+    deaths_global = pd.read_csv(url + filenames[1])
+
+    recovered_global = pd.read_csv(url + filenames[2])
+
+    country_cases = pd.read_csv(
+        "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/web-data/data/cases_country.csv"
     )
+
+
+    confirmed_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
+
+    deaths_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
+
+    recovered_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
+
+    country_cases.drop(
+        columns=[
+            "Last_Update",
+            "Incident_Rate",
+            "People_Tested",
+            "People_Hospitalized",
+            "UID",
+        ],
+        inplace=True,
+    )
+
+
+    confirmed_global.rename(columns={"Country/Region": "country"}, inplace=True)
+    deaths_global.rename(columns={"Country/Region": "country"}, inplace=True)
+    recovered_global.rename(columns={"Country/Region": "country"}, inplace=True)
+
+    country_cases.rename(
+        columns={
+            "Country_Region": "country",
+            "Confirmed": "confirmed",
+            "Deaths": "deaths",
+            "Recovered": "recovered",
+            "Active": "active",
+            "Mortality_Rate": "mortality",
+        },
+        inplace=True,
+    )
+
+
+    confirmed_global = confirmed_global.groupby(["country"], as_index=False).sum()
+    deaths_global = deaths_global.groupby(["country"], as_index=False).sum()
+    recovered_global = recovered_global.groupby(["country"], as_index=False).sum()
 
     recovered = recovered_global.groupby("country").sum().T
     deaths = deaths_global.groupby("country").sum().T
@@ -77,8 +87,6 @@ def get_data():
 
     return deaths, recovered, confirmed
 
-
-# %%
 def create_data_frame(dataframe, country):
 
     deaths, recovered, confirmed = get_data()
@@ -340,8 +348,15 @@ def cnn_predict(df_name, country):
 
     return fig, MASE, predictions
 
+countries = ["India", "US", "Brazil", "Canada", "United Kingdom"]
+# countries = ['India'] # Comment this line out in production
+dfs = ["confirmed", "recovered", "deaths"]
+# dfs = ['confirmed'] # Comment this line out in production
 
-"""
-# EXAMPLE
-fig, MASE, predictions = cnn_predict("confirmed","India")
-"""
+for country_name in countries:
+    for df_name in dfs:
+        fig, _, predictions = cnn_predict(df_name, country_name)
+        with open(f"./output/{country_name}-{df_name}.pkl", "wb") as fh:
+            data = {"fig": fig, "predictions": predictions}
+            pickle.dump(data, fh)
+

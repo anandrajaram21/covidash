@@ -46,7 +46,6 @@ TIMEOUT = 3600
 
 @cache.memoize(timeout=TIMEOUT)
 def collect_data():
-    # try:
     filenames = [
         "time_series_covid19_confirmed_global.csv",
         "time_series_covid19_deaths_global.csv",

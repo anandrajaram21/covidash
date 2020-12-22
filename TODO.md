@@ -38,7 +38,7 @@
      - Windows
    - README
    - Any addtional ones
-2. Documentation (Anand)
+2. Documentation (optional as we have project report) (Anand)
 3. Project report (Anirudh)
 4. Presentation (Arunachala)
 

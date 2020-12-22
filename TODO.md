@@ -44,7 +44,7 @@
 
 ### Third Priority - Enhancements : To be done if time permits
 
-3. Creating cards for each section of the page (Anirudh)
+1. Creating cards for each section of the page (Anirudh)
 1. Converting the model to just 3 models for all countries instead of 3 per country (Arunachala)
 2. Documentation (optional as we already have project report) (Anand)
 3. Adding comparison graphs to country page to make the dashboard more interactive (Anand)

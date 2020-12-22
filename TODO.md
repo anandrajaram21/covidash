@@ -17,7 +17,7 @@
 
 ### Second Priority - Can be done later once the working project is completed
 
-1. Cleaning up the folder: (Anirudh)
+1. Cleaning up the folder: (Anyone but Anirudh)
    - Python files (one file for each):
      - Dashboard
      - CNN
@@ -45,5 +45,5 @@
 ### Third Priority - Enhancements : To be done if time permits
 
 1. Converting the model to just 3 models for all countries instead of 3 per country (Arunachala)
-2. Creating cards for each section of the page (Anirudh)
+2. Creating cards for each section of the page (Anirudh) - Should be removed as this is considered to be a part of making the page look good, and should be shifted into the first priority section
 3. Adding comparison graphs to country page to make the dashboard more interactive (Anand)

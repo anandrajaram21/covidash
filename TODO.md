@@ -12,12 +12,16 @@
 
    - Creating a poster/image or cards with precautions
    - Make the page look appealing
+   
 
-3. Setting up a cron job (daily) (Anand)
+3. Creating cards for each section of the page (Anirudh)
+
+4. Setting up a cron job (daily) (Anand)
+
 
 ### Second Priority - Can be done later once the working project is completed
 
-1. Cleaning up the folder: (Anyone but Anirudh)
+1. Cleaning up the folder: (Anand)
    - Python files (one file for each):
      - Dashboard
      - CNN
@@ -38,12 +42,12 @@
      - Windows
    - README
    - Any addtional ones
-2. Documentation (optional as we have project report) (Anand)
-3. Project report (Anirudh)
-4. Presentation (Arunachala)
+2. Project report (Anirudh)
+3. Presentation (Arunachala)
 
 ### Third Priority - Enhancements : To be done if time permits
 
+
 1. Converting the model to just 3 models for all countries instead of 3 per country (Arunachala)
-2. Creating cards for each section of the page (Anirudh) - Should be removed as this is considered to be a part of making the page look good, and should be shifted into the first priority section
+2. Documentation (optional as we already have project report) (Anand)
 3. Adding comparison graphs to country page to make the dashboard more interactive (Anand)

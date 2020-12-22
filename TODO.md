@@ -41,10 +41,12 @@
    - Any addtional ones
 2. Project report (Anirudh)
 3. Presentation (Arunachala)
+ 
 
 ### Third Priority - Enhancements : To be done if time permits
 
 1. Creating cards for each section of the page (Anirudh)
 1. Converting the model to just 3 models for all countries instead of 3 per country (Arunachala)
+4. Put a weekly button in the time series (Arunachala)
 2. Documentation (optional as we already have project report) (Anand)
 3. Adding comparison graphs to country page to make the dashboard more interactive (Anand)

@@ -1,8 +1,8 @@
 name: Generate Predictions and Graphs
 
-on: push
-  # schedule:
-  #   - cron: '0 0 * * *'
+on:
+  schedule:
+  - cron: '0 0 * * *'
 
 jobs:
   generate_predictions_and_graphs:

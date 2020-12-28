@@ -74,8 +74,10 @@ npm start
 ### Technologies Used
 
 - Python is the primary programming language used
-- Plotly Dash is the framework used to build the web app. (Plotly Dash uses Flask in its underlying implementation, so its very fast)
-- Facebook Prophet is the main library used to make the model that forecasts the cases. Some other libraries like Scikitlearn and Tensorflow were also used, but none of them provided as good a speed to accuracy ratio as Facebook Prophet.
+- Plotly Dash is the framework used to build the web app. (Plotly Dash uses Flask in its underlying implementation, and so is very fast)
+- Keras is the main library used to make the model (CNN) that forecasts the cases. Some other libraries like Facebook Prophet and SciKit-Learn were used, but Keras offered the most flexibility along with ease of learning and experimentation.
 - Plotly is the library used for all the data visualizations and graphs that you see on the dashboard.
 - Jupyter Notebooks were used widely for testing our models and our visualizations.
 - Docusaurus was used to make the project documentation.
+
+### **[Presentaion](https://github.com/Majimearun/Covid-19-Outbreak-Analysis)**

@@ -40,7 +40,7 @@
    - README
    - Any addtional ones
 2. Project report (Anirudh)
-3. Presentation (Arunachala)
+3. <del>Presentation (Arunachala)</del> ✔
  
 
 ### Third Priority - Enhancements : To be done if time permits

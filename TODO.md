@@ -13,7 +13,7 @@
    - Creating a poster/image or cards with precautions
    - Make the page look appealing
    
-4. Setting up a cron job (daily) (Anand)
+4. <del>Setting up a cron job (daily) (Anand)</del>  ✔
 
 
 ### Second Priority - Can be done later once the working project is completed

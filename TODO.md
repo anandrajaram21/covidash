@@ -19,26 +19,7 @@
 ### Second Priority - Can be done later once the working project is completed
 
 1. Cleaning up the folder: (Anand)
-   - Python files (one file for each):
-     - Dashboard
-     - CNN
-     - General Graphs
-     - Animations
-     - Map
-     - App-vars
-     - Any additional one
-   - Jupyter Notebooks
-     - CNN
-     - Map
-     - General Graphs
-     - Animations
-   - Docker files
-   - Environment files:
-     - Linux
-     - Mac OS
-     - Windows
-   - README
-   - Any addtional ones
+
 2. Project report (Anirudh)
 3. <del>Presentation (Arunachala)</del> ✔
  

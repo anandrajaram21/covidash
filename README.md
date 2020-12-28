@@ -80,4 +80,4 @@ npm start
 - Jupyter Notebooks were used widely for testing our models and our visualizations.
 - Docusaurus was used to make the project documentation.
 
-### **[Presentaion](https://github.com/Majimearun/Covid-19-Outbreak-Analysis)**
+  ### **[Presentation](https://github.com/Majimearun/Covid-19-Outbreak-Analysis)**

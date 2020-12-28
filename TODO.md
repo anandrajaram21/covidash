@@ -31,4 +31,4 @@
 1. Converting the model to just 3 models for all countries instead of 3 per country (Arunachala)
 4. <del>Put an option in the time series for different time periods and daily/cumulative (Arunachala)</del> ✔
 2. Documentation (optional as we already have project report) (Anand)
-3. Adding comparison graphs to country page to make the dashboard more interactive (Anand)
+3. Adding comparison graphs and flexibility to old graphs (once point 3 is done) to make the dashboard more interactive (Anand)

@@ -1,6 +1,6 @@
 # TODO List
 
-### First Priority - Has to be done ASAP
+### First Priority - Has to be done ASAP 📌
 
 1. Home Page: (Anirudh)
 
@@ -16,16 +16,15 @@
 4. <del>Setting up a cron job (daily) (Anand)</del>  ✔
 
 
-### Second Priority - Can be done later once the working project is completed
+### Second Priority - Can be done later once the working project is completed 📌
 
 1. Cleaning up the folder: (Anand)
-
-2. Project report (Anirudh)
+2. Project report (Anirudh)  
 2. <del>Generalize function for both maps (global and country) (Arunachala)</del> ✔
 3. <del>Presentation (Arunachala)</del> ✔
  
 
-### Third Priority - Enhancements : To be done if time permits
+### Third Priority - Enhancements : To be done if time permits 📌
 
 1. Creating cards for each section of the page (Anirudh)
 1. Converting the model to just 3 models for all countries instead of 3 per country (Arunachala)

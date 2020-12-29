@@ -14,6 +14,8 @@
    - Make the page look appealing
    
 4. <del>Setting up a cron job (daily) (Anand)</del>  ✔
+5. Fix colors (Arunachala) 
+6. Choose better and uniform fonts (Anirudh) 
 
 
 ### 📌 Second Priority - Can be done later once the working project is completed 

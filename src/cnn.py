@@ -70,10 +70,8 @@ def get_data():
     confirmed = confirmed_global.groupby("country").sum().T
 
     deaths.index = pd.to_datetime(deaths.index, infer_datetime_format=True)
-    recovered.index = pd.to_datetime(
-        recovered.index, infer_datetime_format=True)
-    confirmed.index = pd.to_datetime(
-        confirmed.index, infer_datetime_format=True)
+    recovered.index = pd.to_datetime(recovered.index, infer_datetime_format=True)
+    confirmed.index = pd.to_datetime(confirmed.index, infer_datetime_format=True)
 
     return deaths, recovered, confirmed
 
@@ -90,14 +88,12 @@ def create_data_frame(dataframe, country):
 
     elif dataframe == "recovered":
         data = pd.DataFrame(
-            index=recovered.index, data=recovered[country].values, columns=[
-                "Total"]
+            index=recovered.index, data=recovered[country].values, columns=["Total"]
         )
 
     elif dataframe == "confirmed":
         data = pd.DataFrame(
-            index=confirmed.index, data=confirmed[country].values, columns=[
-                "Total"]
+            index=confirmed.index, data=confirmed[country].values, columns=["Total"]
         )
 
     data = data[(data != 0).all(1)]
@@ -233,7 +229,7 @@ def test_model(p, X_train, X_test, y_train, y_test, data):
         predictions_cumulative.append(start)
 
     # The actual cumulative values
-    y_test_cumulative = data["Total"][-len(y_test):]
+    y_test_cumulative = data["Total"][-len(y_test) :]
 
     MASE = mase(y_test_cumulative, predictions_cumulative)
 
@@ -259,7 +255,7 @@ def forecast(data_diff, data, n, model):
 
     for i in range(n):
         l = len(forecast)
-        inp = (list(data_diff["Total"][-(n - l):])) + forecast
+        inp = (list(data_diff["Total"][-(n - l) :])) + forecast
         inp = np.array(inp)
         inp = inp.reshape(1, 14, 1)
         future = model.predict(inp, verbose=0)
@@ -281,11 +277,9 @@ def plot_graph(data, pred):
     datelist = datelist[1:]
     fig = go.Figure()
     fig.add_trace(
-        go.Scatter(x=data.index, y=data["Total"],
-                   mode="lines", name="Up till now")
+        go.Scatter(x=data.index, y=data["Total"], mode="lines", name="Up till now")
     )
-    fig.add_trace(go.Scatter(x=datelist, y=pred,
-                             mode="lines", name="Predictions*"))
+    fig.add_trace(go.Scatter(x=datelist, y=pred, mode="lines", name="Predictions*"))
     fig.update_layout(template="plotly_dark")
 
     return fig
@@ -303,14 +297,14 @@ def naive_forecast(study, country):
         go.Scatter(x=df.index, y=df["Total"], mode="lines", name="Up till now")
     )
     fig.add_trace(
-        go.Scatter(x=datelist, y=predictions,
-                   mode="lines", name="Predictions*")
+        go.Scatter(x=datelist, y=predictions, mode="lines", name="Predictions*")
     )
     fig.update_layout(template="plotly_dark")
     return 1, fig, predictions
 
 
 # %%
+
 
 def check_slope(x, y):
     c = Counter(np.diff(y) / np.diff(x))
@@ -336,7 +330,11 @@ def cnn_predict(df_name, country):
 
     datelist = pd.date_range(data.index[-1], periods=8).tolist()[1:]
     predictions = pd.DataFrame(
-        data={"Date": list(map(lambda x: x.strftime('%d.%m.%Y'), datelist)), "Cases": f[:7]})
+        data={
+            "Date": list(map(lambda x: x.strftime("%d.%m.%Y"), datelist)),
+            "Cases": f[:7],
+        }
+    )
 
     return fig, MASE, predictions
 

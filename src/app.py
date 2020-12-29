@@ -45,6 +45,7 @@ cache = Cache(
 
 TIMEOUT = 3600
 
+
 @cache.memoize(timeout=TIMEOUT)
 def collect_data():
     filenames = [
@@ -63,7 +64,6 @@ def collect_data():
         "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/web-data/data/cases_country.csv"
     )
 
-
     confirmed_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
 
     deaths_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
@@ -81,7 +81,6 @@ def collect_data():
         inplace=True,
     )
 
-
     confirmed_global.rename(columns={"Country/Region": "country"}, inplace=True)
     deaths_global.rename(columns={"Country/Region": "country"}, inplace=True)
     recovered_global.rename(columns={"Country/Region": "country"}, inplace=True)
@@ -98,7 +97,6 @@ def collect_data():
         inplace=True,
     )
 
-
     confirmed_global = confirmed_global.groupby(["country"], as_index=False).sum()
     deaths_global = deaths_global.groupby(["country"], as_index=False).sum()
     recovered_global = recovered_global.groupby(["country"], as_index=False).sum()
@@ -111,15 +109,16 @@ def collect_data():
     return (confirmed_global, deaths_global, recovered_global, country_cases)
 
     # except:
-        # #pass
-        # return (
-                # pd.read_csv("confirmed_global.csv"),
-                # pd.read_csv("deaths_global.csv"),
-                # pd.read_csv("recovered_global.csv"),
-                # pd.read_csv("country_cases.csv")
-            # )
+    # #pass
+    # return (
+    # pd.read_csv("confirmed_global.csv"),
+    # pd.read_csv("deaths_global.csv"),
+    # pd.read_csv("recovered_global.csv"),
+    # pd.read_csv("country_cases.csv")
+    # )
 
-@cache.memoize(timeout=TIMEOUT)           
+
+@cache.memoize(timeout=TIMEOUT)
 def get_today_data():
     today_data = requests.get("https://corona.lmao.ninja/v2/all?yesterday")
     today_country_data = requests.get("https://corona.lmao.ninja/v2/jhucsse")
@@ -149,9 +148,7 @@ def get_final_object(country, array):
 def plot_province(data, metric, metric_name):
     fig = go.Figure()
 
-    fig.add_trace(
-        go.Bar(x=data["Provinces"], y=data[metric])
-    )
+    fig.add_trace(go.Bar(x=data["Provinces"], y=data[metric]))
 
     fig.update_layout(
         title={
@@ -204,6 +201,7 @@ country_cases_sorted = country_cases.sort_values("confirmed", ascending=False)
 import animations
 import map
 import new_map_functions as nmf
+
 import cnn
 
 # ----------------------------------------------------------------------------------------------------
@@ -268,7 +266,6 @@ home_page = dbc.Container(
         dbc.Card(
             dbc.CardBody(
                 [
-
                     html.Div(
                         [
                             html.Img(
@@ -276,41 +273,44 @@ home_page = dbc.Container(
                                 src="https://fourremovalsolutions.sg/wp-content/uploads/2020/04/Four-Solutions-Disinfecting-Spraying-01.png",
                                 height="35%",
                                 width="70%",
-                                style={"border-radius": "2rem",
-                                       "float": "right"}
+                                style={"border-radius": "2rem", "float": "right"},
                             ),
                             html.H4(
-                                'Save yourself',
-                                style={'text-align': 'left',
-                                       'padding-top': '5%'}
+                                "Save yourself",
+                                style={"text-align": "left", "padding-top": "5%"},
                             ),
                             html.H4(
-                                'Save the world.',
-                                style={'text-align': 'left'},
+                                "Save the world.",
+                                style={"text-align": "left"},
                             ),
                             html.Br(),
                             html.P(
-                                'Coronavirus disease 2019 (COVID-19) is an infectious disease caused by severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2). It was first identified in December 2019 in Wuhan, Hubei, China, and has resulted in an ongoing pandemic.',
-                                style={'text-align': 'left'}
+                                "Coronavirus disease 2019 (COVID-19) is an infectious disease caused by severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2). It was first identified in December 2019 in Wuhan, Hubei, China, and has resulted in an ongoing pandemic.",
+                                style={"text-align": "left"},
                             ),
                             html.Br(),
-                            dbc.Button("Click here to check symptoms",
-                                       color="danger", className="mr-1"),
-
+                            dbc.Button(
+                                "Preventive Measures",
+                                color="danger",
+                                className="mr-1",
+                                id="prevent-button",
+                                href="/prevent"
+                            ),
                         ],
-                        className='clearfix'
-
+                        className="clearfix",
                     )
-
-
                 ]
             ),
-            style={"width": "100%", 'display': 'flex', 'flex': '1 1 auto', 'margin-top': '5%',
-                   'margin-bottom': '5%', 'border-radius': '2rem', "background-color": "#060606"},
+            style={
+                "width": "100%",
+                "display": "flex",
+                "flex": "1 1 auto",
+                "margin-top": "5%",
+                "margin-bottom": "5%",
+                "border-radius": "2rem",
+                "background-color": "#060606",
+            },
         ),
-
-
-
         # dcc.Markdown(av.covid_19, className="m-5"),
         #         dbc.Card(
         #     dbc.CardBody(
@@ -330,10 +330,7 @@ home_page = dbc.Container(
         #                  style={'text-align':'left'}
         #             ),],
         #             className='clearfix'
-
         #             )
-
-
         #         ]
         #     ),
         #     style={"width": "100%",'display':'flex','flex':'1 1 auto','margin-top':'5%','margin-bottom':'5%','border-radius':'2rem'},
@@ -341,143 +338,203 @@ home_page = dbc.Container(
         dbc.Card(
             dbc.CardBody(
                 [
-                    html.H5("Symptoms of COVID-19", className="card-title",
-                            style={'text-align': 'center'}),
+                    html.H5(
+                        "Symptoms of COVID-19",
+                        className="card-title",
+                        style={"text-align": "center"},
+                    ),
                     html.Div(
                         [
                             html.Img(
                                 src="https://api.pcloud.com/getpubthumb?code=XZ2Ys4XZWYlOIr9ennzvCWRAK3KntfWxevRX&linkpassword=undefined&size=1025x1365&crop=0&type=auto",
                                 height="25%",
                                 width="15%",
-                                style={'float': 'left', 'padding-right': '5%'},
-                                className='img-fluid'
+                                style={"float": "left", "padding-right": "5%"},
+                                className="img-fluid",
                             ),
                             html.P(
-                                'Common symptoms include fever, cough, fatigue, shortness of breath, and loss of smell and taste. While the majority of cases result in mild symptoms, some progress to acute respiratory distress syndrome (ARDS) possibly precipitated by cytokine storm, multi-organ failure, septic shock, and blood clots. The time from exposure to onset of symptoms is typically around five days, but may range from two to fourteen days.',
-
-                                style={'text-align': 'left'}
-                            ), ],
-                        className='clearfix'
-
-                    )
-
-
+                                "Common symptoms include fever, cough, fatigue, shortness of breath, and loss of smell and taste. While the majority of cases result in mild symptoms, some progress to acute respiratory distress syndrome (ARDS) possibly precipitated by cytokine storm, multi-organ failure, septic shock, and blood clots. The time from exposure to onset of symptoms is typically around five days, but may range from two to fourteen days.",
+                                style={"text-align": "left"},
+                            ),
+                        ],
+                        className="clearfix",
+                    ),
                 ]
             ),
-            style={"width": "100%", 'display': 'flex', 'flex': '1 1 auto',
-                   'margin-top': '5%', 'margin-bottom': '5%', 'border-radius': '2rem'},
+            style={
+                "width": "100%",
+                "display": "flex",
+                "flex": "1 1 auto",
+                "margin-top": "5%",
+                "margin-bottom": "5%",
+                "border-radius": "2rem",
+            },
         ),
         dbc.Card(
             dbc.CardBody(
                 [
-                    html.H5("Treatment", className="card-title",
-                            style={'text-align': 'center'}),
+                    html.H5(
+                        "Treatment",
+                        className="card-title",
+                        style={"text-align": "center"},
+                    ),
                     html.Div(
                         [
                             html.Img(
                                 src="https://api.pcloud.com/getpubthumb?code=XZDFW4XZS7nBuBp8quR5nJVsiSl0kXtiMKnX&linkpassword=undefined&size=433x577&crop=0&type=auto",
                                 height="25%",
                                 width="15%",
-                                style={'float': 'left', 'padding-right': '5%'},
-                                className='img-fluid'
+                                style={"float": "left", "padding-right": "5%"},
+                                className="img-fluid",
                             ),
                             html.P(
-                                '    There are no vaccines nor specific antiviral treatments for COVID-19. Management involves the treatment of symptoms, supportive care, isolation, and experimental measures. The World Health Organization (WHO) declared the COVID‑19 outbreak a public health emergency of international concern (PHEIC) on 30 January 2020 and a pandemic on 11 March 2020. Local transmission of the disease has occurred in most countries across all six WHO regions.',
-
-                                style={'text-align': 'left'}
-                            ), ],
-                        className='clearfix'
-
-                    )
-
-
+                                "    There are no vaccines nor specific antiviral treatments for COVID-19. Management involves the treatment of symptoms, supportive care, isolation, and experimental measures. The World Health Organization (WHO) declared the COVID‑19 outbreak a public health emergency of international concern (PHEIC) on 30 January 2020 and a pandemic on 11 March 2020. Local transmission of the disease has occurred in most countries across all six WHO regions.",
+                                style={"text-align": "left"},
+                            ),
+                        ],
+                        className="clearfix",
+                    ),
                 ]
             ),
-            style={"width": "100%", 'display': 'flex', 'flex': '1 1 auto',
-                   'margin-top': '5%', 'margin-bottom': '5%', 'border-radius': '2rem'},
+            style={
+                "width": "100%",
+                "display": "flex",
+                "flex": "1 1 auto",
+                "margin-top": "5%",
+                "margin-bottom": "5%",
+                "border-radius": "2rem",
+            },
         ),
-
         html.Div(
             [
-
                 dbc.Row(
                     [
-                        dbc.Col(dbc.Card(
-                            [
-
-                                dbc.CardBody(
-                                    [
-                                        html.H5("Global Situation", className="card-title",
-                                                style={'text-align': 'center'}),
-                                        html.P(
-                                            "This is some card content that we'll reuse",
-                                            className="card-text",
-                                        ),
-                                        dbc.CardLink("Click here to view the Global Situation",
-                                                     href="/global", style={'text-align': 'center'}),
-                                    ]
-
-                                ),
-                            ],
-                            style={'border-radius': '2rem', 'background-color': '#0a0582'}, inverse=True)),
-                        dbc.Col(dbc.Card([
-
-                            dbc.CardBody(
+                        dbc.Col(
+                            dbc.Card(
                                 [
-                                    html.H5("Country Analysis", className="card-title",
-                                            style={'text-align': 'center'}),
-                                    html.P(
-                                        "This is some card content that we'll reuse",
-                                        className="card-text",
+                                    dbc.CardBody(
+                                        [
+                                            html.H5(
+                                                "Global Situation",
+                                                className="card-title",
+                                                style={"text-align": "center"},
+                                            ),
+                                            html.P(
+                                                "This is some card content that we'll reuse",
+                                                className="card-text",
+                                            ),
+                                            dbc.CardLink(
+                                                "Click here to view the Global Situation",
+                                                href="/global",
+                                                style={"text-align": "center"},
+                                            ),
+                                        ]
                                     ),
-                                    dbc.CardLink("Click here to view the Analysis of the situation Country Wise",
-                                                 href="/country", style={'text-align': 'center'}),
-                                ]
-
-                            ),
-                        ], style={'border-radius': '2rem', 'background-color': '#1e1996'}, inverse=True)),
+                                ],
+                                style={
+                                    "border-radius": "2rem",
+                                    "background-color": "#0a0582",
+                                },
+                                inverse=True,
+                            )
+                        ),
+                        dbc.Col(
+                            dbc.Card(
+                                [
+                                    dbc.CardBody(
+                                        [
+                                            html.H5(
+                                                "Country Analysis",
+                                                className="card-title",
+                                                style={"text-align": "center"},
+                                            ),
+                                            html.P(
+                                                "This is some card content that we'll reuse",
+                                                className="card-text",
+                                            ),
+                                            dbc.CardLink(
+                                                "Click here to view the Analysis of the situation Country Wise",
+                                                href="/country",
+                                                style={"text-align": "center"},
+                                            ),
+                                        ]
+                                    ),
+                                ],
+                                style={
+                                    "border-radius": "2rem",
+                                    "background-color": "#1e1996",
+                                },
+                                inverse=True,
+                            )
+                        ),
                     ],
                     className="mb-4",
                 ),
                 dbc.Row(
                     [
-                        dbc.Col(dbc.Card([
-                            dbc.CardBody(
+                        dbc.Col(
+                            dbc.Card(
                                 [
-                                    html.H5("Forecasts", className="card-title",
-                                            style={'text-align': 'center'}),
-                                    html.P(
-                                        "This is some card content that we'll reuse",
-                                        className="card-text",
+                                    dbc.CardBody(
+                                        [
+                                            html.H5(
+                                                "Forecasts",
+                                                className="card-title",
+                                                style={"text-align": "center"},
+                                            ),
+                                            html.P(
+                                                "This is some card content that we'll reuse",
+                                                className="card-text",
+                                            ),
+                                            dbc.CardLink(
+                                                "Click here to view forecasts by a Convolutional Neural Network Model",
+                                                href="/forecast",
+                                                style={"text-align": "center"},
+                                            ),
+                                        ]
                                     ),
-                                    dbc.CardLink("Click here to view forecasts by a Convolutional Neural Network Model",
-                                                 href="/forecast", style={'text-align': 'center'}),
-                                ]
-
-                            ),
-                        ], style={'border-radius': '2rem', 'background-color': '#322daa'},
-                            inverse=True)),
-                        dbc.Col(dbc.Card([
-
-                            dbc.CardBody(
+                                ],
+                                style={
+                                    "border-radius": "2rem",
+                                    "background-color": "#322daa",
+                                },
+                                inverse=True,
+                            )
+                        ),
+                        dbc.Col(
+                            dbc.Card(
                                 [
-                                    html.H5("Preventive Measures", className="card-title",
-                                            style={'text-align': 'center'}),
-                                    html.P(
-                                        "This is some card content that we'll reuse",
-                                        className="card-text",
+                                    dbc.CardBody(
+                                        [
+                                            html.H5(
+                                                "Preventive Measures",
+                                                className="card-title",
+                                                style={"text-align": "center"},
+                                            ),
+                                            html.P(
+                                                "This is some card content that we'll reuse",
+                                                className="card-text",
+                                            ),
+                                            dbc.CardLink(
+                                                "Click here to view Preventive Measures",
+                                                href="/prevent",
+                                                style={"text-align": "center"},
+                                            ),
+                                        ]
                                     ),
-                                    dbc.CardLink("Click here to view Preventive Measures",
-                                                 href="/prevent", style={'text-align': 'center'}),
-                                ]
-
-                            ),
-                        ], style={'border-radius': '2rem', 'background-color': '#6e68fb'}, inverse=True)),
+                                ],
+                                style={
+                                    "border-radius": "2rem",
+                                    "background-color": "#6e68fb",
+                                },
+                                inverse=True,
+                            )
+                        ),
                     ],
                     className="mb-4",
                 ),
             ]
-        )
+        ),
     ],
     className="mt-5",
 )
@@ -1419,59 +1476,76 @@ def forecast_cases(btn1, btn2, btn3, value):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     if "forecast-confirmed" in changed_id:
         try:
-            response = requests.get(f"https://github.com/anandrajaram21/covidash/raw/web_app/output/{value}-confirmed.pkl")
-            with open('temp.pkl', 'wb') as fh:
+            response = requests.get(
+                f"https://github.com/anandrajaram21/covidash/raw/web_app/output/{value}-confirmed.pkl"
+            )
+            with open("temp.pkl", "wb") as fh:
                 fh.write(response.content)
-            with open('temp.pkl', 'rb') as fh:
+            with open("temp.pkl", "rb") as fh:
                 data = pickle.load(fh)
                 return (
                     dcc.Graph(figure=data["fig"]),
-                    dbc.Table.from_dataframe(data["predictions"], striped=True, bordered=True, hover=True)
+                    dbc.Table.from_dataframe(
+                        data["predictions"], striped=True, bordered=True, hover=True
+                    ),
                 )
             os.remove("temp.pkl")
         except:
             fig, err, preds = cnn.cnn_predict("confirmed", value)
             return (
                 dcc.Graph(figure=fig),
-                dbc.Table.from_dataframe(preds, striped=True, bordered=True, hover=True),
+                dbc.Table.from_dataframe(
+                    preds, striped=True, bordered=True, hover=True
+                ),
             )
     elif "forecast-recoveries" in changed_id:
         try:
-            response = requests.get(f"https://github.com/anandrajaram21/covidash/raw/web_app/output/{value}-recovered.pkl")
-            with open('temp.pkl', 'wb') as fh:
+            response = requests.get(
+                f"https://github.com/anandrajaram21/covidash/raw/web_app/output/{value}-recovered.pkl"
+            )
+            with open("temp.pkl", "wb") as fh:
                 fh.write(response.content)
-            with open('temp.pkl', 'rb') as fh:
+            with open("temp.pkl", "rb") as fh:
                 data = pickle.load(fh)
                 return (
                     dcc.Graph(figure=data["fig"]),
-                    dbc.Table.from_dataframe(data["predictions"], striped=True, bordered=True, hover=True)
+                    dbc.Table.from_dataframe(
+                        data["predictions"], striped=True, bordered=True, hover=True
+                    ),
                 )
             os.remove("temp.pkl")
         except:
             fig, err, preds = cnn.cnn_predict("recovered", value)
             return (
                 dcc.Graph(figure=fig),
-                dbc.Table.from_dataframe(preds, striped=True, bordered=True, hover=True),
+                dbc.Table.from_dataframe(
+                    preds, striped=True, bordered=True, hover=True
+                ),
             )
     elif "forecast-deaths" in changed_id:
         try:
-            response = requests.get(f"https://github.com/anandrajaram21/covidash/raw/web_app/output/{value}-deaths.pkl")
-            with open('temp.pkl', 'wb') as fh:
+            response = requests.get(
+                f"https://github.com/anandrajaram21/covidash/raw/web_app/output/{value}-deaths.pkl"
+            )
+            with open("temp.pkl", "wb") as fh:
                 fh.write(response.content)
-            with open('temp.pkl', 'rb') as fh:
+            with open("temp.pkl", "rb") as fh:
                 data = pickle.load(fh)
                 return (
                     dcc.Graph(figure=data["fig"]),
-                    dbc.Table.from_dataframe(data["predictions"], striped=True, bordered=True, hover=True)
+                    dbc.Table.from_dataframe(
+                        data["predictions"], striped=True, bordered=True, hover=True
+                    ),
                 )
             os.remove("temp.pkl")
         except:
             fig, err, preds = cnn.cnn_predict("deaths", value)
             return (
                 dcc.Graph(figure=fig),
-                dbc.Table.from_dataframe(preds, striped=True, bordered=True, hover=True),
+                dbc.Table.from_dataframe(
+                    preds, striped=True, bordered=True, hover=True
+                ),
             )
-
 
 @app.callback(
     dash.dependencies.Output("page-content", "children"),

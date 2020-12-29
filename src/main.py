@@ -92,8 +92,3 @@ def collect_data():
     confirmed_global.at[178, "5/20/20"] = 251667
 
     return (confirmed_global, deaths_global, recovered_global, country_cases)
-
-
-
-
-

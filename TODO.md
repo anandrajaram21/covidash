@@ -14,7 +14,7 @@
    - Make the page look appealing
    
 4. <del>Setting up a cron job (daily) (Anand)</del>  ✔
-5. Fix colors (Arunachala) 
+5. <del>Fix colors (Arunachala)</del> ✔
 6. Choose better and uniform fonts (Anirudh) 
 
 

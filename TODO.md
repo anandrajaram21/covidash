@@ -4,13 +4,13 @@
 
 1. Home Page: (Anirudh)
 
-   - General information about COVID-19
+   - <del>General information about COVID-19</del> ✔
    - Redirective cards to respective pages along with information
-   - Make the page look appealing
+   - <del>Make the page look appealing</del> ✔
 
 2. Precautions Page: (Anirudh)
 
-   - Creating a poster/image or cards with precautions
+   - Creating cards with precautions
    - Make the page look appealing
    
 4. <del>Setting up a cron job (daily) (Anand)</del>  ✔

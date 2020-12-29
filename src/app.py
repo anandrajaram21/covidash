@@ -268,34 +268,43 @@ home_page = dbc.Container(
                 [
                     html.Div(
                         [
-                            html.Img(
-                                # src="https://www.fda.gov/files/covid19-1600x900.jpg",
-                                src="https://fourremovalsolutions.sg/wp-content/uploads/2020/04/Four-Solutions-Disinfecting-Spraying-01.png",
-                                height="35%",
-                                width="70%",
-                                style={"border-radius": "2rem", "float": "right"},
+                            dbc.Row(
+                                [
+                                    dbc.Col(
+                                        html.Img(
+                                            # src="https://www.fda.gov/files/covid19-1600x900.jpg",
+                                            src="https://fourremovalsolutions.sg/wp-content/uploads/2020/04/Four-Solutions-Disinfecting-Spraying-01.png",
+                                            height="100%",
+                                            width="100%",
+                                            style={"border-radius": "2rem"},
+
+                                        ),
+                                        sm=12, md=8, lg=9),
+                                    dbc.Col([html.H4(
+                                        "Save yourself",
+                                        style={
+                                            "text-align": "left", "padding-top": "5%", "font-size": '1.4rem'},
+                                    ),
+                                        html.H4(
+                                        "Save the world.",
+                                        style={"text-align": "left",
+                                               "font-size": '1.4rem'},
+                                    ), html.Br(),
+                                        html.P(
+                                        "Coronavirus disease 2019 (COVID-19) is an infectious disease caused by severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2). It was first identified in December 2019 in Wuhan, Hubei, China, and has resulted in an ongoing pandemic.",
+                                        style={"text-align": "left"},
+                                    ),
+                                        html.Br(),
+                                        dbc.Button(
+                                        "Preventive Measures",
+                                        color="danger",
+                                        className="mr-1",
+                                        id="prevent-button",
+                                        href="/prevent"
+                                    ), ], sm=12, md=4, lg=3),],
                             ),
-                            html.H4(
-                                "Save yourself",
-                                style={"text-align": "left", "padding-top": "5%"},
-                            ),
-                            html.H4(
-                                "Save the world.",
-                                style={"text-align": "left"},
-                            ),
-                            html.Br(),
-                            html.P(
-                                "Coronavirus disease 2019 (COVID-19) is an infectious disease caused by severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2). It was first identified in December 2019 in Wuhan, Hubei, China, and has resulted in an ongoing pandemic.",
-                                style={"text-align": "left"},
-                            ),
-                            html.Br(),
-                            dbc.Button(
-                                "Preventive Measures",
-                                color="danger",
-                                className="mr-1",
-                                id="prevent-button",
-                                href="/prevent"
-                            ),
+
+
                         ],
                         className="clearfix",
                     )
@@ -335,7 +344,8 @@ home_page = dbc.Container(
         #     ),
         #     style={"width": "100%",'display':'flex','flex':'1 1 auto','margin-top':'5%','margin-bottom':'5%','border-radius':'2rem'},
         # ),
-        dbc.Card(
+        dbc.Row([dbc.Col(
+               dbc.Card(
             dbc.CardBody(
                 [
                     html.H5(
@@ -344,19 +354,23 @@ home_page = dbc.Container(
                         style={"text-align": "center"},
                     ),
                     html.Div(
-                        [
+                        dbc.Row([
+                            dbc.Col(
                             html.Img(
-                                src="https://api.pcloud.com/getpubthumb?code=XZ2Ys4XZWYlOIr9ennzvCWRAK3KntfWxevRX&linkpassword=undefined&size=1025x1365&crop=0&type=auto",
-                                height="25%",
-                                width="15%",
-                                style={"float": "left", "padding-right": "5%"},
+                                src="https://image.freepik.com/free-vector/coronavirus-symptoms-concept_23-2148496136.jpg",
+                                height="100%",
+                                width="100%",
                                 className="img-fluid",
-                            ),
+                                style={'padding-bottom':'10%'}
+                            ),sm=8,lg=6,md=12),
+                            dbc.Col(
                             html.P(
                                 "Common symptoms include fever, cough, fatigue, shortness of breath, and loss of smell and taste. While the majority of cases result in mild symptoms, some progress to acute respiratory distress syndrome (ARDS) possibly precipitated by cytokine storm, multi-organ failure, septic shock, and blood clots. The time from exposure to onset of symptoms is typically around five days, but may range from two to fourteen days.",
                                 style={"text-align": "left"},
-                            ),
-                        ],
+                            ),sm=12,md=12,lg=6
+                            )]
+                        ),
+                        
                         className="clearfix",
                     ),
                 ]
@@ -368,8 +382,11 @@ home_page = dbc.Container(
                 "margin-top": "5%",
                 "margin-bottom": "5%",
                 "border-radius": "2rem",
+                "background-color":'#f5f5f5',
+                "color":'black'
             },
-        ),
+        ),lg=6,md=6,sm=12),
+        dbc.Col(
         dbc.Card(
             dbc.CardBody(
                 [
@@ -378,20 +395,24 @@ home_page = dbc.Container(
                         className="card-title",
                         style={"text-align": "center"},
                     ),
-                    html.Div(
-                        [
+                  html.Div(
+                        dbc.Row([
+                            dbc.Col(
                             html.Img(
-                                src="https://api.pcloud.com/getpubthumb?code=XZDFW4XZS7nBuBp8quR5nJVsiSl0kXtiMKnX&linkpassword=undefined&size=433x577&crop=0&type=auto",
-                                height="25%",
-                                width="15%",
-                                style={"float": "left", "padding-right": "5%"},
+                                src="https://image.freepik.com/free-vector/scientists-working-creating-covid-19-vaccine_23-2148551283.jpg",
+                                height="100%",
+                                width="100%",
                                 className="img-fluid",
-                            ),
-                            html.P(
+                                style={'padding-bottom':'10%'}
+                            ),sm=8,lg=6,md=12),
+                            dbc.Col(
+                           html.P(
                                 "    There are no vaccines nor specific antiviral treatments for COVID-19. Management involves the treatment of symptoms, supportive care, isolation, and experimental measures. The World Health Organization (WHO) declared the COVID‑19 outbreak a public health emergency of international concern (PHEIC) on 30 January 2020 and a pandemic on 11 March 2020. Local transmission of the disease has occurred in most countries across all six WHO regions.",
                                 style={"text-align": "left"},
-                            ),
-                        ],
+                            ),sm=12,md=12,lg=6
+                            )]
+                        ),
+                        
                         className="clearfix",
                     ),
                 ]
@@ -403,8 +424,12 @@ home_page = dbc.Container(
                 "margin-top": "5%",
                 "margin-bottom": "5%",
                 "border-radius": "2rem",
+                "background-color":'#f5f5f5',
+                "color":'black'
             },
-        ),
+        ),lg=6,md=6,sm=12
+        )]),
+
         html.Div(
             [
                 dbc.Row(
@@ -433,11 +458,14 @@ home_page = dbc.Container(
                                 ],
                                 style={
                                     "border-radius": "2rem",
-                                    "background-color": "#0a0582",
+                                    "border-color": "#0a0582",
+                                    "background-color": "#000000",
+                                    "border-style":'solid',
+                                    "border-width":'medium'
                                 },
-                                inverse=True,
+                                inverse=True,className="mb-4"
                             )
-                        ),
+                        ,sm=12,md=12,lg=6),
                         dbc.Col(
                             dbc.Card(
                                 [
@@ -462,10 +490,13 @@ home_page = dbc.Container(
                                 ],
                                 style={
                                     "border-radius": "2rem",
-                                    "background-color": "#1e1996",
+                                    "border-color": "#1e1996",
+                                    "background-color": "#000000",
+                                    "border-style":'solid',
+                                    "border-width":'medium'
                                 },
                                 inverse=True,
-                            )
+                            ),sm=12,md=12,lg=6
                         ),
                     ],
                     className="mb-4",
@@ -496,10 +527,13 @@ home_page = dbc.Container(
                                 ],
                                 style={
                                     "border-radius": "2rem",
-                                    "background-color": "#322daa",
+                                    "border-color": "#322daa",
+                                    "background-color": "#000000",
+                                    "border-style":'solid',
+                                    "border-width":'medium'
                                 },
-                                inverse=True,
-                            )
+                                inverse=True,className="mb-4"
+                            ),sm=12,md=12,lg=6
                         ),
                         dbc.Col(
                             dbc.Card(
@@ -525,10 +559,13 @@ home_page = dbc.Container(
                                 ],
                                 style={
                                     "border-radius": "2rem",
-                                    "background-color": "#6e68fb",
+                                    "border-color": "#6e68fb",
+                                    "background-color": "#000000",
+                                    "border-style":'solid',
+                                    "border-width":'medium'
                                 },
                                 inverse=True,
-                            )
+                            ),sm=12,md=12,lg=6
                         ),
                     ],
                     className="mb-4",

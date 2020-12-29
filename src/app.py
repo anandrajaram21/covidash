@@ -265,12 +265,219 @@ navbar = dbc.NavbarSimple(
 
 home_page = dbc.Container(
     children=[
-        html.Img(
-            src="https://www.fda.gov/files/covid19-1600x900.jpg",
-            height="35%",
-            width="80%",
+        dbc.Card(
+            dbc.CardBody(
+                [
+
+                    html.Div(
+                        [
+                            html.Img(
+                                # src="https://www.fda.gov/files/covid19-1600x900.jpg",
+                                src="https://fourremovalsolutions.sg/wp-content/uploads/2020/04/Four-Solutions-Disinfecting-Spraying-01.png",
+                                height="35%",
+                                width="70%",
+                                style={"border-radius": "2rem",
+                                       "float": "right"}
+                            ),
+                            html.H4(
+                                'Save yourself',
+                                style={'text-align': 'left',
+                                       'padding-top': '5%'}
+                            ),
+                            html.H4(
+                                'Save the world.',
+                                style={'text-align': 'left'},
+                            ),
+                            html.Br(),
+                            html.P(
+                                'Coronavirus disease 2019 (COVID-19) is an infectious disease caused by severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2). It was first identified in December 2019 in Wuhan, Hubei, China, and has resulted in an ongoing pandemic.',
+                                style={'text-align': 'left'}
+                            ),
+                            html.Br(),
+                            dbc.Button("Click here to check symptoms",
+                                       color="danger", className="mr-1"),
+
+                        ],
+                        className='clearfix'
+
+                    )
+
+
+                ]
+            ),
+            style={"width": "100%", 'display': 'flex', 'flex': '1 1 auto', 'margin-top': '5%',
+                   'margin-bottom': '5%', 'border-radius': '2rem', "background-color": "#060606"},
         ),
-        dcc.Markdown(av.covid_19, className="m-5"),
+
+
+
+        # dcc.Markdown(av.covid_19, className="m-5"),
+        #         dbc.Card(
+        #     dbc.CardBody(
+        #         [
+        #             html.H5("What COVID-19 is", className="card-title", style={'text-align':'center'}),
+        #             html.Div(
+        #                 [
+        #                 html.Img(
+        #             src="https://www.fda.gov/files/covid19-1600x900.jpg",
+        #             height="30%",
+        #             width="30%",
+        #             style={'float':'left','padding-right':'5%'},
+        #             className='img-fluid'
+        #         ),
+        #          html.P(
+        #     'Coronavirus disease 2019 (COVID-19) is an infectious disease caused by severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2). It was first identified in December 2019 in Wuhan, Hubei, China, and has resulted in an ongoing pandemic.',
+        #                  style={'text-align':'left'}
+        #             ),],
+        #             className='clearfix'
+
+        #             )
+
+
+        #         ]
+        #     ),
+        #     style={"width": "100%",'display':'flex','flex':'1 1 auto','margin-top':'5%','margin-bottom':'5%','border-radius':'2rem'},
+        # ),
+        dbc.Card(
+            dbc.CardBody(
+                [
+                    html.H5("Symptoms of COVID-19", className="card-title",
+                            style={'text-align': 'center'}),
+                    html.Div(
+                        [
+                            html.Img(
+                                src="https://api.pcloud.com/getpubthumb?code=XZ2Ys4XZWYlOIr9ennzvCWRAK3KntfWxevRX&linkpassword=undefined&size=1025x1365&crop=0&type=auto",
+                                height="25%",
+                                width="15%",
+                                style={'float': 'left', 'padding-right': '5%'},
+                                className='img-fluid'
+                            ),
+                            html.P(
+                                'Common symptoms include fever, cough, fatigue, shortness of breath, and loss of smell and taste. While the majority of cases result in mild symptoms, some progress to acute respiratory distress syndrome (ARDS) possibly precipitated by cytokine storm, multi-organ failure, septic shock, and blood clots. The time from exposure to onset of symptoms is typically around five days, but may range from two to fourteen days.',
+
+                                style={'text-align': 'left'}
+                            ), ],
+                        className='clearfix'
+
+                    )
+
+
+                ]
+            ),
+            style={"width": "100%", 'display': 'flex', 'flex': '1 1 auto',
+                   'margin-top': '5%', 'margin-bottom': '5%', 'border-radius': '2rem'},
+        ),
+        dbc.Card(
+            dbc.CardBody(
+                [
+                    html.H5("Treatment", className="card-title",
+                            style={'text-align': 'center'}),
+                    html.Div(
+                        [
+                            html.Img(
+                                src="https://api.pcloud.com/getpubthumb?code=XZDFW4XZS7nBuBp8quR5nJVsiSl0kXtiMKnX&linkpassword=undefined&size=433x577&crop=0&type=auto",
+                                height="25%",
+                                width="15%",
+                                style={'float': 'left', 'padding-right': '5%'},
+                                className='img-fluid'
+                            ),
+                            html.P(
+                                '    There are no vaccines nor specific antiviral treatments for COVID-19. Management involves the treatment of symptoms, supportive care, isolation, and experimental measures. The World Health Organization (WHO) declared the COVID‑19 outbreak a public health emergency of international concern (PHEIC) on 30 January 2020 and a pandemic on 11 March 2020. Local transmission of the disease has occurred in most countries across all six WHO regions.',
+
+                                style={'text-align': 'left'}
+                            ), ],
+                        className='clearfix'
+
+                    )
+
+
+                ]
+            ),
+            style={"width": "100%", 'display': 'flex', 'flex': '1 1 auto',
+                   'margin-top': '5%', 'margin-bottom': '5%', 'border-radius': '2rem'},
+        ),
+
+        html.Div(
+            [
+
+                dbc.Row(
+                    [
+                        dbc.Col(dbc.Card(
+                            [
+
+                                dbc.CardBody(
+                                    [
+                                        html.H5("Global Situation", className="card-title",
+                                                style={'text-align': 'center'}),
+                                        html.P(
+                                            "This is some card content that we'll reuse",
+                                            className="card-text",
+                                        ),
+                                        dbc.CardLink("Click here to view the Global Situation",
+                                                     href="/global", style={'text-align': 'center'}),
+                                    ]
+
+                                ),
+                            ],
+                            style={'border-radius': '2rem', 'background-color': '#0a0582'}, inverse=True)),
+                        dbc.Col(dbc.Card([
+
+                            dbc.CardBody(
+                                [
+                                    html.H5("Country Analysis", className="card-title",
+                                            style={'text-align': 'center'}),
+                                    html.P(
+                                        "This is some card content that we'll reuse",
+                                        className="card-text",
+                                    ),
+                                    dbc.CardLink("Click here to view the Analysis of the situation Country Wise",
+                                                 href="/country", style={'text-align': 'center'}),
+                                ]
+
+                            ),
+                        ], style={'border-radius': '2rem', 'background-color': '#1e1996'}, inverse=True)),
+                    ],
+                    className="mb-4",
+                ),
+                dbc.Row(
+                    [
+                        dbc.Col(dbc.Card([
+                            dbc.CardBody(
+                                [
+                                    html.H5("Forecasts", className="card-title",
+                                            style={'text-align': 'center'}),
+                                    html.P(
+                                        "This is some card content that we'll reuse",
+                                        className="card-text",
+                                    ),
+                                    dbc.CardLink("Click here to view forecasts by a Convolutional Neural Network Model",
+                                                 href="/forecast", style={'text-align': 'center'}),
+                                ]
+
+                            ),
+                        ], style={'border-radius': '2rem', 'background-color': '#322daa'},
+                            inverse=True)),
+                        dbc.Col(dbc.Card([
+
+                            dbc.CardBody(
+                                [
+                                    html.H5("Preventive Measures", className="card-title",
+                                            style={'text-align': 'center'}),
+                                    html.P(
+                                        "This is some card content that we'll reuse",
+                                        className="card-text",
+                                    ),
+                                    dbc.CardLink("Click here to view Preventive Measures",
+                                                 href="/prevent", style={'text-align': 'center'}),
+                                ]
+
+                            ),
+                        ], style={'border-radius': '2rem', 'background-color': '#6e68fb'}, inverse=True)),
+                    ],
+                    className="mb-4",
+                ),
+            ]
+        )
     ],
     className="mt-5",
 )

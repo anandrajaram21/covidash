@@ -70,6 +70,8 @@ def collect_data():
 
     recovered_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
 
+    country_cases.drop(columns=["People_Tested", "People_Hospitalized"], inplace=True)
+
     country_cases.drop(
         columns=[
             "Last_Update",
@@ -105,8 +107,10 @@ def collect_data():
     # deaths_global.to_csv("deaths_global.csv",index = False)
     # recovered_global.to_csv("recovered_global.csv",index = False)
     # country_cases.to_csv("country_cases.csv",index = False)
+    country_cases_sorted = country_cases.sort_values("confirmed", ascending=False)
+    country_cases_sorted.index = [x for x in range(len(country_cases_sorted))]
 
-    return (confirmed_global, deaths_global, recovered_global, country_cases)
+    return (confirmed_global, deaths_global, recovered_global, country_cases_sorted)
 
     # except:
     # #pass
@@ -194,7 +198,7 @@ confirmed_global, deaths_global, recovered_global, country_cases = (
     av.country_cases,
 )
 
-country_cases_sorted = country_cases.sort_values("confirmed", ascending=False)
+
 
 # Importing these modules later as they rely on having data stored
 

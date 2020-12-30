@@ -1,82 +1,44 @@
-"""
-CNN model to predict covid cases 
-
-STATS: (Number of trials = 75)
-
---> Error (MASE):   
-
-As we are using MASE with CNN and a naive model, the maximum possible error can be fixed (current error cap = 1 (but not strict))
-
-# TODO : Reduce the average MASE with the CNN  (needs fine tuning weekly)
-
-Countries: (MASE in the order confirmed,deaths,recovered)
-{
-    1.India -> [0.3, 0.78, 0.32]
-    2.US -> [0.37, 0.56, 0.5]
-    3.Italy -> [1.8, 0.29, 2.76]
-    4.Australia -> [3.4, 1, 2.87]
-    5.Tanzania -> [1, 1, 1]
-    6.Japan -> [2.1, 1.28, 4.01]
-    7.China -> [5.34, 1, 1.38]
-    8.Canada -> [0.43, 0.38, 2.82]
-    9.Brazil -> [2.04, 1.63, 3.95]
-    10.Botswana -> [1, 1, 1]
-}
-
---> Runtime:
-Avg time taken -> 94.79 seconds
-Least time -> 71.88 seconds
-Highest time -> 106.63 seconds
-
-
---> Downward Cumulative Cases : N/A
-- observed in 0/75 trials 
-
-"""
 # %%
+# Imports
+
+import app_vars as av
 import pandas as pd
-
 import numpy as np
+import plotly.graph_objects as go
 from collections import Counter
-
 from TSErrors import FindErrors
-
 from sklearn.model_selection import ParameterGrid
-
 from keras.models import Sequential
 from keras.layers.convolutional import Conv1D, MaxPooling1D
 from keras.layers import Dense, Flatten
-
-import plotly.graph_objects as go
-import plotly.io as pio
-
-# module required to get confirmed_global, deaths_global, recovered_global
-import app_vars as av
-
-pio.templates.default = "plotly_dark"
-
+# %%
+confirmed_global, deaths_global, recovered_global, country_cases_sorted = (
+    av.confirmed_global,
+    av.deaths_global,
+    av.recovered_global,
+    av.country_cases_sorted,
+)
 
 # %%
-def get_data():
 
-    confirmed_global, deaths_global, recovered_global = (
-        av.confirmed_global,
-        av.deaths_global,
-        av.recovered_global,
-    )
 
-    recovered = recovered_global.groupby("country").sum().T
-    deaths = deaths_global.groupby("country").sum().T
-    confirmed = confirmed_global.groupby("country").sum().T
+def get_data(confirmed=confirmed_global, deaths=deaths_global, recovered=recovered_global):
+
+    recovered = recovered.groupby("country").sum().T
+    deaths = deaths.groupby("country").sum().T
+    confirmed = confirmed.groupby("country").sum().T
 
     deaths.index = pd.to_datetime(deaths.index, infer_datetime_format=True)
-    recovered.index = pd.to_datetime(recovered.index, infer_datetime_format=True)
-    confirmed.index = pd.to_datetime(confirmed.index, infer_datetime_format=True)
+    recovered.index = pd.to_datetime(
+        recovered.index, infer_datetime_format=True)
+    confirmed.index = pd.to_datetime(
+        confirmed.index, infer_datetime_format=True)
 
     return deaths, recovered, confirmed
 
-
 # %%
+
+
 def create_data_frame(dataframe, country):
 
     deaths, recovered, confirmed = get_data()
@@ -88,12 +50,14 @@ def create_data_frame(dataframe, country):
 
     elif dataframe == "recovered":
         data = pd.DataFrame(
-            index=recovered.index, data=recovered[country].values, columns=["Total"]
+            index=recovered.index, data=recovered[country].values, columns=[
+                "Total"]
         )
 
     elif dataframe == "confirmed":
         data = pd.DataFrame(
-            index=confirmed.index, data=confirmed[country].values, columns=["Total"]
+            index=confirmed.index, data=confirmed[country].values, columns=[
+                "Total"]
         )
 
     data = data[(data != 0).all(1)]
@@ -105,8 +69,9 @@ def create_data_frame(dataframe, country):
 
     return data, data_diff
 
-
 # %%
+
+
 def make_series(df_name, country, steps):
 
     data, data_diff = create_data_frame(df_name, country)
@@ -125,14 +90,16 @@ def make_series(df_name, country, steps):
 
     return data, data_diff, np.array(X), np.array(y)
 
-
 # %%
+
+
 def mase(y_true, y_pred):
     er = FindErrors(y_true, y_pred)
     return er.mase()
 
-
 # %%
+
+
 def create_param_grid():
 
     param_grid = {
@@ -145,7 +112,6 @@ def create_param_grid():
     grid = ParameterGrid(param_grid)
 
     return grid
-
 
 # %%
 
@@ -169,8 +135,9 @@ def compile_model(p):
 
     return model
 
-
 # %%
+
+
 def hyperparameter_tuning(grid, X_train, y_train):
 
     parameters = pd.DataFrame(columns=["MASE", "Parameters"])
@@ -193,8 +160,9 @@ def hyperparameter_tuning(grid, X_train, y_train):
 
     return parameters
 
-
 # %%
+
+
 def get_best_params(parameters):
 
     # sort the dataframe based on MASE values
@@ -202,8 +170,9 @@ def get_best_params(parameters):
 
     return final.values[2]
 
-
 # %%
+
+
 def test_model(p, X_train, X_test, y_train, y_test, data):
 
     model = compile_model(p)
@@ -229,14 +198,15 @@ def test_model(p, X_train, X_test, y_train, y_test, data):
         predictions_cumulative.append(start)
 
     # The actual cumulative values
-    y_test_cumulative = data["Total"][-len(y_test) :]
+    y_test_cumulative = data["Total"][-len(y_test):]
 
     MASE = mase(y_test_cumulative, predictions_cumulative)
 
     return MASE
 
-
 # %%
+
+
 def make_final_model(p, X, y):
     model = compile_model(p)
 
@@ -247,15 +217,16 @@ def make_final_model(p, X, y):
 
     return model
 
-
 # %%
+
+
 def forecast(data_diff, data, n, model):
 
     forecast = []
 
     for i in range(n):
         l = len(forecast)
-        inp = (list(data_diff["Total"][-(n - l) :])) + forecast
+        inp = (list(data_diff["Total"][-(n - l):])) + forecast
         inp = np.array(inp)
         inp = inp.reshape(1, 14, 1)
         future = model.predict(inp, verbose=0)
@@ -269,21 +240,30 @@ def forecast(data_diff, data, n, model):
 
     return forecast_cumulative
 
-
 # %%
+
+
 def plot_graph(data, pred):
 
     datelist = pd.date_range(data.index[-1], periods=15).tolist()
     datelist = datelist[1:]
     fig = go.Figure()
     fig.add_trace(
-        go.Scatter(x=data.index, y=data["Total"], mode="lines", name="Up till now")
+        go.Scatter(x=data.index, y=data["Total"],
+                   mode="lines", name="Up till now")
     )
-    fig.add_trace(go.Scatter(x=datelist, y=pred, mode="lines", name="Predictions*"))
+    fig.add_trace(go.Scatter(x=datelist, y=pred,
+                             mode="lines", name="Predictions*"))
     fig.update_layout(template="plotly_dark")
 
     return fig
 
+# %%
+
+
+def check_slope(x, y):
+    c = Counter(np.diff(y) / np.diff(x))
+    return 0 not in [i[0] for i in c.most_common(1)]
 
 # %%
 
@@ -297,18 +277,13 @@ def naive_forecast(study, country):
         go.Scatter(x=df.index, y=df["Total"], mode="lines", name="Up till now")
     )
     fig.add_trace(
-        go.Scatter(x=datelist, y=predictions, mode="lines", name="Predictions*")
+        go.Scatter(x=datelist, y=predictions,
+                   mode="lines", name="Predictions*")
     )
     fig.update_layout(template="plotly_dark")
     return 1, fig, predictions
 
-
 # %%
-
-
-def check_slope(x, y):
-    c = Counter(np.diff(y) / np.diff(x))
-    return 0 not in [i[0] for i in c.most_common(1)]
 
 
 def cnn_predict(df_name, country):
@@ -330,16 +305,15 @@ def cnn_predict(df_name, country):
 
     datelist = pd.date_range(data.index[-1], periods=8).tolist()[1:]
     predictions = pd.DataFrame(
-        data={
-            "Date": list(map(lambda x: x.strftime("%d.%m.%Y"), datelist)),
-            "Cases": f[:7],
-        }
-    )
+        data={"Date": list(map(lambda x: x.strftime('%d/%m/%Y'), datelist)), "Cases": f[:7]})
 
-    return fig, MASE, predictions
+    return predictions, MASE, fig
 
 
+# %%
+# Examples
 """
-# EXAMPLE
-fig, MASE, predictions = cnn_predict("confirmed","India")
+pred,_,figure = cnn_predict("confirmed","India")
+pred,_,figure = cnn_predict("deaths","US")
+pred,_,figure = cnn_predict("recovered","Japan")
 """

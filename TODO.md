@@ -30,4 +30,4 @@
 
 1. Creating cards for each section of the page (Anirudh)
 4. <del>Put an option in the time series for different time periods and daily/cumulative (Arunachala)</del> ✔
-3. Adding comparison graphs and flexibility to old graphs (once point 3 is done) to make the dashboard more interactive (Anand)
+3. Adding comparison graphs and flexibility to old graphs to make the dashboard more interactive (Anand)

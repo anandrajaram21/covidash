@@ -352,7 +352,7 @@ home_page = dbc.Container(
                     html.H5(
                         "Symptoms of COVID-19",
                         className="card-title",
-                        style={"text-align": "center"},
+                        style={"text-align": "center",'font-weight':'bold'},
                     ),
                     html.Div(
                         dbc.Row([
@@ -367,7 +367,7 @@ home_page = dbc.Container(
                             dbc.Col(
                             html.P(
                                 "Common symptoms include fever, cough, fatigue, shortness of breath, and loss of smell and taste. While the majority of cases result in mild symptoms, some progress to acute respiratory distress syndrome (ARDS) possibly precipitated by cytokine storm, multi-organ failure, septic shock, and blood clots. The time from exposure to onset of symptoms is typically around five days, but may range from two to fourteen days.",
-                                style={"text-align": "left"},
+                                style={"text-align": "left",'font-size':'large'},
                             ),sm=12,md=12,lg=6,style={'display':'flex','align-items':'center'}
                             )]
                         ),
@@ -394,7 +394,7 @@ home_page = dbc.Container(
                     html.H5(
                         "Treatment",
                         className="card-title",
-                        style={"text-align": "center"},
+                        style={"text-align": "center",'font-weight':'bold'},
                     ),
                   html.Div(
                         dbc.Row([
@@ -409,7 +409,7 @@ home_page = dbc.Container(
                             dbc.Col(
                            html.P(
                                 "    There are no vaccines nor specific antiviral treatments for COVID-19. Management involves the treatment of symptoms, supportive care, isolation, and experimental measures. The World Health Organization (WHO) declared the COVID‑19 outbreak a public health emergency of international concern (PHEIC) on 30 January 2020 and a pandemic on 11 March 2020. Local transmission of the disease has occurred in most countries across all six WHO regions.",
-                                style={"text-align": "left"},
+                                style={"text-align": "left",'font-size':'large'},
                             ),sm=12,md=12,lg=6,style={'display':'flex','align-items':'center'}
                             )]
                         ),
@@ -1052,12 +1052,180 @@ forecast_page = html.Div(
 
 preventive_page = dbc.Container(
     children=[
-        html.Img(
-            src="https://images.pexels.com/photos/3735769/pexels-photo-3735769.jpeg?auto=comfpress&cs=tinysrgb&dpr=2&h=750&w=1260",
-            height="35%",
-            width="80%",
+        # dbc.Row(
+        #     [
+        #         dbc.Col(html.Img(
+        #     src="https://api.pcloud.com/getpubthumb?code=XZuvpQXZsR3nbzh8S9j61OE1DfDCHbAVIOdk&linkpassword=undefined&size=413x460&crop=0&type=auto",
+        #     height="50%",
+        #     width="40%",
+        # ), align="start",lg=6,sm=12,md=8),
+        # dbc.Col(html.P('Wash your hands often with soap and water for at least 20 seconds especially after you have been in a public place, or after blowing your nose, coughing, or sneezing.'),align='start',lg=7,sm=12,md=8),
+        # dbc.Col(html.Img(
+        #     src="https://api.pcloud.com/getpubthumb?code=XZ7ipQXZ5KUuyw3hghJcuqkGaMUU1VQJqyOk&linkpassword=undefined&size=430x365&crop=0&type=auto",
+        #     height="50%",
+        #     width="40%",
+        #     style={'float':'right'},
+        # ), align="end",lg=8,sm=12,md=8),
+        # dbc.Col(html.P('Disinfect regularly used surfaces, avoid cash transactions. Use Credit Cards or Net Banking wherever possible'),align='end',lg=6,sm=12,md=6)
+        #     ]
+        # ),
+
+dbc.Row([dbc.Col(
+               dbc.Card(
+            dbc.CardBody(
+                [
+                    html.H5(
+                        "Wash Your Hands",
+                        className="card-title",
+                        style={"text-align": "center",'font-weight':'bold'},
+                    ),
+                    html.Div(
+                        dbc.Row([
+                            dbc.Col(
+                            html.Img(
+                                src="https://api.pcloud.com/getpubthumb?code=XZuvpQXZsR3nbzh8S9j61OE1DfDCHbAVIOdk&linkpassword=undefined&size=413x460&crop=0&type=auto",
+                                height="100%",
+                                width="100%",
+                                className="img-fluid",
+                                style={'padding-bottom':'10%',"border-radius": "5rem"}
+                            ),sm=8,lg=6,md=8,style={'display':'flex','align-items':'center'}),
+                            dbc.Col(
+                            html.P(
+                                '''Wash your hands often with soap and water for at least 20 seconds especially after you have been in a public place, or after blowing your nose, coughing, or sneezing.
+    Cover all surfaces of your hands and rub them together until they feel dry.
+    Avoid touching your eyes, nose, and mouth with unwashed hands.''',
+                                style={"text-align": "left",'font-size':'large'},
+                            ),sm=12,md=12,lg=6,style={'display':'flex','align-items':'center'}
+                            )]
+                        ),
+                        
+                        className="clearfix",
+                    ),
+                ]
+            ),
+            style={
+                "width": "100%",
+                "display": "flex",
+                "flex": "1 1 auto",
+                "margin-top": "5%",
+                "margin-bottom": "5%",
+                "border-radius": "2rem",
+                "background-color":'#f5f5f5',
+                "color":'black'
+            },
+        ),lg=8,md=8,sm=12),
+        dbc.Col(            
+        dbc.Card(
+            dbc.CardBody(
+                [
+                    html.H5(
+                        "Clean Surfaces In Contact",
+                        className="card-title",
+                        style={"text-align": "center",'font-weight':'bold'},
+                    ),
+                  html.Div(
+                        dbc.Row([
+                            dbc.Col(
+                            html.Img(
+                                src="https://api.pcloud.com/getpubthumb?code=XZ7ipQXZ5KUuyw3hghJcuqkGaMUU1VQJqyOk&linkpassword=undefined&size=430x365&crop=0&type=auto",
+                                height="100%",
+                                width="100%",
+                                className="img-fluid",
+                                style={'padding-bottom':'10%',"border-radius": "5rem"}
+                            ),sm=8,lg=6,md=8),
+                            dbc.Col(
+                           html.P('''Clean and disinfect frequently touched surfaces daily. This includes tables, doorknobs, light switches, countertops, handles, desks, phones, keyboards, toilets, faucets, and sinks.
+    - If surfaces are dirty, clean them. Use detergent or soap and water prior to disinfection.
+    - Then, use a household disinfectant. Most common EPA-registered household disinfectants will work. ''',
+                                style={"text-align": "left",'font-size':'large'},
+                            ),sm=12,md=12,lg=6,style={'display':'flex','align-items':'center'}
+                            )]
+                        ),
+                        
+                        className="clearfix",
+                    ),
+                ]
+            ),
+            style={
+                "width": "100%",
+                "display": "flex",
+                "flex": "1 1 auto",
+                "margin-top": "5%",
+                "margin-bottom": "5%",
+                "border-radius": "2rem",
+                "background-color":'#f5f5f5',
+                "color":'black'
+            },
+        ),lg=8,md=8,sm=12
         ),
-        dcc.Markdown(av.safety, className="mt-5"),
+
+        dbc.Col(            
+        dbc.Card(
+            dbc.CardBody(
+                [
+                    html.H5(
+                        "Always Cover Your Mouth",
+                        className="card-title",
+                        style={"text-align": "center",'font-weight':'bold'},
+                    ),
+                  html.Div(
+                        dbc.Row([
+                            dbc.Col(
+                            html.Img(
+                                src="https://api.pcloud.com/getpubthumb?code=XZY9HQXZEKg6hUK7fay5q06RYI65GJ5OXVay&linkpassword=undefined&size=499x499&crop=0&type=auto",
+                                height="100%",
+                                width="100%",
+                                className="img-fluid",
+                                style={'padding-bottom':'10%',"border-radius": "5rem"}
+                            ),sm=8,lg=6,md=8),
+                            dbc.Col(
+                           html.P('''You could spread COVID-19 to others even if you do not feel sick.
+    The cloth face cover is meant to protect other people in case you are infected.
+    Everyone should wear a cloth face cover in public settings and when around people who don’t live in your household, especially when other social distancing measures are difficult to maintain.
+    The cloth face cover is not a substitute for social distancing. ''',
+                                style={"text-align": "left",'font-size':'large'},
+                            ),sm=12,md=12,lg=6,style={'display':'flex','align-items':'center'}
+                            )]
+                        ),
+                        
+                        className="clearfix",
+                    ),
+                ]
+            ),
+            style={
+                "width": "100%",
+                "display": "flex",
+                "flex": "1 1 auto",
+                "margin-top": "5%",
+                "margin-bottom": "5%",
+                "border-radius": "2rem",
+                "background-color":'#f5f5f5',
+                "color":'black'
+            },
+        ),lg=8,md=8,sm=12
+        ),
+        ],
+        style={'justify-content':'center'}
+        ),
+
+        dbc.Row(
+            [
+                dbc.Col(html.Img(
+            src="https://api.pcloud.com/getpubthumb?code=XZlEpQXZpJuyvwybNSmg8RVr1VPyxYcWDHCX&linkpassword=undefined&size=279x382&crop=0&type=auto",
+            height="60%",
+            width="90%",
+            style={'margin-top':'25%','width':'125%'},
+        ), align="start",width=3),
+        dbc.Col(html.Img(src="https://api.pcloud.com/getpubthumb?code=XZScpQXZAAbOx5c5QeRUQzz7ji6jqFkeEJKk&linkpassword=undefined&size=387x99&crop=0&type=auto",width='100%'), align="center",width=6),
+        dbc.Col(html.Img(
+            src="https://api.pcloud.com/getpubthumb?code=XZfOpQXZdAvDtsdvjX0Rg6RWhabgDk11fMTy&linkpassword=undefined&size=218x433&crop=0&type=auto",
+            height="45%",
+            width="100%",
+            style={'float':'right'},
+        ), align="end",width=3),  
+            ]
+        ),
+        
     ],
 )
 

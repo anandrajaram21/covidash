@@ -299,6 +299,7 @@ home_page = dbc.Container(
                                         "Preventive Measures",
                                         color="danger",
                                         className="mr-1",
+                                        style={"border-radius": "1rem"},
                                         id="prevent-button",
                                         href="/prevent"
                                     ), ], sm=12, md=4, lg=3),],
@@ -385,7 +386,7 @@ home_page = dbc.Container(
                 "background-color":'#f5f5f5',
                 "color":'black'
             },
-        ),lg=6,md=6,sm=12),
+        ),lg=8,md=8,sm=12),
         dbc.Col(
         dbc.Card(
             dbc.CardBody(
@@ -427,7 +428,7 @@ home_page = dbc.Container(
                 "background-color":'#f5f5f5',
                 "color":'black'
             },
-        ),lg=6,md=6,sm=12
+        ),lg=8,md=8,sm=12
         )]),
 
         html.Div(
@@ -448,10 +449,12 @@ home_page = dbc.Container(
                                                 "This is some card content that we'll reuse",
                                                 className="card-text",
                                             ),
-                                            dbc.CardLink(
-                                                "Click here to view the Global Situation",
+                                            dbc.Button(
+                                                "Global Situation",
                                                 href="/global",
-                                                style={"text-align": "center"},
+                                                style={"text-align": "center","background-color":"#0a0582",'border-color':'transparent',"border-radius": "1rem"},
+                                                className="mr-1",
+                                                block=True
                                             ),
                                         ]
                                     ),
@@ -465,7 +468,7 @@ home_page = dbc.Container(
                                 },
                                 inverse=True,className="mb-4"
                             )
-                        ,sm=12,md=12,lg=6),
+                        ,sm=12,md=12,lg=4),
                         dbc.Col(
                             dbc.Card(
                                 [
@@ -480,10 +483,12 @@ home_page = dbc.Container(
                                                 "This is some card content that we'll reuse",
                                                 className="card-text",
                                             ),
-                                            dbc.CardLink(
-                                                "Click here to view the Analysis of the situation Country Wise",
+                                            dbc.Button(
+                                                "Country Analysis",
                                                 href="/country",
-                                                style={"text-align": "center"},
+                                                style={"text-align": "center","background-color":"#1e1996",'border-color':'transparent',"border-radius": "1rem"},
+                                                className="mr-1",
+                                                block=True
                                             ),
                                         ]
                                     ),
@@ -496,14 +501,9 @@ home_page = dbc.Container(
                                     "border-width":'medium'
                                 },
                                 inverse=True,
-                            ),sm=12,md=12,lg=6
+                            ),sm=12,md=12,lg=4
                         ),
-                    ],
-                    className="mb-4",
-                ),
-                dbc.Row(
-                    [
-                        dbc.Col(
+                          dbc.Col(
                             dbc.Card(
                                 [
                                     dbc.CardBody(
@@ -517,10 +517,12 @@ home_page = dbc.Container(
                                                 "This is some card content that we'll reuse",
                                                 className="card-text",
                                             ),
-                                            dbc.CardLink(
-                                                "Click here to view forecasts by a Convolutional Neural Network Model",
+                                            dbc.Button(
+                                                "Forecast",
                                                 href="/forecast",
-                                                style={"text-align": "center"},
+                                                style={"text-align": "center","background-color":"#322daa",'border-color':'transparent', "border-radius": "1rem"},
+                                                className="mr-1",
+                                                block=True
                                             ),
                                         ]
                                     ),
@@ -532,44 +534,51 @@ home_page = dbc.Container(
                                     "border-style":'solid',
                                     "border-width":'medium'
                                 },
-                                inverse=True,className="mb-4"
-                            ),sm=12,md=12,lg=6
-                        ),
-                        dbc.Col(
-                            dbc.Card(
-                                [
-                                    dbc.CardBody(
-                                        [
-                                            html.H5(
-                                                "Preventive Measures",
-                                                className="card-title",
-                                                style={"text-align": "center"},
-                                            ),
-                                            html.P(
-                                                "This is some card content that we'll reuse",
-                                                className="card-text",
-                                            ),
-                                            dbc.CardLink(
-                                                "Click here to view Preventive Measures",
-                                                href="/prevent",
-                                                style={"text-align": "center"},
-                                            ),
-                                        ]
-                                    ),
-                                ],
-                                style={
-                                    "border-radius": "2rem",
-                                    "border-color": "#6e68fb",
-                                    "background-color": "#000000",
-                                    "border-style":'solid',
-                                    "border-width":'medium'
-                                },
                                 inverse=True,
-                            ),sm=12,md=12,lg=6
+                            ),sm=12,md=12,lg=4
                         ),
                     ],
                     className="mb-4",
                 ),
+                # dbc.Row(
+                #     [
+
+                #         dbc.Col(
+                #             dbc.Card(
+                #                 [
+                #                     dbc.CardBody(
+                #                         [
+                #                             html.H5(
+                #                                 "Preventive Measures",
+                #                                 className="card-title",
+                #                                 style={"text-align": "center"},
+                #                             ),
+                #                             html.P(
+                #                                 "This is some card content that we'll reuse",
+                #                                 className="card-text",
+                #                             ),
+                #                             dbc.Button(
+                #                                 "Click here to view Preventive Measures",
+                #                                 href="/prevent",
+                #                                 style={"text-align": "center","background-color":"#6e68fb",'border-color':'transparent'},
+                #                                 className="mr-1"
+                #                             ),
+                #                         ]
+                #                     ),
+                #                 ],
+                #                 style={
+                #                     "border-radius": "2rem",
+                #                     "border-color": "#6e68fb",
+                #                     "background-color": "#000000",
+                #                     "border-style":'solid',
+                #                     "border-width":'medium'
+                #                 },
+                #                 inverse=True,
+                #             ),sm=12,md=12,lg=6
+                #         ),
+                #     ],
+                #     className="mb-4",
+                # ),
             ]
         ),
     ],

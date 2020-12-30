@@ -362,13 +362,13 @@ home_page = dbc.Container(
                                 height="100%",
                                 width="100%",
                                 className="img-fluid",
-                                style={'padding-bottom':'10%'}
-                            ),sm=8,lg=6,md=12),
+                                style={'padding-bottom':'10%',"border-radius": "5rem"}
+                            ),sm=8,lg=6,md=12,style={'display':'flex','align-items':'center'}),
                             dbc.Col(
                             html.P(
                                 "Common symptoms include fever, cough, fatigue, shortness of breath, and loss of smell and taste. While the majority of cases result in mild symptoms, some progress to acute respiratory distress syndrome (ARDS) possibly precipitated by cytokine storm, multi-organ failure, septic shock, and blood clots. The time from exposure to onset of symptoms is typically around five days, but may range from two to fourteen days.",
                                 style={"text-align": "left"},
-                            ),sm=12,md=12,lg=6
+                            ),sm=12,md=12,lg=6,style={'display':'flex','align-items':'center'}
                             )]
                         ),
                         
@@ -404,13 +404,13 @@ home_page = dbc.Container(
                                 height="100%",
                                 width="100%",
                                 className="img-fluid",
-                                style={'padding-bottom':'10%'}
+                                style={'padding-bottom':'10%',"border-radius": "5rem"}
                             ),sm=8,lg=6,md=12),
                             dbc.Col(
                            html.P(
                                 "    There are no vaccines nor specific antiviral treatments for COVID-19. Management involves the treatment of symptoms, supportive care, isolation, and experimental measures. The World Health Organization (WHO) declared the COVID‑19 outbreak a public health emergency of international concern (PHEIC) on 30 January 2020 and a pandemic on 11 March 2020. Local transmission of the disease has occurred in most countries across all six WHO regions.",
                                 style={"text-align": "left"},
-                            ),sm=12,md=12,lg=6
+                            ),sm=12,md=12,lg=6,style={'display':'flex','align-items':'center'}
                             )]
                         ),
                         
@@ -429,7 +429,9 @@ home_page = dbc.Container(
                 "color":'black'
             },
         ),lg=8,md=8,sm=12
-        )]),
+        )],
+        style={'justify-content':'center'}
+        ),
 
         html.Div(
             [
@@ -579,10 +581,12 @@ home_page = dbc.Container(
                 #     ],
                 #     className="mb-4",
                 # ),
-            ]
+            ],
+
         ),
     ],
     className="mt-5",
+    
 )
 
 # ----------------------------------------------------------------------------------------------------

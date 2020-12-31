@@ -4,7 +4,6 @@
 1. Clean up folder (Anand)
 1. Fill up information about each page in home page (Anirudh)
 3. Fonts revision (Anirudh) 
-4. Color check (Arunachala)
 2. Project report (Anirudh) 
 
 

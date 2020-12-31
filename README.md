@@ -70,6 +70,10 @@ python .\src\web_app\app.py # or change directory to web_app and run `python app
 cd docs
 npm start
 ```
+### Presentation
+<a href = "https://colab.research.google.com/drive/12SBxJ_N1TLJgc6pZVy9G-vgZY3k2w_Aa?usp=sharing">
+<img src='https://img.shields.io/static/v1?label=view%20on&message=google%20colab&color=ffa31a&style=for-the-badge' />
+</a> 
 
 ### Technologies Used
 
@@ -82,17 +86,15 @@ npm start
 
 <br>
 
-Web-Application/Dashboard - https://github.com/anandrajaram21/covidash
-- Main Contributor(s):
-  - [Anand Rajaram](https://github.com/anandrajaram21/)
-  - [Anirudh Lakhotia](https://github.com/anirudhlakhotia/)
+### Main Contributors
+[Web-Application/Dashboard](https://github.com/anandrajaram21/covidash) 
 
-Data Visualization/Predictive Model - https://github.com/Majimearun/covid-19-data-science-project
-- Main Contributor(s):
-  - [Arunachala A.M.](https://github.com/Majimearun)
+ - [Anand Rajaram](https://github.com/anandrajaram21/)
+ - [Anirudh Lakhotia](https://github.com/anirudhlakhotia/)
+
+[Data Visualization/Predictive Model](https://github.com/Majimearun/covid-19-data-science-project) 
+
+ - [Arunachala A.M.](https://github.com/Majimearun)
 
 
-<a href = "https://colab.research.google.com/drive/12SBxJ_N1TLJgc6pZVy9G-vgZY3k2w_Aa?usp=sharing">
-<img src='https://img.shields.io/static/v1?label=presentation&message=google%20colab&color=ffa31a&style=for-the-badge' />
-</a> 
 

@@ -82,7 +82,7 @@ npm start
 <br>
 
 ### Main Contributors
-Web-Application/Dashboard [(link here)](https://github.com/anandrajaram21/covidash) 
+Web Application/Dashboard [(link here)](https://github.com/anandrajaram21/covidash/tree/web_app) 
 
  - [Anand Rajaram](https://github.com/anandrajaram21/)
  - [Anirudh Lakhotia](https://github.com/anirudhlakhotia/)

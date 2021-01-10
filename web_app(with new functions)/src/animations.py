@@ -66,32 +66,9 @@ def animated_barchart(df, name):
     return plot_fig(create_data(take_top10(unpivot(df))), color)
 
 
-def compare(df, *args):
-    l = list(args)
-    temp = unpivot(df)
-    return temp[temp["country"].isin(l)]
-
-
-def create_comparison_animation(df, name, *args):
-    df = compare(df, *args)
-    ff = create_data(df)
-    color = (
-        "#f54842"
-        if name == "deaths"
-        else "#45a2ff"
-        if name == "confirmed"
-        else "#42f587"
-    )
-    return plot_fig(ff, color)
-
-
 """
 Examples:
 fig = animated_barchart(confirmed_global, "confirmed")
 fig = animated_barchart(deaths_global, "deaths")
 fig = animated_barchart(recovered_global, "recovered")
-
-fig = create_comparison_animation(confirmed_global, "confirmed", "India", "US", "Australia", "Brazil")
-fig = create_comparison_animation(recovered_global, "recovered", "India", "US", "Australia", "Brazil")
-fig = create_comparison_animation(deaths_global, "deaths", "India", "US", "Brazil")
 """

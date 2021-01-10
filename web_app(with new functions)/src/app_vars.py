@@ -1,4 +1,4 @@
-confirmed_global, deaths_global, recovered_global, country_cases = (
+confirmed_global, deaths_global, recovered_global, country_cases_sorted = (
     None,
     None,
     None,

@@ -84,33 +84,29 @@ def get_world_timeseries(df):
     return data
 
 
-def plot_world_timeseries(df, df_name):
-    data = get_world_timeseries(df)
-    if df_name == "confirmed":
-        fig = px.bar(
-            data,
-            x="Date",
-            y="Cases",
-            template="plotly_dark",
-            color_discrete_sequence=["blue"] * len(data),
-        )
-    elif df_name == "recovered":
-        fig = px.bar(
-            data,
-            x="Date",
-            y="Cases",
-            template="plotly_dark",
-            color_discrete_sequence=["green"] * len(data),
-        )
-    elif df_name == "deaths":
-        fig = px.bar(
-            data,
-            x="Date",
-            y="Cases",
-            template="plotly_dark",
-            color_discrete_sequence=["red"] * len(data),
-        )
-    fig.layout.update(hovermode="x")
+def plot_world_timeseries(df, name, n=-90, daily=False):
+    if not daily:
+        new_data = get_world_timeseries(df)[n:]
+    else:
+        data = get_world_timeseries(df)
+        cases = data["Cases"].diff()[1:]
+        new_data = data[1:]
+        new_data["Cases"] = cases
+        new_data = new_data[n:]
+    color = (
+        "#f54842"
+        if "deaths" == name
+        else "#45a2ff"
+        if "confirmed" == name
+        else "#42f587"
+    )
+    fig = px.bar(
+        new_data,
+        x="Date",
+        y="Cases",
+        template="plotly_dark",
+        color_discrete_sequence=[color] * len(data),
+    )
     return fig
 
 

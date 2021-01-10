@@ -12,9 +12,6 @@ Covidash is an open source, community driven, COVID-19 dashboard that not only s
 - You can use git to clone the repository, or you can download the zip file.
 
 ### Basic Setup
-
-#### 1. On Linux/macOS
-
 ##### a. Using Docker
 
 - Run the following commands on a UNIX based system
@@ -41,21 +38,6 @@ pip install -r requirements.txt
 ```
 cd src/web_app/
 gunicorn --bind :8050 --workers 2 --threads 8 app:server # Change the number of workers and threads to your liking
-```
-
-- Open a browser and navigate to 0.0.0.0:8050, and you will see the dashboard
-
-#### 2. On Windows
-
-##### a. Using Anaconda
-
-- Run the following commands in Anaconda Prompt
-
-```
-cd <path of the cloned folder>
-conda env create -f environment_windows.yml
-conda activate covid
-python .\src\web_app\app.py # or change directory to web_app and run `python app.py`
 ```
 
 - Open a browser and navigate to 0.0.0.0:8050, and you will see the dashboard

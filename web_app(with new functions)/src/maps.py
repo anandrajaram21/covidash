@@ -1,6 +1,4 @@
-# %%
 # Imports
-
 import app_vars as av
 import pandas as pd
 import numpy as np
@@ -12,7 +10,7 @@ import requests
 from itertools import chain
 from math import log
 from math import e
-# %%
+
 confirmed_global, deaths_global, recovered_global, country_cases_sorted = (
     av.confirmed_global,
     av.deaths_global,
@@ -20,13 +18,9 @@ confirmed_global, deaths_global, recovered_global, country_cases_sorted = (
     av.country_cases_sorted,
 )
 
-# %%
-
 
 def chainer(s):
     return list(chain.from_iterable(s.str.split(",")))
-
-# %%
 
 
 def convert_df(df, cols):
@@ -60,14 +54,16 @@ def convert_df(df, cols):
     )
     return df
 
-# %%
-
 
 def create_hovertemplate(df, study, country):
-    emoji = "💀" if study.lower() == "deaths" else "😷" if study.lower() == "recovered" else "🏥"
+    emoji = (
+        "💀"
+        if study.lower() == "deaths"
+        else "😷"
+        if study.lower() == "recovered"
+        else "🏥"
+    )
     return f"{emoji}: {format(int(float(df.loc[(df['Study'] == study) & (df['Country'] == country), 'Count'])),',d')}"
-
-# %%
 
 
 def create_data(df, study, color):
@@ -78,19 +74,16 @@ def create_data(df, study, color):
     for country in countries:
         try:
             event_data = dict(
-                lat=df.loc[(df["Study"] == study) & (
-                    df["Country"] == country), "Lat"],
+                lat=df.loc[(df["Study"] == study) & (df["Country"] == country), "Lat"],
                 lon=df.loc[
-                    (df["Study"] == study) & (
-                        df["Country"] == country), "Long_"
+                    (df["Study"] == study) & (df["Country"] == country), "Long_"
                 ],
                 name=f"{country}",
                 marker={
                     "size": log(
                         float(
                             df.loc[
-                                (df["Study"] == study) & (
-                                    df["Country"] == country),
+                                (df["Study"] == study) & (df["Country"] == country),
                                 "Count",
                             ]
                         ),
@@ -107,8 +100,6 @@ def create_data(df, study, color):
             continue
 
     return data
-
-# %%
 
 
 def create_basic_layout(latitude, longitude, zoom):
@@ -128,8 +119,6 @@ def create_basic_layout(latitude, longitude, zoom):
         },
     }
     return layout
-
-# %%
 
 
 def update_layout(study, layout):
@@ -151,11 +140,10 @@ def update_layout(study, layout):
     layout["title"] = f"{study.capitalize()}"
     layout["annotations"] = annotations
     layout["hoverlabel"] = dict(
-        font_size=16, font_family="Rockwell", font_color="black")
+        font_size=16, font_family="Rockwell", font_color="black"
+    )
 
     return layout
-
-# %%
 
 
 def get_lat_long(country, coord_df=country_cases_sorted):
@@ -163,21 +151,15 @@ def get_lat_long(country, coord_df=country_cases_sorted):
     long = float(coord_df.loc[(coord_df["country"] == country), "Long_"])
     return lat, long
 
-# %%
-
 
 def get_country_wise_data():
     response = requests.get("https://corona.lmao.ninja/v2/jhucsse")
     data = response.json()
     return data
 
-# %%
-
 
 def choose_country(array, country):
     return [i for i in array if (i["country"] == country)]
-
-# %%
 
 
 def get_country_frame(country):
@@ -201,15 +183,11 @@ def get_country_frame(country):
     df = df[df["Provinces"] != "Unknown"]
     return df
 
-# %%
-
 
 def interactive_map(data, layout):
     figure = {"data": data, "layout": layout}
 
     return figure
-
-# %%
 
 
 def plot_study(
@@ -230,15 +208,18 @@ def plot_study(
     figure = interactive_map(data, updated_layout)
     return figure
 
-# %%
-
 
 def plot_country(Country, data, study):
     country = choose_country(data, Country)
     df = get_country_frame(country)
-    columns = ["Provinces", ["Confirmed",
-                             "Recoveries", "Deaths"], "lat", "lon"]
-    color = "#45a2ff" if study == "Confirmed" else "#f54842" if study == "Deaths" else "#42f587"
+    columns = ["Provinces", ["Confirmed", "Recoveries", "Deaths"], "lat", "lon"]
+    color = (
+        "#45a2ff"
+        if study == "Confirmed"
+        else "#f54842"
+        if study == "Deaths"
+        else "#42f587"
+    )
     d = dict(study=study.title(), color=color)
     figure = plot_study(
         df,
@@ -252,21 +233,17 @@ def plot_country(Country, data, study):
     return figure
 
 
-# %%
-# Example 1
 """
-confirmed = dict(study="confirmed",color="#45a2ff")
-recovered = dict(study="recovered",color="#42f587")
-deaths = dict(study="deaths",color="#f54842")
+Examples:
+confirmed = dict(study="confirmed", color="#45a2ff")
+recovered = dict(study="recovered", color="#42f587")
+deaths = dict(study="deaths", color="#f54842")
 
 columns = ["country", ["deaths", "confirmed", "recovered"], "Lat", "Long_"]
 
 figure = plot_study(country_cases_sorted, columns, confirmed)
 py.iplot(figure)
-"""
 
-# Example 2
-"""
-figure= plot_country("Japan",get_country_wise_data(),"Recoveries")
+figure= plot_country("Japan", get_country_wise_data(), "Recoveries")
 py.iplot(figure)
 """

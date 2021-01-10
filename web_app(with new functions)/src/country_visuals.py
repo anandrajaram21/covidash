@@ -1,6 +1,4 @@
-# %%
 # Imports
-
 import pandas as pd
 import numpy as np
 import requests
@@ -8,7 +6,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 
-# %%
 def get_today_data():
     today_data = requests.get("https://corona.lmao.ninja/v2/all?yesterday")
     today_country_data = requests.get("https://corona.lmao.ninja/v2/jhucsse")
@@ -18,8 +15,6 @@ def get_today_data():
 
     return today_data, today_country_data
 
-# %%
-
 
 def cases_object(array):
     obj1 = {
@@ -28,19 +23,13 @@ def cases_object(array):
     }
     return {**obj1, "updatedAt": [i["updatedAt"] for i in array]}
 
-# %%
-
 
 def choose_country(array, country):
     return [i for i in array if (i["country"] == country)]
 
-# %%
-
 
 def get_final_object(country, array):
     return cases_object(choose_country(array, country))
-
-# %%
 
 
 def get_country_frame(country):
@@ -64,15 +53,11 @@ def get_country_frame(country):
     df = df[df["Provinces"] != "Unknown"]
     return df
 
-# %%
-
 
 def plot_province(data, metric, metric_name):
     fig = go.Figure()
 
-    fig.add_trace(
-        go.Bar(x=data["Provinces"], y=data[metric])
-    )
+    fig.add_trace(go.Bar(x=data["Provinces"], y=data[metric]))
 
     fig.update_layout(
         title={
@@ -89,12 +74,9 @@ def plot_province(data, metric, metric_name):
 
     return fig
 
-# %%
-
 
 def table_province_data(data, metric):
-    df = pd.DataFrame(
-        data={"Provinces": data["Provinces"], metric: data[metric]})
+    df = pd.DataFrame(data={"Provinces": data["Provinces"], metric: data[metric]})
     df[metric] = df[metric].map(lambda x: format(x, ",d"))
     if len(df) <= 1:
         return
@@ -102,11 +84,11 @@ def table_province_data(data, metric):
         return df
 
 
-# %%
-# Example
 """
-today_data,today_country_data = get_today_data()
+Examples:
+today_data, today_country_data = get_today_data()
 country_stats = get_country_frame(choose_country(today_country_data, "India"))
+
 bar_chart = plot_province(country_stats, "Confirmed", "Confirmed Cases")
 table = table_province_data(country_stats, "Confirmed")
 """

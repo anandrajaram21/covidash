@@ -1,14 +1,10 @@
-# %%
 # Imports
-
 import app_vars as av
 import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 
-
-# %%
 confirmed_global, deaths_global, recovered_global, country_cases_sorted = (
     av.confirmed_global,
     av.deaths_global,
@@ -16,23 +12,19 @@ confirmed_global, deaths_global, recovered_global, country_cases_sorted = (
     av.country_cases_sorted,
 )
 
-# %%
-# TOP TEN AFFECTED
-
 
 def unpivot(df):
-    return df.melt(id_vars=["country"],  value_vars=df.columns[1:])
-
-# %%
+    return df.melt(id_vars=["country"], value_vars=df.columns[1:])
 
 
 def take_top10(df):
-    top = list(df[df["variable"] == df['variable'][df.index[-1]]
-                  ].sort_values(by=['value'], ascending=False).head(10)["country"])
-    df = df[df['country'].isin(top)]
+    top = list(
+        df[df["variable"] == df["variable"][df.index[-1]]]
+        .sort_values(by=["value"], ascending=False)
+        .head(10)["country"]
+    )
+    df = df[df["country"].isin(top)]
     return df
-
-# %%
 
 
 def create_data(df):
@@ -40,38 +32,38 @@ def create_data(df):
     l = list(set(new["variable"]))
     l.sort()
     l.reverse()
-    ff = new[new['variable'].isin(l[::5])]
-    ff.rename(columns={"country": "Country",
-                       "variable": "Date", "value": "Cases"}, inplace=True)
+    ff = new[new["variable"].isin(l[::5])]
+    ff.rename(
+        columns={"country": "Country", "variable": "Date", "value": "Cases"},
+        inplace=True,
+    )
     return ff
-
-# %%
 
 
 def plot_fig(ff, Color):
-    fig = px.bar(ff, x="Country", y="Cases", color_discrete_sequence=[
-                 Color]*len(ff), template="plotly_dark", animation_frame="Date", animation_group="Country", range_y=[0, ff["Cases"].max()])
+    fig = px.bar(
+        ff,
+        x="Country",
+        y="Cases",
+        color_discrete_sequence=[Color] * len(ff),
+        template="plotly_dark",
+        animation_frame="Date",
+        animation_group="Country",
+        range_y=[0, ff["Cases"].max()],
+    )
     fig.layout.update(showlegend=False)
     return fig
 
-# %%
-
 
 def animated_barchart(df, name):
-    color = "#f54842" if name == "deaths" else "#45a2ff" if name == "confirmed" else "#42f587"
+    color = (
+        "#f54842"
+        if name == "deaths"
+        else "#45a2ff"
+        if name == "confirmed"
+        else "#42f587"
+    )
     return plot_fig(create_data(take_top10(unpivot(df))), color)
-
-
-# %%
-# Examples
-"""
-fig = animated_barchart(confirmed_global,"confirmed")
-fig = animated_barchart(deaths_global,"deaths")
-fig = animated_barchart(recovered_global,"recovered")
-"""
-
-# %%
-# Animations based on users choice
 
 
 def compare(df, *args):
@@ -79,20 +71,27 @@ def compare(df, *args):
     temp = unpivot(df)
     return temp[temp["country"].isin(l)]
 
-# %%
-
 
 def create_comparison_animation(df, name, *args):
     df = compare(df, *args)
     ff = create_data(df)
-    color = "#f54842" if name == "deaths" else "#45a2ff" if name == "confirmed" else "#42f587"
+    color = (
+        "#f54842"
+        if name == "deaths"
+        else "#45a2ff"
+        if name == "confirmed"
+        else "#42f587"
+    )
     return plot_fig(ff, color)
 
 
-# %%
-# Examples
 """
-fig = create_comparison_animation(confirmed_global,"confirmed","India","US","Australia","Brazil")
-fig = create_comparison_animation(recovered_global,"recovered","India","US","Australia","Brazil")
-fig = create_comparison_animation(deaths_global,"deaths","India","US","Brazil")
+Examples:
+fig = animated_barchart(confirmed_global, "confirmed")
+fig = animated_barchart(deaths_global, "deaths")
+fig = animated_barchart(recovered_global, "recovered")
+
+fig = create_comparison_animation(confirmed_global, "confirmed", "India", "US", "Australia", "Brazil")
+fig = create_comparison_animation(recovered_global, "recovered", "India", "US", "Australia", "Brazil")
+fig = create_comparison_animation(deaths_global, "deaths", "India", "US", "Brazil")
 """

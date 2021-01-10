@@ -1,10 +1,4 @@
-"""
-# App
-This file contains the source code for the web app made with plotly dash
-"""
-
 # Imports and data preprocessing
-
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -103,23 +97,10 @@ def collect_data():
     deaths_global = deaths_global.groupby(["country"], as_index=False).sum()
     recovered_global = recovered_global.groupby(["country"], as_index=False).sum()
 
-    # confirmed_global.to_csv("confirmed_global.csv",index = False)
-    # deaths_global.to_csv("deaths_global.csv",index = False)
-    # recovered_global.to_csv("recovered_global.csv",index = False)
-    # country_cases.to_csv("country_cases.csv",index = False)
     country_cases_sorted = country_cases.sort_values("confirmed", ascending=False)
     country_cases_sorted.index = [x for x in range(len(country_cases_sorted))]
 
     return (confirmed_global, deaths_global, recovered_global, country_cases_sorted)
-
-    # except:
-    # #pass
-    # return (
-    # pd.read_csv("confirmed_global.csv"),
-    # pd.read_csv("deaths_global.csv"),
-    # pd.read_csv("recovered_global.csv"),
-    # pd.read_csv("country_cases.csv")
-    # )
 
 
 @cache.memoize(timeout=TIMEOUT)
@@ -198,24 +179,17 @@ confirmed_global, deaths_global, recovered_global, country_cases = (
     av.country_cases,
 )
 
-
-
 # Importing these modules later as they rely on having data stored
 
 import animations
-import map
-import new_map_functions as nmf
-
+import maps
+import country_visuals
+import timeseries
 import cnn
-
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
 
 # Making the Graphs and Declaring the Variables Required for the Pages
 
-animations_figure = animations.animated_barchart(confirmed_global)
+animations_figure = animations.animated_barchart(confirmed_global, "confirmed")
 
 confirmed = dict(study="confirmed", color="blue")
 recovered = dict(study="recovered", color="green")
@@ -223,26 +197,21 @@ deaths = dict(study="deaths", color="red")
 
 columns = ["country", ["deaths", "confirmed", "recovered"], "Lat", "Long_"]
 
-world_map = map.plot_study(country_cases_sorted, columns, confirmed)
+world_map = maps.plot_study(country_cases_sorted, columns, confirmed)
 
-confirmed_timeseries = animations.plot_world_timeseries(confirmed_global, "confirmed")
+confirmed_timeseries = timeseries.plot_world_timeseries(confirmed_global, "confirmed")
 
 country_list = confirmed_global["country"]
 
 today = date.today()
 
-world_timeseries_confirmed = animations.get_world_timeseries(confirmed_global)
-world_timeseries_deaths = animations.get_world_timeseries(deaths_global)
-world_timeseries_recovered = animations.get_world_timeseries(recovered_global)
+world_timeseries_confirmed = timeseries.get_world_timeseries(confirmed_global)
+world_timeseries_deaths = timeseries.get_world_timeseries(deaths_global)
+world_timeseries_recovered = timeseries.get_world_timeseries(recovered_global)
 
 confirmed_global_cases_today = format(today_data["cases"], ",d")
 confirmed_recovered_cases_today = format(today_data["recovered"], ",d")
 confirmed_deaths_cases_today = format(today_data["deaths"], ",d")
-
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
 
 # Making the Individual Pages
 
@@ -260,11 +229,6 @@ navbar = dbc.NavbarSimple(
     brand_href="/",
 )
 
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-
 home_page = dbc.Container(
     children=[
         dbc.Card(
@@ -276,40 +240,53 @@ home_page = dbc.Container(
                                 [
                                     dbc.Col(
                                         html.Img(
-                                            # src="https://www.fda.gov/files/covid19-1600x900.jpg",
                                             src="https://fourremovalsolutions.sg/wp-content/uploads/2020/04/Four-Solutions-Disinfecting-Spraying-01.png",
                                             height="100%",
                                             width="100%",
                                             style={"border-radius": "2rem"},
-
                                         ),
-                                        sm=12, md=8, lg=9),
-                                    dbc.Col([html.H4(
-                                        "Save yourself",
-                                        style={
-                                            "text-align": "left", "padding-top": "5%", "font-size": '1.4rem'},
+                                        sm=12,
+                                        md=8,
+                                        lg=9,
                                     ),
-                                        html.H4(
-                                        "Save the world.",
-                                        style={"text-align": "left",
-                                               "font-size": '1.4rem'},
-                                    ), html.Br(),
-                                        html.P(
-                                        "Coronavirus disease 2019 (COVID-19) is an infectious disease caused by severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2). It was first identified in December 2019 in Wuhan, Hubei, China, and has resulted in an ongoing pandemic.",
-                                        style={"text-align": "left"},
+                                    dbc.Col(
+                                        [
+                                            html.H4(
+                                                "Save yourself",
+                                                style={
+                                                    "text-align": "left",
+                                                    "padding-top": "5%",
+                                                    "font-size": "1.4rem",
+                                                },
+                                            ),
+                                            html.H4(
+                                                "Save the world.",
+                                                style={
+                                                    "text-align": "left",
+                                                    "font-size": "1.4rem",
+                                                },
+                                            ),
+                                            html.Br(),
+                                            html.P(
+                                                "Coronavirus disease 2019 (COVID-19) is an infectious disease caused by severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2). It was first identified in December 2019 in Wuhan, Hubei, China, and has resulted in an ongoing pandemic.",
+                                                style={"text-align": "left"},
+                                            ),
+                                            html.Br(),
+                                            dbc.Button(
+                                                "Preventive Measures",
+                                                color="danger",
+                                                className="mr-1",
+                                                style={"border-radius": "1rem"},
+                                                id="prevent-button",
+                                                href="/prevent",
+                                            ),
+                                        ],
+                                        sm=12,
+                                        md=4,
+                                        lg=3,
                                     ),
-                                        html.Br(),
-                                        dbc.Button(
-                                        "Preventive Measures",
-                                        color="danger",
-                                        className="mr-1",
-                                        style={"border-radius": "1rem"},
-                                        id="prevent-button",
-                                        href="/prevent"
-                                    ), ], sm=12, md=4, lg=3),],
+                                ],
                             ),
-
-
                         ],
                         className="clearfix",
                     )
@@ -325,118 +302,149 @@ home_page = dbc.Container(
                 "background-color": "#060606",
             },
         ),
-        # dcc.Markdown(av.covid_19, className="m-5"),
-        #         dbc.Card(
-        #     dbc.CardBody(
-        #         [
-        #             html.H5("What COVID-19 is", className="card-title", style={'text-align':'center'}),
-        #             html.Div(
-        #                 [
-        #                 html.Img(
-        #             src="https://www.fda.gov/files/covid19-1600x900.jpg",
-        #             height="30%",
-        #             width="30%",
-        #             style={'float':'left','padding-right':'5%'},
-        #             className='img-fluid'
-        #         ),
-        #          html.P(
-        #     'Coronavirus disease 2019 (COVID-19) is an infectious disease caused by severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2). It was first identified in December 2019 in Wuhan, Hubei, China, and has resulted in an ongoing pandemic.',
-        #                  style={'text-align':'left'}
-        #             ),],
-        #             className='clearfix'
-        #             )
-        #         ]
-        #     ),
-        #     style={"width": "100%",'display':'flex','flex':'1 1 auto','margin-top':'5%','margin-bottom':'5%','border-radius':'2rem'},
-        # ),
-        dbc.Row([dbc.Col(
-               dbc.Card(
-            dbc.CardBody(
-                [
-                    html.H5(
-                        "Symptoms of COVID-19",
-                        className="card-title",
-                        style={"text-align": "center",'font-weight':'bold'},
-                    ),
-                    html.Div(
-                        dbc.Row([
-                            dbc.Col(
-                            html.Img(
-                                src="https://image.freepik.com/free-vector/coronavirus-symptoms-concept_23-2148496136.jpg",
-                                height="100%",
-                                width="100%",
-                                className="img-fluid",
-                                style={'padding-bottom':'10%',"border-radius": "5rem"}
-                            ),sm=8,lg=6,md=12,style={'display':'flex','align-items':'center'}),
-                            dbc.Col(
-                            html.P(
-                                "Common symptoms include fever, cough, fatigue, shortness of breath, and loss of smell and taste. While the majority of cases result in mild symptoms, some progress to acute respiratory distress syndrome (ARDS) possibly precipitated by cytokine storm, multi-organ failure, septic shock, and blood clots. The time from exposure to onset of symptoms is typically around five days, but may range from two to fourteen days.",
-                                style={"text-align": "left",'font-size':'large'},
-                            ),sm=12,md=12,lg=6,style={'display':'flex','align-items':'center'}
-                            )]
+        dbc.Row(
+            [
+                dbc.Col(
+                    dbc.Card(
+                        dbc.CardBody(
+                            [
+                                html.H5(
+                                    "Symptoms of COVID-19",
+                                    className="card-title",
+                                    style={
+                                        "text-align": "center",
+                                        "font-weight": "bold",
+                                    },
+                                ),
+                                html.Div(
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                html.Img(
+                                                    src="https://image.freepik.com/free-vector/coronavirus-symptoms-concept_23-2148496136.jpg",
+                                                    height="100%",
+                                                    width="100%",
+                                                    className="img-fluid",
+                                                    style={
+                                                        "padding-bottom": "10%",
+                                                        "border-radius": "5rem",
+                                                    },
+                                                ),
+                                                sm=8,
+                                                lg=6,
+                                                md=12,
+                                                style={
+                                                    "display": "flex",
+                                                    "align-items": "center",
+                                                },
+                                            ),
+                                            dbc.Col(
+                                                html.P(
+                                                    "Common symptoms include fever, cough, fatigue, shortness of breath, and loss of smell and taste. While the majority of cases result in mild symptoms, some progress to acute respiratory distress syndrome (ARDS) possibly precipitated by cytokine storm, multi-organ failure, septic shock, and blood clots. The time from exposure to onset of symptoms is typically around five days, but may range from two to fourteen days.",
+                                                    style={
+                                                        "text-align": "left",
+                                                        "font-size": "large",
+                                                    },
+                                                ),
+                                                sm=12,
+                                                md=12,
+                                                lg=6,
+                                                style={
+                                                    "display": "flex",
+                                                    "align-items": "center",
+                                                },
+                                            ),
+                                        ]
+                                    ),
+                                    className="clearfix",
+                                ),
+                            ]
                         ),
-                        
-                        className="clearfix",
+                        style={
+                            "width": "100%",
+                            "display": "flex",
+                            "flex": "1 1 auto",
+                            "margin-top": "5%",
+                            "margin-bottom": "5%",
+                            "border-radius": "2rem",
+                            "background-color": "#f5f5f5",
+                            "color": "black",
+                        },
                     ),
-                ]
-            ),
-            style={
-                "width": "100%",
-                "display": "flex",
-                "flex": "1 1 auto",
-                "margin-top": "5%",
-                "margin-bottom": "5%",
-                "border-radius": "2rem",
-                "background-color":'#f5f5f5',
-                "color":'black'
-            },
-        ),lg=8,md=8,sm=12),
-        dbc.Col(
-        dbc.Card(
-            dbc.CardBody(
-                [
-                    html.H5(
-                        "Treatment",
-                        className="card-title",
-                        style={"text-align": "center",'font-weight':'bold'},
-                    ),
-                  html.Div(
-                        dbc.Row([
-                            dbc.Col(
-                            html.Img(
-                                src="https://image.freepik.com/free-vector/scientists-working-creating-covid-19-vaccine_23-2148551283.jpg",
-                                height="100%",
-                                width="100%",
-                                className="img-fluid",
-                                style={'padding-bottom':'10%',"border-radius": "5rem"}
-                            ),sm=8,lg=6,md=12),
-                            dbc.Col(
-                           html.P(
-                                "    There are no vaccines nor specific antiviral treatments for COVID-19. Management involves the treatment of symptoms, supportive care, isolation, and experimental measures. The World Health Organization (WHO) declared the COVID‑19 outbreak a public health emergency of international concern (PHEIC) on 30 January 2020 and a pandemic on 11 March 2020. Local transmission of the disease has occurred in most countries across all six WHO regions.",
-                                style={"text-align": "left",'font-size':'large'},
-                            ),sm=12,md=12,lg=6,style={'display':'flex','align-items':'center'}
-                            )]
+                    lg=8,
+                    md=8,
+                    sm=12,
+                ),
+                dbc.Col(
+                    dbc.Card(
+                        dbc.CardBody(
+                            [
+                                html.H5(
+                                    "Treatment",
+                                    className="card-title",
+                                    style={
+                                        "text-align": "center",
+                                        "font-weight": "bold",
+                                    },
+                                ),
+                                html.Div(
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                html.Img(
+                                                    src="https://image.freepik.com/free-vector/scientists-working-creating-covid-19-vaccine_23-2148551283.jpg",
+                                                    height="100%",
+                                                    width="100%",
+                                                    className="img-fluid",
+                                                    style={
+                                                        "padding-bottom": "10%",
+                                                        "border-radius": "5rem",
+                                                    },
+                                                ),
+                                                sm=8,
+                                                lg=6,
+                                                md=12,
+                                            ),
+                                            dbc.Col(
+                                                html.P(
+                                                    "    There are no vaccines nor specific antiviral treatments for COVID-19. Management involves the treatment of symptoms, supportive care, isolation, and experimental measures. The World Health Organization (WHO) declared the COVID‑19 outbreak a public health emergency of international concern (PHEIC) on 30 January 2020 and a pandemic on 11 March 2020. Local transmission of the disease has occurred in most countries across all six WHO regions.",
+                                                    style={
+                                                        "text-align": "left",
+                                                        "font-size": "large",
+                                                    },
+                                                ),
+                                                sm=12,
+                                                md=12,
+                                                lg=6,
+                                                style={
+                                                    "display": "flex",
+                                                    "align-items": "center",
+                                                },
+                                            ),
+                                        ]
+                                    ),
+                                    className="clearfix",
+                                ),
+                            ]
                         ),
-                        
-                        className="clearfix",
+                        style={
+                            "width": "100%",
+                            "display": "flex",
+                            "flex": "1 1 auto",
+                            "margin-top": "5%",
+                            "margin-bottom": "5%",
+                            "border-radius": "2rem",
+                            "background-color": "#f5f5f5",
+                            "color": "black",
+                        },
                     ),
-                ]
-            ),
-            style={
-                "width": "100%",
-                "display": "flex",
-                "flex": "1 1 auto",
-                "margin-top": "5%",
-                "margin-bottom": "5%",
-                "border-radius": "2rem",
-                "background-color":'#f5f5f5',
-                "color":'black'
-            },
-        ),lg=8,md=8,sm=12
-        )],
-        style={'justify-content':'center'}
+                    lg=8,
+                    md=8,
+                    sm=12,
+                ),
+            ],
+            style={"justify-content": "center"},
         ),
-
         html.Div(
             [
                 dbc.Row(
@@ -458,9 +466,14 @@ home_page = dbc.Container(
                                             dbc.Button(
                                                 "Global Situation",
                                                 href="/global",
-                                                style={"text-align": "center","background-color":"#0a0582",'border-color':'transparent',"border-radius": "1rem"},
+                                                style={
+                                                    "text-align": "center",
+                                                    "background-color": "#0a0582",
+                                                    "border-color": "transparent",
+                                                    "border-radius": "1rem",
+                                                },
                                                 className="mr-1",
-                                                block=True
+                                                block=True,
                                             ),
                                         ]
                                     ),
@@ -469,12 +482,16 @@ home_page = dbc.Container(
                                     "border-radius": "2rem",
                                     "border-color": "#0a0582",
                                     "background-color": "#000000",
-                                    "border-style":'solid',
-                                    "border-width":'medium'
+                                    "border-style": "solid",
+                                    "border-width": "medium",
                                 },
-                                inverse=True,className="mb-4"
-                            )
-                        ,sm=12,md=12,lg=4),
+                                inverse=True,
+                                className="mb-4",
+                            ),
+                            sm=12,
+                            md=12,
+                            lg=4,
+                        ),
                         dbc.Col(
                             dbc.Card(
                                 [
@@ -492,9 +509,14 @@ home_page = dbc.Container(
                                             dbc.Button(
                                                 "Country Analysis",
                                                 href="/country",
-                                                style={"text-align": "center","background-color":"#1e1996",'border-color':'transparent',"border-radius": "1rem"},
+                                                style={
+                                                    "text-align": "center",
+                                                    "background-color": "#1e1996",
+                                                    "border-color": "transparent",
+                                                    "border-radius": "1rem",
+                                                },
                                                 className="mr-1",
-                                                block=True
+                                                block=True,
                                             ),
                                         ]
                                     ),
@@ -503,13 +525,16 @@ home_page = dbc.Container(
                                     "border-radius": "2rem",
                                     "border-color": "#1e1996",
                                     "background-color": "#000000",
-                                    "border-style":'solid',
-                                    "border-width":'medium'
+                                    "border-style": "solid",
+                                    "border-width": "medium",
                                 },
                                 inverse=True,
-                            ),sm=12,md=12,lg=4
+                            ),
+                            sm=12,
+                            md=12,
+                            lg=4,
                         ),
-                          dbc.Col(
+                        dbc.Col(
                             dbc.Card(
                                 [
                                     dbc.CardBody(
@@ -526,9 +551,14 @@ home_page = dbc.Container(
                                             dbc.Button(
                                                 "Forecast",
                                                 href="/forecast",
-                                                style={"text-align": "center","background-color":"#322daa",'border-color':'transparent', "border-radius": "1rem"},
+                                                style={
+                                                    "text-align": "center",
+                                                    "background-color": "#322daa",
+                                                    "border-color": "transparent",
+                                                    "border-radius": "1rem",
+                                                },
                                                 className="mr-1",
-                                                block=True
+                                                block=True,
                                             ),
                                         ]
                                     ),
@@ -537,66 +567,23 @@ home_page = dbc.Container(
                                     "border-radius": "2rem",
                                     "border-color": "#322daa",
                                     "background-color": "#000000",
-                                    "border-style":'solid',
-                                    "border-width":'medium'
+                                    "border-style": "solid",
+                                    "border-width": "medium",
                                 },
                                 inverse=True,
-                            ),sm=12,md=12,lg=4
+                            ),
+                            sm=12,
+                            md=12,
+                            lg=4,
                         ),
                     ],
                     className="mb-4",
                 ),
-                # dbc.Row(
-                #     [
-
-                #         dbc.Col(
-                #             dbc.Card(
-                #                 [
-                #                     dbc.CardBody(
-                #                         [
-                #                             html.H5(
-                #                                 "Preventive Measures",
-                #                                 className="card-title",
-                #                                 style={"text-align": "center"},
-                #                             ),
-                #                             html.P(
-                #                                 "This is some card content that we'll reuse",
-                #                                 className="card-text",
-                #                             ),
-                #                             dbc.Button(
-                #                                 "Click here to view Preventive Measures",
-                #                                 href="/prevent",
-                #                                 style={"text-align": "center","background-color":"#6e68fb",'border-color':'transparent'},
-                #                                 className="mr-1"
-                #                             ),
-                #                         ]
-                #                     ),
-                #                 ],
-                #                 style={
-                #                     "border-radius": "2rem",
-                #                     "border-color": "#6e68fb",
-                #                     "background-color": "#000000",
-                #                     "border-style":'solid',
-                #                     "border-width":'medium'
-                #                 },
-                #                 inverse=True,
-                #             ),sm=12,md=12,lg=6
-                #         ),
-                #     ],
-                #     className="mb-4",
-                # ),
             ],
-
         ),
     ],
     className="mt-5",
-    
 )
-
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
 
 global_page = html.Div(
     children=[
@@ -745,11 +732,6 @@ global_page = html.Div(
     ],
     className="m-5",
 )
-
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
 
 country_page = html.Div(
     children=[
@@ -1049,187 +1031,257 @@ forecast_page = html.Div(
     className="m-5",
 )
 
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-
 preventive_page = dbc.Container(
     children=[
-        # dbc.Row(
-        #     [
-        #         dbc.Col(html.Img(
-        #     src="https://api.pcloud.com/getpubthumb?code=XZuvpQXZsR3nbzh8S9j61OE1DfDCHbAVIOdk&linkpassword=undefined&size=413x460&crop=0&type=auto",
-        #     height="50%",
-        #     width="40%",
-        # ), align="start",lg=6,sm=12,md=8),
-        # dbc.Col(html.P('Wash your hands often with soap and water for at least 20 seconds especially after you have been in a public place, or after blowing your nose, coughing, or sneezing.'),align='start',lg=7,sm=12,md=8),
-        # dbc.Col(html.Img(
-        #     src="https://api.pcloud.com/getpubthumb?code=XZ7ipQXZ5KUuyw3hghJcuqkGaMUU1VQJqyOk&linkpassword=undefined&size=430x365&crop=0&type=auto",
-        #     height="50%",
-        #     width="40%",
-        #     style={'float':'right'},
-        # ), align="end",lg=8,sm=12,md=8),
-        # dbc.Col(html.P('Disinfect regularly used surfaces, avoid cash transactions. Use Credit Cards or Net Banking wherever possible'),align='end',lg=6,sm=12,md=6)
-        #     ]
-        # ),
-
-dbc.Row([dbc.Col(
-               dbc.Card(
-            dbc.CardBody(
-                [
-                    html.H5(
-                        "Wash Your Hands",
-                        className="card-title",
-                        style={"text-align": "center",'font-weight':'bold'},
-                    ),
-                    html.Div(
-                        dbc.Row([
-                            dbc.Col(
-                            html.Img(
-                                src="https://api.pcloud.com/getpubthumb?code=XZuvpQXZsR3nbzh8S9j61OE1DfDCHbAVIOdk&linkpassword=undefined&size=413x460&crop=0&type=auto",
-                                height="100%",
-                                width="100%",
-                                className="img-fluid",
-                                style={'padding-bottom':'10%',"border-radius": "5rem"}
-                            ),sm=8,lg=6,md=8,style={'display':'flex','align-items':'center'}),
-                            dbc.Col(
-                            html.P(
-                                '''Wash your hands often with soap and water for at least 20 seconds especially after you have been in a public place, or after blowing your nose, coughing, or sneezing.
-    Cover all surfaces of your hands and rub them together until they feel dry.
-    Avoid touching your eyes, nose, and mouth with unwashed hands.''',
-                                style={"text-align": "left",'font-size':'large'},
-                            ),sm=12,md=12,lg=6,style={'display':'flex','align-items':'center'}
-                            )]
-                        ),
-                        
-                        className="clearfix",
-                    ),
-                ]
-            ),
-            style={
-                "width": "100%",
-                "display": "flex",
-                "flex": "1 1 auto",
-                "margin-top": "5%",
-                "margin-bottom": "5%",
-                "border-radius": "2rem",
-                "background-color":'#f5f5f5',
-                "color":'black'
-            },
-        ),lg=8,md=8,sm=12),
-        dbc.Col(            
-        dbc.Card(
-            dbc.CardBody(
-                [
-                    html.H5(
-                        "Clean Surfaces In Contact",
-                        className="card-title",
-                        style={"text-align": "center",'font-weight':'bold'},
-                    ),
-                  html.Div(
-                        dbc.Row([
-                            dbc.Col(
-                            html.Img(
-                                src="https://api.pcloud.com/getpubthumb?code=XZ7ipQXZ5KUuyw3hghJcuqkGaMUU1VQJqyOk&linkpassword=undefined&size=430x365&crop=0&type=auto",
-                                height="100%",
-                                width="100%",
-                                className="img-fluid",
-                                style={'padding-bottom':'10%',"border-radius": "5rem"}
-                            ),sm=8,lg=6,md=8),
-                            dbc.Col(
-                           html.P('''Clean and disinfect frequently touched surfaces daily. This includes tables, doorknobs, light switches, countertops, handles, desks, phones, keyboards, toilets, faucets, and sinks.
-    - If surfaces are dirty, clean them. Use detergent or soap and water prior to disinfection.
-    - Then, use a household disinfectant. Most common EPA-registered household disinfectants will work. ''',
-                                style={"text-align": "left",'font-size':'large'},
-                            ),sm=12,md=12,lg=6,style={'display':'flex','align-items':'center'}
-                            )]
-                        ),
-                        
-                        className="clearfix",
-                    ),
-                ]
-            ),
-            style={
-                "width": "100%",
-                "display": "flex",
-                "flex": "1 1 auto",
-                "margin-top": "5%",
-                "margin-bottom": "5%",
-                "border-radius": "2rem",
-                "background-color":'#f5f5f5',
-                "color":'black'
-            },
-        ),lg=8,md=8,sm=12
-        ),
-
-        dbc.Col(            
-        dbc.Card(
-            dbc.CardBody(
-                [
-                    html.H5(
-                        "Always Cover Your Mouth",
-                        className="card-title",
-                        style={"text-align": "center",'font-weight':'bold'},
-                    ),
-                  html.Div(
-                        dbc.Row([
-                            dbc.Col(
-                            html.Img(
-                                src="https://api.pcloud.com/getpubthumb?code=XZY9HQXZEKg6hUK7fay5q06RYI65GJ5OXVay&linkpassword=undefined&size=499x499&crop=0&type=auto",
-                                height="100%",
-                                width="100%",
-                                className="img-fluid",
-                                style={'padding-bottom':'10%',"border-radius": "5rem"}
-                            ),sm=8,lg=6,md=8),
-                            dbc.Col(
-                           html.P('''You could spread COVID-19 to others even if you do not feel sick.
-    The cloth face cover is meant to protect other people in case you are infected.
-    Everyone should wear a cloth face cover in public settings and when around people who don’t live in your household, especially when other social distancing measures are difficult to maintain.
-    The cloth face cover is not a substitute for social distancing. ''',
-                                style={"text-align": "left",'font-size':'large'},
-                            ),sm=12,md=12,lg=6,style={'display':'flex','align-items':'center'}
-                            )]
-                        ),
-                        
-                        className="clearfix",
-                    ),
-                ]
-            ),
-            style={
-                "width": "100%",
-                "display": "flex",
-                "flex": "1 1 auto",
-                "margin-top": "5%",
-                "margin-bottom": "5%",
-                "border-radius": "2rem",
-                "background-color":'#f5f5f5',
-                "color":'black'
-            },
-        ),lg=8,md=8,sm=12
-        ),
-        ],
-        style={'justify-content':'center'}
-        ),
-
         dbc.Row(
             [
-                dbc.Col(html.Img(
-            src="https://api.pcloud.com/getpubthumb?code=XZlEpQXZpJuyvwybNSmg8RVr1VPyxYcWDHCX&linkpassword=undefined&size=279x382&crop=0&type=auto",
-            height="60%",
-            width="90%",
-            style={'margin-top':'25%','width':'125%'},
-        ), align="start",width=3),
-        dbc.Col(html.Img(src="https://api.pcloud.com/getpubthumb?code=XZScpQXZAAbOx5c5QeRUQzz7ji6jqFkeEJKk&linkpassword=undefined&size=387x99&crop=0&type=auto",width='100%'), align="center",width=6),
-        dbc.Col(html.Img(
-            src="https://api.pcloud.com/getpubthumb?code=XZfOpQXZdAvDtsdvjX0Rg6RWhabgDk11fMTy&linkpassword=undefined&size=218x433&crop=0&type=auto",
-            height="45%",
-            width="100%",
-            style={'float':'right'},
-        ), align="end",width=3),  
+                dbc.Col(
+                    dbc.Card(
+                        dbc.CardBody(
+                            [
+                                html.H5(
+                                    "Wash Your Hands",
+                                    className="card-title",
+                                    style={
+                                        "text-align": "center",
+                                        "font-weight": "bold",
+                                    },
+                                ),
+                                html.Div(
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                html.Img(
+                                                    src="https://api.pcloud.com/getpubthumb?code=XZuvpQXZsR3nbzh8S9j61OE1DfDCHbAVIOdk&linkpassword=undefined&size=413x460&crop=0&type=auto",
+                                                    height="100%",
+                                                    width="100%",
+                                                    className="img-fluid",
+                                                    style={
+                                                        "padding-bottom": "10%",
+                                                        "border-radius": "5rem",
+                                                    },
+                                                ),
+                                                sm=8,
+                                                lg=6,
+                                                md=8,
+                                                style={
+                                                    "display": "flex",
+                                                    "align-items": "center",
+                                                },
+                                            ),
+                                            dbc.Col(
+                                                html.P(
+                                                    """Wash your hands often with soap and water for at least 20 seconds especially after you have been in a public place, or after blowing your nose, coughing, or sneezing.
+    Cover all surfaces of your hands and rub them together until they feel dry.
+    Avoid touching your eyes, nose, and mouth with unwashed hands.""",
+                                                    style={
+                                                        "text-align": "left",
+                                                        "font-size": "large",
+                                                    },
+                                                ),
+                                                sm=12,
+                                                md=12,
+                                                lg=6,
+                                                style={
+                                                    "display": "flex",
+                                                    "align-items": "center",
+                                                },
+                                            ),
+                                        ]
+                                    ),
+                                    className="clearfix",
+                                ),
+                            ]
+                        ),
+                        style={
+                            "width": "100%",
+                            "display": "flex",
+                            "flex": "1 1 auto",
+                            "margin-top": "5%",
+                            "margin-bottom": "5%",
+                            "border-radius": "2rem",
+                            "background-color": "#f5f5f5",
+                            "color": "black",
+                        },
+                    ),
+                    lg=8,
+                    md=8,
+                    sm=12,
+                ),
+                dbc.Col(
+                    dbc.Card(
+                        dbc.CardBody(
+                            [
+                                html.H5(
+                                    "Clean Surfaces In Contact",
+                                    className="card-title",
+                                    style={
+                                        "text-align": "center",
+                                        "font-weight": "bold",
+                                    },
+                                ),
+                                html.Div(
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                html.Img(
+                                                    src="https://api.pcloud.com/getpubthumb?code=XZ7ipQXZ5KUuyw3hghJcuqkGaMUU1VQJqyOk&linkpassword=undefined&size=430x365&crop=0&type=auto",
+                                                    height="100%",
+                                                    width="100%",
+                                                    className="img-fluid",
+                                                    style={
+                                                        "padding-bottom": "10%",
+                                                        "border-radius": "5rem",
+                                                    },
+                                                ),
+                                                sm=8,
+                                                lg=6,
+                                                md=8,
+                                            ),
+                                            dbc.Col(
+                                                html.P(
+                                                    """Clean and disinfect frequently touched surfaces daily. This includes tables, doorknobs, light switches, countertops, handles, desks, phones, keyboards, toilets, faucets, and sinks.
+    - If surfaces are dirty, clean them. Use detergent or soap and water prior to disinfection.
+    - Then, use a household disinfectant. Most common EPA-registered household disinfectants will work. """,
+                                                    style={
+                                                        "text-align": "left",
+                                                        "font-size": "large",
+                                                    },
+                                                ),
+                                                sm=12,
+                                                md=12,
+                                                lg=6,
+                                                style={
+                                                    "display": "flex",
+                                                    "align-items": "center",
+                                                },
+                                            ),
+                                        ]
+                                    ),
+                                    className="clearfix",
+                                ),
+                            ]
+                        ),
+                        style={
+                            "width": "100%",
+                            "display": "flex",
+                            "flex": "1 1 auto",
+                            "margin-top": "5%",
+                            "margin-bottom": "5%",
+                            "border-radius": "2rem",
+                            "background-color": "#f5f5f5",
+                            "color": "black",
+                        },
+                    ),
+                    lg=8,
+                    md=8,
+                    sm=12,
+                ),
+                dbc.Col(
+                    dbc.Card(
+                        dbc.CardBody(
+                            [
+                                html.H5(
+                                    "Always Cover Your Mouth",
+                                    className="card-title",
+                                    style={
+                                        "text-align": "center",
+                                        "font-weight": "bold",
+                                    },
+                                ),
+                                html.Div(
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                html.Img(
+                                                    src="https://api.pcloud.com/getpubthumb?code=XZY9HQXZEKg6hUK7fay5q06RYI65GJ5OXVay&linkpassword=undefined&size=499x499&crop=0&type=auto",
+                                                    height="100%",
+                                                    width="100%",
+                                                    className="img-fluid",
+                                                    style={
+                                                        "padding-bottom": "10%",
+                                                        "border-radius": "5rem",
+                                                    },
+                                                ),
+                                                sm=8,
+                                                lg=6,
+                                                md=8,
+                                            ),
+                                            dbc.Col(
+                                                html.P(
+                                                    """You could spread COVID-19 to others even if you do not feel sick.
+    The cloth face cover is meant to protect other people in case you are infected.
+    Everyone should wear a cloth face cover in public settings and when around people who don’t live in your household, especially when other social distancing measures are difficult to maintain.
+    The cloth face cover is not a substitute for social distancing. """,
+                                                    style={
+                                                        "text-align": "left",
+                                                        "font-size": "large",
+                                                    },
+                                                ),
+                                                sm=12,
+                                                md=12,
+                                                lg=6,
+                                                style={
+                                                    "display": "flex",
+                                                    "align-items": "center",
+                                                },
+                                            ),
+                                        ]
+                                    ),
+                                    className="clearfix",
+                                ),
+                            ]
+                        ),
+                        style={
+                            "width": "100%",
+                            "display": "flex",
+                            "flex": "1 1 auto",
+                            "margin-top": "5%",
+                            "margin-bottom": "5%",
+                            "border-radius": "2rem",
+                            "background-color": "#f5f5f5",
+                            "color": "black",
+                        },
+                    ),
+                    lg=8,
+                    md=8,
+                    sm=12,
+                ),
+            ],
+            style={"justify-content": "center"},
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    html.Img(
+                        src="https://api.pcloud.com/getpubthumb?code=XZlEpQXZpJuyvwybNSmg8RVr1VPyxYcWDHCX&linkpassword=undefined&size=279x382&crop=0&type=auto",
+                        height="60%",
+                        width="90%",
+                        style={"margin-top": "25%", "width": "125%"},
+                    ),
+                    align="start",
+                    width=3,
+                ),
+                dbc.Col(
+                    html.Img(
+                        src="https://api.pcloud.com/getpubthumb?code=XZScpQXZAAbOx5c5QeRUQzz7ji6jqFkeEJKk&linkpassword=undefined&size=387x99&crop=0&type=auto",
+                        width="100%",
+                    ),
+                    align="center",
+                    width=6,
+                ),
+                dbc.Col(
+                    html.Img(
+                        src="https://api.pcloud.com/getpubthumb?code=XZfOpQXZdAvDtsdvjX0Rg6RWhabgDk11fMTy&linkpassword=undefined&size=218x433&crop=0&type=auto",
+                        height="45%",
+                        width="100%",
+                        style={"float": "right"},
+                    ),
+                    align="end",
+                    width=3,
+                ),
             ]
         ),
-        
     ],
 )
 
@@ -1237,15 +1289,9 @@ app.layout = html.Div(
     [dcc.Location(id="url", refresh=False), navbar, html.Div(id="page-content")]
 )
 
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-
-
 # Callbacks for the Global Situation Page
 
-
+# Updates the message on top of the page
 @app.callback(
     dash.dependencies.Output("global-message", "children"),
     dash.dependencies.Input("confirmed", "n_clicks"),
@@ -1292,6 +1338,7 @@ def update_message(btn1, btn2, btn3):
         )
 
 
+# Updates the huge world map, the animation, and the time series on the page
 @app.callback(
     dash.dependencies.Output("metric-output", "figure"),
     dash.dependencies.Output("animation-output", "figure"),
@@ -1306,30 +1353,31 @@ def update_graphs(btn1, btn2, btn3):
 
     if "confirmed" in changed_id:
         return (
-            map.plot_study(country_cases_sorted, columns, confirmed),
-            animations.animated_barchart(df=confirmed_global),
-            animations.plot_world_timeseries(confirmed_global, "confirmed"),
+            maps.plot_study(country_cases_sorted, columns, confirmed),
+            animations.animated_barchart(df=confirmed_global, name="confirmed"),
+            timeseries.plot_world_timeseries(confirmed_global, "confirmed"),
         )
     elif "recoveries" in changed_id:
         return (
-            map.plot_study(country_cases_sorted, columns, recovered),
-            animations.animated_barchart(df=recovered_global),
-            animations.plot_world_timeseries(recovered_global, "recovered"),
+            maps.plot_study(country_cases_sorted, columns, recovered),
+            animations.animated_barchart(df=recovered_global, name="recovered"),
+            timeseries.plot_world_timeseries(recovered_global, "recovered"),
         )
     elif "deaths" in changed_id:
         return (
-            map.plot_study(country_cases_sorted, columns, deaths),
-            animations.animated_barchart(df=deaths_global),
-            animations.plot_world_timeseries(deaths_global, "deaths"),
+            maps.plot_study(country_cases_sorted, columns, deaths),
+            animations.animated_barchart(df=deaths_global, name="deaths"),
+            timeseries.plot_world_timeseries(deaths_global, "deaths"),
         )
     else:
         return (
-            map.plot_study(country_cases_sorted, columns, confirmed),
-            animations.animated_barchart(df=confirmed_global),
-            animations.plot_world_timeseries(confirmed_global, "confirmed"),
+            maps.plot_study(country_cases_sorted, columns, confirmed),
+            animations.animated_barchart(df=confirmed_global, name="confirmed"),
+            timeseries.plot_world_timeseries(confirmed_global, "confirmed"),
         )
 
 
+# Updates the text and stats on the page
 @app.callback(
     dash.dependencies.Output("today", "children"),
     dash.dependencies.Output("lastweek", "children"),
@@ -1404,15 +1452,9 @@ def update_cases(btn1, btn2, btn3):
             "-" + format(today_data["cases"] - lastmonth_cases, ",d"),
         )
 
-
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-
 # Callbacks for the Country Analysis Page
 
-
+# Updates the message on top of the page for the country selected in the dropdown
 @app.callback(
     dash.dependencies.Output("country-message", "children"),
     dash.dependencies.Input("country-dropdown", "value"),
@@ -1466,6 +1508,7 @@ def update_country_message(value, btn1, btn2, btn3):
         )
 
 
+# Updates the graphs shown on the page for the country chosen in the dropdown
 @app.callback(
     dash.dependencies.Output("metric-output-country", "figure"),
     dash.dependencies.Output("timeseries-output-country", "figure"),
@@ -1480,49 +1523,49 @@ def update_graphs_country(value, btn1, btn2, btn3):
     if "confirmed-country" in changed_id:
         try:
             return (
-                nmf.plot_country(value, today_country_data, "confirmed"),
-                animations.static_line(confirmed_global, "confirmed", value),
+                maps.plot_country(value, today_country_data, "Confirmed"),
+                timeseries.static_line(confirmed_global, value),
             )
         except:
             return (
-                map.plot_study(country_cases_sorted, columns, confirmed, value),
-                animations.static_line(confirmed_global, "confirmed", value),
+                maps.plot_study(country_cases_sorted, columns, confirmed, value),
+                timeseries.static_line(confirmed_global, value),
             )
     elif "recoveries-country" in changed_id:
         try:
             return (
-                nmf.plot_country(value, today_country_data, "recoveries"),
-                animations.static_line(confirmed_global, "recovered", value),
+                maps.plot_country(value, today_country_data, "Recoveries"),
+                timeseries.static_line(confirmed_global, value),
             )
         except:
             return (
-                map.plot_study(country_cases_sorted, columns, recovered, value),
-                animations.static_line(confirmed_global, "recovered", value),
+                maps.plot_study(country_cases_sorted, columns, recovered, value),
+                timeseries.static_line(confirmed_global, value),
             )
     elif "deaths-country" in changed_id:
         try:
             return (
-                nmf.plot_country(value, today_country_data, "deaths"),
-                animations.static_line(confirmed_global, "deaths", value),
+                maps.plot_country(value, today_country_data, "deaths"),
+                timeseries.static_line(confirmed_global, value),
             )
         except:
             return (
-                map.plot_study(country_cases_sorted, columns, deaths, value),
-                animations.static_line(confirmed_global, "deaths", value),
+                maps.plot_study(country_cases_sorted, columns, deaths, value),
+                timeseries.static_line(confirmed_global, value),
             )
     else:
         try:
             return (
-                nmf.plot_country(value, today_country_data, "confirmed"),
-                animations.static_line(confirmed_global, "confirmed", value),
+                maps.plot_country(value, today_country_data, "confirmed"),
+                timeseries.static_line(confirmed_global, value),
             )
         except:
             return (
-                map.plot_study(country_cases_sorted, columns, confirmed, value),
-                animations.static_line(confirmed_global, "confirmed", value),
+                maps.plot_study(country_cases_sorted, columns, confirmed, value),
+                timeseries.static_line(confirmed_global, value),
             )
 
-
+# Update the stats shown on the page
 @app.callback(
     dash.dependencies.Output("today-country", "children"),
     dash.dependencies.Output("lastweek-country", "children"),
@@ -1616,7 +1659,9 @@ def update_cases_country(value, btn1, btn2, btn3):
 )
 def update_stats(value, btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
-    country_stats = nmf.get_country_frame(nmf.choose_country(today_country_data, value))
+    country_stats = maps.get_country_frame(
+        maps.choose_country(today_country_data, value)
+    )
 
     try:
         if "confirmed-country" in changed_id:
@@ -1668,19 +1713,10 @@ def update_stats(value, btn1, btn2, btn3):
     except:
         return (
             html.H5(
-                "Sorry! Unfortunately we do no have sufficient data at the moment."
+                "Sorry! Unfortunately we do not have sufficient data at the moment."
             ),
             None
-            # html.H4(
-            #     "Sorry! Unfortunately we do no have sufficient data at the moment."
-            # ),
         )
-
-
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
 
 # Callbacks for the Forecasts Page
 
@@ -1768,6 +1804,7 @@ def forecast_cases(btn1, btn2, btn3, value):
                     preds, striped=True, bordered=True, hover=True
                 ),
             )
+
 
 @app.callback(
     dash.dependencies.Output("page-content", "children"),

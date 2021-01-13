@@ -26,6 +26,7 @@ def take_top10(df):
     df = df[df["country"].isin(top)]
     return df
 
+
 def line_comparison_data(country):
     whole_df = pd.DataFrame()
     whole_df["dates"] = list(confirmed_global.columns[1:])
@@ -44,11 +45,13 @@ def line_comparison_data(country):
     )
     return whole_df
 
+
 def compare(df, *args):
     l = list(args)
     temp = unpivot(df)
     temp = temp[temp["country"].isin(l)]
     return temp
+
 
 def create_data(df):
     new = take_top10(df)
@@ -88,42 +91,6 @@ def animated_barchart(df, name):
     )
     return plot_fig(create_data(take_top10(unpivot(df))), color)
 
-def static_line(df, df_name, *args):
-    df = compare(df, *args)
-    ff = create_data(df)
-    if df_name == "confirmed":
-        fig = px.line(
-            ff,
-            x="Date",
-            y="Cases",
-            template="plotly_dark",
-            color_discrete_sequence=["blue"] * len(ff),
-            range_y=[0, ff["Cases"].max()],
-        )
-        fig.layout.update(hovermode="x")
-        return fig
-    elif df_name == "recovered":
-        fig = px.line(
-            ff,
-            x="Date",
-            y="Cases",
-            template="plotly_dark",
-            color_discrete_sequence=["green"] * len(ff),
-            range_y=[0, ff["Cases"].max()],
-        )
-        fig.layout.update(hovermode="x")
-        return fig
-    elif df_name == "deaths":
-        fig = px.line(
-            ff,
-            x="Date",
-            y="Cases",
-            template="plotly_dark",
-            color_discrete_sequence=["red"] * len(ff),
-            range_y=[0, ff["Cases"].max()],
-        )
-        fig.layout.update(hovermode="x")
-        return fig
 
 """
 Examples:

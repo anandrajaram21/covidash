@@ -127,6 +127,7 @@ def choose_country(array, country):
 def get_final_object(country, array):
     return cases_object(choose_country(array, country))
 
+
 (
     today_data,
     today_country_data,
@@ -141,12 +142,18 @@ def get_final_object(country, array):
 
 av.country_cases_sorted = av.country_cases
 
-confirmed_global, deaths_global, recovered_global, country_cases, country_cases_sorted = (
+(
+    confirmed_global,
+    deaths_global,
+    recovered_global,
+    country_cases,
+    country_cases_sorted,
+) = (
     av.confirmed_global,
     av.deaths_global,
     av.recovered_global,
     av.country_cases,
-    av.country_cases_sorted
+    av.country_cases_sorted,
 )
 
 # Importing these modules later as they rely on having data stored
@@ -155,21 +162,24 @@ import animations
 import maps
 import country_visuals as cv
 import timeseries
+
 # import cnn
 
 # Making the Graphs and Declaring the Variables Required for the Pages
 
 animations_figure = animations.animated_barchart(confirmed_global, "confirmed")
 
-confirmed = dict(study="confirmed", color="blue")
-recovered = dict(study="recovered", color="green")
-deaths = dict(study="deaths", color="red")
+confirmed = dict(study="confirmed", color="#45a2ff")
+recovered = dict(study="recovered", color="#42f587")
+deaths = dict(study="deaths", color="#f54842")
 
 columns = ["country", ["deaths", "confirmed", "recovered"], "Lat", "Long_"]
 
 world_map = maps.plot_study(country_cases_sorted, columns, confirmed)
 
-confirmed_timeseries = timeseries.plot_world_timeseries(confirmed_global, "confirmed", n=-30, daily=True)
+confirmed_timeseries = timeseries.plot_world_timeseries(
+    confirmed_global, "confirmed", n=-30, daily=True
+)
 
 country_list = confirmed_global["country"]
 
@@ -438,7 +448,7 @@ home_page = dbc.Container(
                                                 href="/global",
                                                 style={
                                                     "text-align": "center",
-                                                    "background-color": "#0a0582",
+                                                    "background-color": "#322daa",
                                                     "border-color": "transparent",
                                                     "border-radius": "1rem",
                                                 },
@@ -450,7 +460,7 @@ home_page = dbc.Container(
                                 ],
                                 style={
                                     "border-radius": "2rem",
-                                    "border-color": "#0a0582",
+                                    "border-color": "#322daa",
                                     "background-color": "#000000",
                                     "border-style": "solid",
                                     "border-width": "medium",
@@ -481,7 +491,7 @@ home_page = dbc.Container(
                                                 href="/country",
                                                 style={
                                                     "text-align": "center",
-                                                    "background-color": "#1e1996",
+                                                    "background-color": "#322daa",
                                                     "border-color": "transparent",
                                                     "border-radius": "1rem",
                                                 },
@@ -493,7 +503,7 @@ home_page = dbc.Container(
                                 ],
                                 style={
                                     "border-radius": "2rem",
-                                    "border-color": "#1e1996",
+                                    "border-color": "#322daa",
                                     "background-color": "#000000",
                                     "border-style": "solid",
                                     "border-width": "medium",
@@ -1325,25 +1335,33 @@ def update_graphs(btn1, btn2, btn3):
         return (
             maps.plot_study(country_cases_sorted, columns, confirmed),
             animations.animated_barchart(df=confirmed_global, name="confirmed"),
-            timeseries.plot_world_timeseries(confirmed_global, "confirmed", n=-30, daily=True),
+            timeseries.plot_world_timeseries(
+                confirmed_global, "confirmed", n=-30, daily=True
+            ),
         )
     elif "recoveries" in changed_id:
         return (
             maps.plot_study(country_cases_sorted, columns, recovered),
             animations.animated_barchart(df=recovered_global, name="recovered"),
-            timeseries.plot_world_timeseries(recovered_global, "recovered", n=-30, daily=True),
+            timeseries.plot_world_timeseries(
+                recovered_global, "recovered", n=-30, daily=True
+            ),
         )
     elif "deaths" in changed_id:
         return (
             maps.plot_study(country_cases_sorted, columns, deaths),
             animations.animated_barchart(df=deaths_global, name="deaths"),
-            timeseries.plot_world_timeseries(deaths_global, "deaths", n=-30, daily=True),
+            timeseries.plot_world_timeseries(
+                deaths_global, "deaths", n=-30, daily=True
+            ),
         )
     else:
         return (
             maps.plot_study(country_cases_sorted, columns, confirmed),
             animations.animated_barchart(df=confirmed_global, name="confirmed"),
-            timeseries.plot_world_timeseries(confirmed_global, "confirmed", n=-30, daily=True),
+            timeseries.plot_world_timeseries(
+                confirmed_global, "confirmed", n=-30, daily=True
+            ),
         )
 
 
@@ -1422,6 +1440,7 @@ def update_cases(btn1, btn2, btn3):
             "-" + format(today_data["cases"] - lastmonth_cases, ",d"),
         )
 
+
 # Callbacks for the Country Analysis Page
 
 # Updates the message on top of the page for the country selected in the dropdown
@@ -1494,46 +1513,95 @@ def update_graphs_country(value, btn1, btn2, btn3):
         try:
             return (
                 maps.plot_country(value, today_country_data, "Confirmed"),
-                animations.static_line(confirmed_global, "confirmed", value),
+                timeseries.plot_timeseries(
+                    value,
+                    timeseries.get_new_cases,
+                    "Confirmed Cases",
+                    n=-30,
+                    daily=True,
+                ),
             )
         except:
             return (
                 maps.plot_study(country_cases_sorted, columns, confirmed, value),
-                animations.static_line(confirmed_global, "confirmed", value),
+                timeseries.plot_timeseries(
+                    value,
+                    timeseries.get_new_cases,
+                    "Confirmed Cases",
+                    n=-30,
+                    daily=True,
+                ),
             )
     elif "recoveries-country" in changed_id:
         try:
             return (
                 maps.plot_country(value, today_country_data, "Recoveries"),
-                animations.static_line(recovered_global, "recovered", value),
+                timeseries.plot_timeseries(
+                    value,
+                    timeseries.get_new_recoveries,
+                    "Recoveries",
+                    n=-30,
+                    daily=True,
+                ),
             )
         except:
             return (
                 maps.plot_study(country_cases_sorted, columns, recovered, value),
-                animations.static_line(recovered_global, "recovered", value),
+                timeseries.plot_timeseries(
+                    value,
+                    timeseries.get_new_recoveries,
+                    "Recoveries",
+                    n=-30,
+                    daily=True,
+                ),
             )
     elif "deaths-country" in changed_id:
         try:
             return (
                 maps.plot_country(value, today_country_data, "deaths"),
-                animations.static_line(deaths_global, "deaths", value),
+                timeseries.plot_timeseries(
+                    value,
+                    timeseries.get_new_deaths,
+                    "Deaths",
+                    n=-30,
+                    daily=True,
+                ),
             )
         except:
             return (
-                maps.plot_study(country_cases_sorted, columns, deaths, value),
-                animations.static_line(deaths_global, "deaths", value),
+                maps.plot_country(value, today_country_data, "deaths"),
+                timeseries.plot_timeseries(
+                    value,
+                    timeseries.get_new_deaths,
+                    "Deaths",
+                    n=-30,
+                    daily=True,
+                ),
             )
     else:
         try:
             return (
-                maps.plot_country(value, today_country_data, "confirmed"),
-                animations.static_line(confirmed_global, "confirmed", value),
+                maps.plot_country(value, today_country_data, "Confirmed"),
+                timeseries.plot_timeseries(
+                    value,
+                    timeseries.get_new_cases,
+                    "Confirmed Cases",
+                    n=-30,
+                    daily=True,
+                ),
             )
         except:
             return (
                 maps.plot_study(country_cases_sorted, columns, confirmed, value),
-                animations.static_line(confirmed_global, "confirmed", value),
+                timeseries.plot_timeseries(
+                    value,
+                    timeseries.get_new_cases,
+                    "Confirmed Cases",
+                    n=-30,
+                    daily=False,
+                ),
             )
+
 
 # Update the stats shown on the page
 @app.callback(
@@ -1637,7 +1705,9 @@ def update_stats(value, btn1, btn2, btn3):
         if "confirmed-country" in changed_id:
             return (
                 dcc.Graph(
-                    figure=cv.plot_province(country_stats, "Confirmed", "Confirmed Cases")
+                    figure=cv.plot_province(
+                        country_stats, "Confirmed", "Confirmed Cases"
+                    )
                 ),
                 dbc.Table.from_dataframe(
                     cv.table_province_data(country_stats, "Confirmed"),
@@ -1671,7 +1741,9 @@ def update_stats(value, btn1, btn2, btn3):
         else:
             return (
                 dcc.Graph(
-                    figure=cv.plot_province(country_stats, "Confirmed", "Confirmed Cases")
+                    figure=cv.plot_province(
+                        country_stats, "Confirmed", "Confirmed Cases"
+                    )
                 ),
                 dbc.Table.from_dataframe(
                     cv.table_province_data(country_stats, "Confirmed"),
@@ -1685,8 +1757,9 @@ def update_stats(value, btn1, btn2, btn3):
             html.H5(
                 "Sorry! Unfortunately we do not have sufficient data at the moment."
             ),
-            None
+            None,
         )
+
 
 # Callbacks for the Forecasts Page
 

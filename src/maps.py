@@ -11,6 +11,12 @@ from itertools import chain
 from math import log
 from math import e
 
+chart_studio.tools.set_credentials_file(
+    username="chartstudiouser", api_key="m9KxT5JPEEukONNW8E50"
+)
+
+mapbox_access_token = "pk.eyJ1IjoiY2hhcnRzdHVkaW91c2VyIiwiYSI6ImNrZXd3bTBoNTA4bnYyemw4N3l5aDN5azIifQ.7e-KoC1KMXr_EKbkahgAQQ"
+
 confirmed_global, deaths_global, recovered_global, country_cases_sorted = (
     av.confirmed_global,
     av.deaths_global,

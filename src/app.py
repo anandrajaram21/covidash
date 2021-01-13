@@ -1,10 +1,4 @@
-"""
-# App
-This file contains the source code for the web app made with plotly dash
-"""
-
 # Imports and data preprocessing
-
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -101,21 +95,10 @@ def collect_data():
     deaths_global = deaths_global.groupby(["country"], as_index=False).sum()
     recovered_global = recovered_global.groupby(["country"], as_index=False).sum()
 
-    # confirmed_global.to_csv("confirmed_global.csv",index = False)
-    # deaths_global.to_csv("deaths_global.csv",index = False)
-    # recovered_global.to_csv("recovered_global.csv",index = False)
-    # country_cases.to_csv("country_cases.csv",index = False)
+    country_cases_sorted = country_cases.sort_values("confirmed", ascending=False)
+    country_cases_sorted.index = [x for x in range(len(country_cases_sorted))]
 
-    return (confirmed_global, deaths_global, recovered_global, country_cases)
-
-    # except:
-    # #pass
-    # return (
-    # pd.read_csv("confirmed_global.csv"),
-    # pd.read_csv("deaths_global.csv"),
-    # pd.read_csv("recovered_global.csv"),
-    # pd.read_csv("country_cases.csv")
-    # )
+    return (confirmed_global, deaths_global, recovered_global, country_cases_sorted)
 
 
 @cache.memoize(timeout=TIMEOUT)
@@ -144,37 +127,6 @@ def choose_country(array, country):
 def get_final_object(country, array):
     return cases_object(choose_country(array, country))
 
-
-def plot_province(data, metric, metric_name):
-    fig = go.Figure()
-
-    fig.add_trace(go.Bar(x=data["Provinces"], y=data[metric]))
-
-    fig.update_layout(
-        title={
-            "text": "Province Details",
-            "y": 0.9,
-            "x": 0.5,
-            "xanchor": "center",
-            "yanchor": "top",
-        },
-        template="plotly_dark",
-        xaxis_title="Province",
-        yaxis_title="Cases",
-    )
-
-    return fig
-
-
-def table_province_data(data, metric):
-    df = pd.DataFrame(data={"Provinces": data["Provinces"], metric: data[metric]})
-    df[metric] = df[metric].map(lambda x: format(x, ",d"))
-    if len(df) <= 1:
-        return
-    else:
-        return df
-
-
 (
     today_data,
     today_country_data,
@@ -187,31 +139,27 @@ def table_province_data(data, metric):
     av.country_cases,
 ) = collect_data()
 
-confirmed_global, deaths_global, recovered_global, country_cases = (
+av.country_cases_sorted = av.country_cases
+
+confirmed_global, deaths_global, recovered_global, country_cases, country_cases_sorted = (
     av.confirmed_global,
     av.deaths_global,
     av.recovered_global,
     av.country_cases,
+    av.country_cases_sorted
 )
-
-country_cases_sorted = country_cases.sort_values("confirmed", ascending=False)
 
 # Importing these modules later as they rely on having data stored
 
 import animations
-import map
-import new_map_functions as nmf
-
-import cnn
-
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
+import maps
+import country_visuals as cv
+import timeseries
+# import cnn
 
 # Making the Graphs and Declaring the Variables Required for the Pages
 
-animations_figure = animations.animated_barchart(confirmed_global)
+animations_figure = animations.animated_barchart(confirmed_global, "confirmed")
 
 confirmed = dict(study="confirmed", color="blue")
 recovered = dict(study="recovered", color="green")
@@ -219,26 +167,21 @@ deaths = dict(study="deaths", color="red")
 
 columns = ["country", ["deaths", "confirmed", "recovered"], "Lat", "Long_"]
 
-world_map = map.plot_study(country_cases_sorted, columns, confirmed)
+world_map = maps.plot_study(country_cases_sorted, columns, confirmed)
 
-confirmed_timeseries = animations.plot_world_timeseries(confirmed_global, "confirmed")
+confirmed_timeseries = timeseries.plot_world_timeseries(confirmed_global, "confirmed", n=-30, daily=True)
 
 country_list = confirmed_global["country"]
 
 today = date.today()
 
-world_timeseries_confirmed = animations.get_world_timeseries(confirmed_global)
-world_timeseries_deaths = animations.get_world_timeseries(deaths_global)
-world_timeseries_recovered = animations.get_world_timeseries(recovered_global)
+world_timeseries_confirmed = timeseries.get_world_timeseries(confirmed_global)
+world_timeseries_deaths = timeseries.get_world_timeseries(deaths_global)
+world_timeseries_recovered = timeseries.get_world_timeseries(recovered_global)
 
 confirmed_global_cases_today = format(today_data["cases"], ",d")
 confirmed_recovered_cases_today = format(today_data["recovered"], ",d")
 confirmed_deaths_cases_today = format(today_data["deaths"], ",d")
-
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
 
 # Making the Individual Pages
 
@@ -256,11 +199,6 @@ navbar = dbc.NavbarSimple(
     brand_href="/",
 )
 
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-
 home_page = dbc.Container(
     children=[
         dbc.Card(
@@ -272,7 +210,6 @@ home_page = dbc.Container(
                                 [
                                     dbc.Col(
                                         html.Img(
-                                            # src="https://www.fda.gov/files/covid19-1600x900.jpg",
                                             src="https://fourremovalsolutions.sg/wp-content/uploads/2020/04/Four-Solutions-Disinfecting-Spraying-01.png",
                                             height="100%",
                                             width="100%",
@@ -335,30 +272,6 @@ home_page = dbc.Container(
                 "background-color": "#060606",
             },
         ),
-        # dcc.Markdown(av.covid_19, className="m-5"),
-        #         dbc.Card(
-        #     dbc.CardBody(
-        #         [
-        #             html.H5("What COVID-19 is", className="card-title", style={'text-align':'center'}),
-        #             html.Div(
-        #                 [
-        #                 html.Img(
-        #             src="https://www.fda.gov/files/covid19-1600x900.jpg",
-        #             height="30%",
-        #             width="30%",
-        #             style={'float':'left','padding-right':'5%'},
-        #             className='img-fluid'
-        #         ),
-        #          html.P(
-        #     'Coronavirus disease 2019 (COVID-19) is an infectious disease caused by severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2). It was first identified in December 2019 in Wuhan, Hubei, China, and has resulted in an ongoing pandemic.',
-        #                  style={'text-align':'left'}
-        #             ),],
-        #             className='clearfix'
-        #             )
-        #         ]
-        #     ),
-        #     style={"width": "100%",'display':'flex','flex':'1 1 auto','margin-top':'5%','margin-bottom':'5%','border-radius':'2rem'},
-        # ),
         dbc.Row(
             [
                 dbc.Col(
@@ -636,54 +549,11 @@ home_page = dbc.Container(
                     ],
                     className="mb-4",
                 ),
-                # dbc.Row(
-                #     [
-                #         dbc.Col(
-                #             dbc.Card(
-                #                 [
-                #                     dbc.CardBody(
-                #                         [
-                #                             html.H5(
-                #                                 "Preventive Measures",
-                #                                 className="card-title",
-                #                                 style={"text-align": "center"},
-                #                             ),
-                #                             html.P(
-                #                                 "This is some card content that we'll reuse",
-                #                                 className="card-text",
-                #                             ),
-                #                             dbc.Button(
-                #                                 "Click here to view Preventive Measures",
-                #                                 href="/prevent",
-                #                                 style={"text-align": "center","background-color":"#6e68fb",'border-color':'transparent'},
-                #                                 className="mr-1"
-                #                             ),
-                #                         ]
-                #                     ),
-                #                 ],
-                #                 style={
-                #                     "border-radius": "2rem",
-                #                     "border-color": "#6e68fb",
-                #                     "background-color": "#000000",
-                #                     "border-style":'solid',
-                #                     "border-width":'medium'
-                #                 },
-                #                 inverse=True,
-                #             ),sm=12,md=12,lg=6
-                #         ),
-                #     ],
-                #     className="mb-4",
-                # ),
             ],
         ),
     ],
     className="mt-5",
 )
-
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
 
 global_page = html.Div(
     children=[
@@ -832,11 +702,6 @@ global_page = html.Div(
     ],
     className="m-5",
 )
-
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
 
 country_page = html.Div(
     children=[
@@ -1136,30 +1001,8 @@ forecast_page = html.Div(
     className="m-5",
 )
 
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-
 preventive_page = dbc.Container(
     children=[
-        # dbc.Row(
-        #     [
-        #         dbc.Col(html.Img(
-        #     src="https://api.pcloud.com/getpubthumb?code=XZuvpQXZsR3nbzh8S9j61OE1DfDCHbAVIOdk&linkpassword=undefined&size=413x460&crop=0&type=auto",
-        #     height="50%",
-        #     width="40%",
-        # ), align="start",lg=6,sm=12,md=8),
-        # dbc.Col(html.P('Wash your hands often with soap and water for at least 20 seconds especially after you have been in a public place, or after blowing your nose, coughing, or sneezing.'),align='start',lg=7,sm=12,md=8),
-        # dbc.Col(html.Img(
-        #     src="https://api.pcloud.com/getpubthumb?code=XZ7ipQXZ5KUuyw3hghJcuqkGaMUU1VQJqyOk&linkpassword=undefined&size=430x365&crop=0&type=auto",
-        #     height="50%",
-        #     width="40%",
-        #     style={'float':'right'},
-        # ), align="end",lg=8,sm=12,md=8),
-        # dbc.Col(html.P('Disinfect regularly used surfaces, avoid cash transactions. Use Credit Cards or Net Banking wherever possible'),align='end',lg=6,sm=12,md=6)
-        #     ]
-        # ),
         dbc.Row(
             [
                 dbc.Col(
@@ -1416,15 +1259,9 @@ app.layout = html.Div(
     [dcc.Location(id="url", refresh=False), navbar, html.Div(id="page-content")]
 )
 
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-
-
 # Callbacks for the Global Situation Page
 
-
+# Updates the message on top of the page
 @app.callback(
     dash.dependencies.Output("global-message", "children"),
     dash.dependencies.Input("confirmed", "n_clicks"),
@@ -1471,6 +1308,7 @@ def update_message(btn1, btn2, btn3):
         )
 
 
+# Updates the huge world map, the animation, and the time series on the page
 @app.callback(
     dash.dependencies.Output("metric-output", "figure"),
     dash.dependencies.Output("animation-output", "figure"),
@@ -1485,30 +1323,31 @@ def update_graphs(btn1, btn2, btn3):
 
     if "confirmed" in changed_id:
         return (
-            map.plot_study(country_cases_sorted, columns, confirmed),
-            animations.animated_barchart(df=confirmed_global),
-            animations.plot_world_timeseries(confirmed_global, "confirmed"),
+            maps.plot_study(country_cases_sorted, columns, confirmed),
+            animations.animated_barchart(df=confirmed_global, name="confirmed"),
+            timeseries.plot_world_timeseries(confirmed_global, "confirmed", n=-30, daily=True),
         )
     elif "recoveries" in changed_id:
         return (
-            map.plot_study(country_cases_sorted, columns, recovered),
-            animations.animated_barchart(df=recovered_global),
-            animations.plot_world_timeseries(recovered_global, "recovered"),
+            maps.plot_study(country_cases_sorted, columns, recovered),
+            animations.animated_barchart(df=recovered_global, name="recovered"),
+            timeseries.plot_world_timeseries(recovered_global, "recovered", n=-30, daily=True),
         )
     elif "deaths" in changed_id:
         return (
-            map.plot_study(country_cases_sorted, columns, deaths),
-            animations.animated_barchart(df=deaths_global),
-            animations.plot_world_timeseries(deaths_global, "deaths"),
+            maps.plot_study(country_cases_sorted, columns, deaths),
+            animations.animated_barchart(df=deaths_global, name="deaths"),
+            timeseries.plot_world_timeseries(deaths_global, "deaths", n=-30, daily=True),
         )
     else:
         return (
-            map.plot_study(country_cases_sorted, columns, confirmed),
-            animations.animated_barchart(df=confirmed_global),
-            animations.plot_world_timeseries(confirmed_global, "confirmed"),
+            maps.plot_study(country_cases_sorted, columns, confirmed),
+            animations.animated_barchart(df=confirmed_global, name="confirmed"),
+            timeseries.plot_world_timeseries(confirmed_global, "confirmed", n=-30, daily=True),
         )
 
 
+# Updates the text and stats on the page
 @app.callback(
     dash.dependencies.Output("today", "children"),
     dash.dependencies.Output("lastweek", "children"),
@@ -1583,15 +1422,9 @@ def update_cases(btn1, btn2, btn3):
             "-" + format(today_data["cases"] - lastmonth_cases, ",d"),
         )
 
-
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-
 # Callbacks for the Country Analysis Page
 
-
+# Updates the message on top of the page for the country selected in the dropdown
 @app.callback(
     dash.dependencies.Output("country-message", "children"),
     dash.dependencies.Input("country-dropdown", "value"),
@@ -1645,6 +1478,7 @@ def update_country_message(value, btn1, btn2, btn3):
         )
 
 
+# Updates the graphs shown on the page for the country chosen in the dropdown
 @app.callback(
     dash.dependencies.Output("metric-output-country", "figure"),
     dash.dependencies.Output("timeseries-output-country", "figure"),
@@ -1659,49 +1493,49 @@ def update_graphs_country(value, btn1, btn2, btn3):
     if "confirmed-country" in changed_id:
         try:
             return (
-                nmf.plot_country(value, today_country_data, "confirmed"),
+                maps.plot_country(value, today_country_data, "Confirmed"),
                 animations.static_line(confirmed_global, "confirmed", value),
             )
         except:
             return (
-                map.plot_study(country_cases_sorted, columns, confirmed, value),
+                maps.plot_study(country_cases_sorted, columns, confirmed, value),
                 animations.static_line(confirmed_global, "confirmed", value),
             )
     elif "recoveries-country" in changed_id:
         try:
             return (
-                nmf.plot_country(value, today_country_data, "recoveries"),
-                animations.static_line(confirmed_global, "recovered", value),
+                maps.plot_country(value, today_country_data, "Recoveries"),
+                animations.static_line(recovered_global, "recovered", value),
             )
         except:
             return (
-                map.plot_study(country_cases_sorted, columns, recovered, value),
-                animations.static_line(confirmed_global, "recovered", value),
+                maps.plot_study(country_cases_sorted, columns, recovered, value),
+                animations.static_line(recovered_global, "recovered", value),
             )
     elif "deaths-country" in changed_id:
         try:
             return (
-                nmf.plot_country(value, today_country_data, "deaths"),
-                animations.static_line(confirmed_global, "deaths", value),
+                maps.plot_country(value, today_country_data, "deaths"),
+                animations.static_line(deaths_global, "deaths", value),
             )
         except:
             return (
-                map.plot_study(country_cases_sorted, columns, deaths, value),
-                animations.static_line(confirmed_global, "deaths", value),
+                maps.plot_study(country_cases_sorted, columns, deaths, value),
+                animations.static_line(deaths_global, "deaths", value),
             )
     else:
         try:
             return (
-                nmf.plot_country(value, today_country_data, "confirmed"),
+                maps.plot_country(value, today_country_data, "confirmed"),
                 animations.static_line(confirmed_global, "confirmed", value),
             )
         except:
             return (
-                map.plot_study(country_cases_sorted, columns, confirmed, value),
+                maps.plot_study(country_cases_sorted, columns, confirmed, value),
                 animations.static_line(confirmed_global, "confirmed", value),
             )
 
-
+# Update the stats shown on the page
 @app.callback(
     dash.dependencies.Output("today-country", "children"),
     dash.dependencies.Output("lastweek-country", "children"),
@@ -1795,16 +1629,18 @@ def update_cases_country(value, btn1, btn2, btn3):
 )
 def update_stats(value, btn1, btn2, btn3):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
-    country_stats = nmf.get_country_frame(nmf.choose_country(today_country_data, value))
+    country_stats = maps.get_country_frame(
+        maps.choose_country(today_country_data, value)
+    )
 
     try:
         if "confirmed-country" in changed_id:
             return (
                 dcc.Graph(
-                    figure=plot_province(country_stats, "Confirmed", "Confirmed Cases")
+                    figure=cv.plot_province(country_stats, "Confirmed", "Confirmed Cases")
                 ),
                 dbc.Table.from_dataframe(
-                    table_province_data(country_stats, "Confirmed"),
+                    cv.table_province_data(country_stats, "Confirmed"),
                     striped=True,
                     bordered=True,
                     hover=True,
@@ -1813,10 +1649,10 @@ def update_stats(value, btn1, btn2, btn3):
         elif "recoveries-country" in changed_id:
             return (
                 dcc.Graph(
-                    figure=plot_province(country_stats, "Recoveries", "Recoveries")
+                    figure=cv.plot_province(country_stats, "Recoveries", "Recoveries")
                 ),
                 dbc.Table.from_dataframe(
-                    table_province_data(country_stats, "Recoveries"),
+                    cv.table_province_data(country_stats, "Recoveries"),
                     striped=True,
                     bordered=True,
                     hover=True,
@@ -1824,9 +1660,9 @@ def update_stats(value, btn1, btn2, btn3):
             )
         elif "deaths-country" in changed_id:
             return (
-                dcc.Graph(figure=plot_province(country_stats, "Deaths", "Deaths")),
+                dcc.Graph(figure=cv.plot_province(country_stats, "Deaths", "Deaths")),
                 dbc.Table.from_dataframe(
-                    table_province_data(country_stats, "Deaths"),
+                    cv.table_province_data(country_stats, "Deaths"),
                     striped=True,
                     bordered=True,
                     hover=True,
@@ -1835,10 +1671,10 @@ def update_stats(value, btn1, btn2, btn3):
         else:
             return (
                 dcc.Graph(
-                    figure=plot_province(country_stats, "Confirmed", "Confirmed Cases")
+                    figure=cv.plot_province(country_stats, "Confirmed", "Confirmed Cases")
                 ),
                 dbc.Table.from_dataframe(
-                    table_province_data(country_stats, "Confirmed"),
+                    cv.table_province_data(country_stats, "Confirmed"),
                     striped=True,
                     bordered=True,
                     hover=True,
@@ -1847,19 +1683,10 @@ def update_stats(value, btn1, btn2, btn3):
     except:
         return (
             html.H5(
-                "Sorry! Unfortunately we do no have sufficient data at the moment."
+                "Sorry! Unfortunately we do not have sufficient data at the moment."
             ),
             None
-            # html.H4(
-            #     "Sorry! Unfortunately we do no have sufficient data at the moment."
-            # ),
         )
-
-
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
 
 # Callbacks for the Forecasts Page
 

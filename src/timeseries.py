@@ -85,8 +85,10 @@ def get_world_timeseries(df):
 
 
 def plot_world_timeseries(df, name, n=-90, daily=False):
+    data, new_data = None, None
     if not daily:
         new_data = get_world_timeseries(df)[n:]
+        data = get_world_timeseries(df)
     else:
         data = get_world_timeseries(df)
         cases = data["Cases"].diff()[1:]

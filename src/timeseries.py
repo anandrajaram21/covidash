@@ -58,7 +58,7 @@ def get_plot(time_series, name):
     return fig
 
 
-def plot_timeseries(country_name, func_name, title, n=-90, daily=False):
+def plot_timeseries(country_name, func_name, title, n=-20, daily=False):
     if not daily:
         new_confirmed_cases = func_name(country_name)[n:]
     else:
@@ -84,7 +84,7 @@ def get_world_timeseries(df):
     return data
 
 
-def plot_world_timeseries(df, name, n=-90, daily=False):
+def plot_world_timeseries(df, name, n=-20, daily=False):
     data, new_data = None, None
     if not daily:
         new_data = get_world_timeseries(df)[n:]
@@ -115,5 +115,5 @@ def plot_world_timeseries(df, name, n=-90, daily=False):
 """
 Examples:
 fig = plot_timeseries("US", get_new_cases, "Confirmed Cases")
-fig = plot_timeseries("India", get_new_recoveries, "Recoveries", n=-30, daily=True)
+fig = plot_timeseries("India", get_new_recoveries, "Recoveries", n=-20, daily=True)
 """

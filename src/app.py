@@ -163,7 +163,7 @@ import maps
 import country_visuals as cv
 import timeseries
 
-# import cnn
+import cnn
 
 # Making the Graphs and Declaring the Variables Required for the Pages
 
@@ -178,7 +178,7 @@ columns = ["country", ["deaths", "confirmed", "recovered"], "Lat", "Long_"]
 world_map = maps.plot_study(country_cases_sorted, columns, confirmed)
 
 confirmed_timeseries = timeseries.plot_world_timeseries(
-    confirmed_global, "confirmed", n=-30, daily=True
+    confirmed_global, "confirmed", n=-20, daily=True
 )
 
 country_list = confirmed_global["country"]
@@ -642,7 +642,7 @@ global_page = html.Div(
                             ],
                             style={
                                 "borderRadius": "30px",
-                                "backgroundColor": "#5a1791",
+                                "backgroundColor": "#8634eb",
                             },
                             className="mt-3 p-3",
                         ),
@@ -663,7 +663,7 @@ global_page = html.Div(
                             ],
                             style={
                                 "borderRadius": "30px",
-                                "backgroundColor": "#732abd",
+                                "backgroundColor": "#8634eb",
                             },
                             className="mt-3 p-3",
                         ),
@@ -844,7 +844,7 @@ country_page = html.Div(
                             ],
                             style={
                                 "borderRadius": "30px",
-                                "backgroundColor": "#5a1791",
+                                "backgroundColor": "#8634eb",
                             },
                             className="mt-3 p-3",
                         ),
@@ -865,7 +865,7 @@ country_page = html.Div(
                             ],
                             style={
                                 "borderRadius": "30px",
-                                "backgroundColor": "#732abd",
+                                "backgroundColor": "#8634eb",
                             },
                             className="mt-3 p-3",
                         ),
@@ -1336,7 +1336,7 @@ def update_graphs(btn1, btn2, btn3):
             maps.plot_study(country_cases_sorted, columns, confirmed),
             animations.animated_barchart(df=confirmed_global, name="confirmed"),
             timeseries.plot_world_timeseries(
-                confirmed_global, "confirmed", n=-30, daily=True
+                confirmed_global, "confirmed", n=-20, daily=True
             ),
         )
     elif "recoveries" in changed_id:
@@ -1344,7 +1344,7 @@ def update_graphs(btn1, btn2, btn3):
             maps.plot_study(country_cases_sorted, columns, recovered),
             animations.animated_barchart(df=recovered_global, name="recovered"),
             timeseries.plot_world_timeseries(
-                recovered_global, "recovered", n=-30, daily=True
+                recovered_global, "recovered", n=-20, daily=True
             ),
         )
     elif "deaths" in changed_id:
@@ -1352,7 +1352,7 @@ def update_graphs(btn1, btn2, btn3):
             maps.plot_study(country_cases_sorted, columns, deaths),
             animations.animated_barchart(df=deaths_global, name="deaths"),
             timeseries.plot_world_timeseries(
-                deaths_global, "deaths", n=-30, daily=True
+                deaths_global, "deaths", n=-20, daily=True
             ),
         )
     else:
@@ -1360,7 +1360,7 @@ def update_graphs(btn1, btn2, btn3):
             maps.plot_study(country_cases_sorted, columns, confirmed),
             animations.animated_barchart(df=confirmed_global, name="confirmed"),
             timeseries.plot_world_timeseries(
-                confirmed_global, "confirmed", n=-30, daily=True
+                confirmed_global, "confirmed", n=-20, daily=True
             ),
         )
 
@@ -1517,7 +1517,7 @@ def update_graphs_country(value, btn1, btn2, btn3):
                     value,
                     timeseries.get_new_cases,
                     "Confirmed Cases",
-                    n=-30,
+                    n=-20,
                     daily=True,
                 ),
             )
@@ -1528,7 +1528,7 @@ def update_graphs_country(value, btn1, btn2, btn3):
                     value,
                     timeseries.get_new_cases,
                     "Confirmed Cases",
-                    n=-30,
+                    n=-20,
                     daily=True,
                 ),
             )
@@ -1540,7 +1540,7 @@ def update_graphs_country(value, btn1, btn2, btn3):
                     value,
                     timeseries.get_new_recoveries,
                     "Recoveries",
-                    n=-30,
+                    n=-20,
                     daily=True,
                 ),
             )
@@ -1551,7 +1551,7 @@ def update_graphs_country(value, btn1, btn2, btn3):
                     value,
                     timeseries.get_new_recoveries,
                     "Recoveries",
-                    n=-30,
+                    n=-20,
                     daily=True,
                 ),
             )
@@ -1563,7 +1563,7 @@ def update_graphs_country(value, btn1, btn2, btn3):
                     value,
                     timeseries.get_new_deaths,
                     "Deaths",
-                    n=-30,
+                    n=-20,
                     daily=True,
                 ),
             )
@@ -1574,7 +1574,7 @@ def update_graphs_country(value, btn1, btn2, btn3):
                     value,
                     timeseries.get_new_deaths,
                     "Deaths",
-                    n=-30,
+                    n=-20,
                     daily=True,
                 ),
             )
@@ -1586,7 +1586,7 @@ def update_graphs_country(value, btn1, btn2, btn3):
                     value,
                     timeseries.get_new_cases,
                     "Confirmed Cases",
-                    n=-30,
+                    n=-20,
                     daily=True,
                 ),
             )
@@ -1597,7 +1597,7 @@ def update_graphs_country(value, btn1, btn2, btn3):
                     value,
                     timeseries.get_new_cases,
                     "Confirmed Cases",
-                    n=-30,
+                    n=-20,
                     daily=False,
                 ),
             )
@@ -1792,7 +1792,7 @@ def forecast_cases(btn1, btn2, btn3, value):
                 )
             os.remove("temp.pkl")
         except:
-            fig, err, preds = cnn.cnn_predict("confirmed", value)
+            preds, _, fig = cnn.cnn_predict("confirmed", value)
             return (
                 dcc.Graph(figure=fig),
                 dbc.Table.from_dataframe(
@@ -1816,7 +1816,7 @@ def forecast_cases(btn1, btn2, btn3, value):
                 )
             os.remove("temp.pkl")
         except:
-            fig, err, preds = cnn.cnn_predict("recovered", value)
+            preds, _, fig = cnn.cnn_predict("recovered", value)
             return (
                 dcc.Graph(figure=fig),
                 dbc.Table.from_dataframe(
@@ -1840,7 +1840,7 @@ def forecast_cases(btn1, btn2, btn3, value):
                 )
             os.remove("temp.pkl")
         except:
-            fig, err, preds = cnn.cnn_predict("deaths", value)
+            preds, _, fig = cnn.cnn_predict("deaths", value)
             return (
                 dcc.Graph(figure=fig),
                 dbc.Table.from_dataframe(

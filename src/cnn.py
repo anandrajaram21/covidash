@@ -231,7 +231,7 @@ def plot_graph(data, pred):
 
 def check_slope(x, y):
     c = Counter(np.diff(y) / np.diff(x))
-    return 0 not in [i[0] for i in c.most_common(1)]
+    return 0 not in c
 
 
 def naive_forecast(study, country):

@@ -440,7 +440,7 @@ home_page = dbc.Container(
                                                 style={"text-align": "center"},
                                             ),
                                             html.P(
-                                                "This is some card content that we'll reuse",
+                                                "See the statistics for the global situation",
                                                 className="card-text",
                                             ),
                                             dbc.Button(
@@ -483,7 +483,7 @@ home_page = dbc.Container(
                                                 style={"text-align": "center"},
                                             ),
                                             html.P(
-                                                "This is some card content that we'll reuse",
+                                                "See the statistics for your country",
                                                 className="card-text",
                                             ),
                                             dbc.Button(
@@ -525,7 +525,7 @@ home_page = dbc.Container(
                                                 style={"text-align": "center"},
                                             ),
                                             html.P(
-                                                "This is some card content that we'll reuse",
+                                                "Generate forecasts for your country",
                                                 className="card-text",
                                             ),
                                             dbc.Button(

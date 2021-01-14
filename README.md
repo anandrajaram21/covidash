@@ -69,9 +69,6 @@ Web Application/Dashboard [(link here)](https://github.com/anandrajaram21/covida
  - [Anand Rajaram](https://github.com/anandrajaram21/)
  - [Anirudh Lakhotia](https://github.com/anirudhlakhotia/)
 
-Data Visualization and Predictive Model [(link here)](https://github.com/Majimearun/covid-19-data-science-project) 
-
- - [Arunachala A.M.](https://github.com/Majimearun)
 
 
 

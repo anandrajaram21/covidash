@@ -1393,9 +1393,9 @@ def update_cases(btn1, btn2, btn3):
         return (
             confirmed_global_cases_today,
             format(lastweek_cases, ",d"),
-            "-" + format(today_data["cases"] - lastweek_cases, ",d"),
+            "+" + format(today_data["cases"] - lastweek_cases, ",d"),
             format(lastmonth_cases, ",d"),
-            "-" + format(today_data["cases"] - lastmonth_cases, ",d"),
+            "+" + format(today_data["cases"] - lastmonth_cases, ",d"),
         )
     elif "recoveries" in changed_id:
         lastweek_cases = world_timeseries_recovered.at[
@@ -1407,9 +1407,9 @@ def update_cases(btn1, btn2, btn3):
         return (
             confirmed_recovered_cases_today,
             format(lastweek_cases, ",d"),
-            "-" + format(today_data["recovered"] - lastweek_cases, ",d"),
+            "+" + format(today_data["recovered"] - lastweek_cases, ",d"),
             format(lastmonth_cases, ",d"),
-            "-" + format(today_data["recovered"] - lastmonth_cases, ",d"),
+            "+" + format(today_data["recovered"] - lastmonth_cases, ",d"),
         )
     elif "deaths" in changed_id:
         lastweek_cases = world_timeseries_deaths.at[
@@ -1421,9 +1421,9 @@ def update_cases(btn1, btn2, btn3):
         return (
             confirmed_deaths_cases_today,
             format(lastweek_cases, ",d"),
-            "-" + format(today_data["deaths"] - lastweek_cases, ",d"),
+            "+" + format(today_data["deaths"] - lastweek_cases, ",d"),
             format(lastmonth_cases, ",d"),
-            "-" + format(today_data["deaths"] - lastmonth_cases, ",d"),
+            "+" + format(today_data["deaths"] - lastmonth_cases, ",d"),
         )
     else:
         lastweek_cases = world_timeseries_confirmed.at[
@@ -1435,9 +1435,9 @@ def update_cases(btn1, btn2, btn3):
         return (
             confirmed_global_cases_today,
             format(lastweek_cases, ",d"),
-            "-" + format(today_data["cases"] - lastweek_cases, ",d"),
+            "+" + format(today_data["cases"] - lastweek_cases, ",d"),
             format(lastmonth_cases, ",d"),
-            "-" + format(today_data["cases"] - lastmonth_cases, ",d"),
+            "+" + format(today_data["cases"] - lastmonth_cases, ",d"),
         )
 
 
@@ -1639,9 +1639,9 @@ def update_cases_country(value, btn1, btn2, btn3):
         return (
             cases,
             format(lastweek_cases, ",d"),
-            "-" + format(country_stats["confirmed"] - lastweek_cases, ",d"),
+            "+" + format(country_stats["confirmed"] - lastweek_cases, ",d"),
             format(lastmonth_cases, ",d"),
-            "-" + format(country_stats["confirmed"] - lastmonth_cases, ",d"),
+            "+" + format(country_stats["confirmed"] - lastmonth_cases, ",d"),
         )
     elif "recoveries-country" in changed_id:
         lastweek_cases = country_time_series.at[
@@ -1653,9 +1653,9 @@ def update_cases_country(value, btn1, btn2, btn3):
         return (
             recovered,
             format(lastweek_cases, ",d"),
-            "-" + format(country_stats["recovered"] - lastweek_cases, ",d"),
+            "+" + format(country_stats["recovered"] - lastweek_cases, ",d"),
             format(lastmonth_cases, ",d"),
-            "-" + format(country_stats["recovered"] - lastmonth_cases, ",d"),
+            "+" + format(country_stats["recovered"] - lastmonth_cases, ",d"),
         )
     elif "deaths-country" in changed_id:
         lastweek_cases = country_time_series.at[
@@ -1667,9 +1667,9 @@ def update_cases_country(value, btn1, btn2, btn3):
         return (
             deaths,
             format(lastweek_cases, ",d"),
-            "-" + format(country_stats["deaths"] - lastweek_cases, ",d"),
+            "+" + format(country_stats["deaths"] - lastweek_cases, ",d"),
             format(lastmonth_cases, ",d"),
-            "-" + format(country_stats["deaths"] - lastmonth_cases, ",d"),
+            "+" + format(country_stats["deaths"] - lastmonth_cases, ",d"),
         )
     else:
         lastweek_cases = country_time_series.at[
@@ -1681,9 +1681,9 @@ def update_cases_country(value, btn1, btn2, btn3):
         return (
             cases,
             format(lastweek_cases, ",d"),
-            "-" + format(country_stats["confirmed"] - lastweek_cases, ",d"),
+            "+" + format(country_stats["confirmed"] - lastweek_cases, ",d"),
             format(lastmonth_cases, ",d"),
-            "-" + format(country_stats["confirmed"] - lastmonth_cases, ",d"),
+            "+" + format(country_stats["confirmed"] - lastmonth_cases, ",d"),
         )
 
 

@@ -1,0 +1,22 @@
+{
+  "unversionedId": "gettingstarted",
+  "id": "gettingstarted",
+  "isDocsHomePage": false,
+  "title": "Getting Started",
+  "description": "Hello world",
+  "source": "@site/docs/gettingstarted.md",
+  "slug": "/gettingstarted",
+  "permalink": "/docs/gettingstarted",
+  "editUrl": "https://github.com/facebook/docusaurus/edit/master/website/docs/gettingstarted.md",
+  "version": "current",
+  "sidebar_label": "Getting Started",
+  "sidebar": "someSidebar",
+  "previous": {
+    "title": "Introduction",
+    "permalink": "/docs/intro"
+  },
+  "next": {
+    "title": "This is Document Number 3",
+    "permalink": "/docs/doc3"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "unversionedId": "docs/intro",
+  "id": "docs/intro",
+  "isDocsHomePage": false,
+  "title": "Introduction",
+  "description": "This is the introduction page",
+  "source": "@site/docs/docs/introduction.md",
+  "slug": "/docs/intro",
+  "permalink": "/docs/docs/intro",
+  "editUrl": "https://github.com/facebook/docusaurus/edit/master/website/docs/docs/introduction.md",
+  "version": "current",
+  "sidebar_label": "Introduction"
+}

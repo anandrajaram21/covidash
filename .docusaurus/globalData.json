@@ -1,0 +1,67 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/docs",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/docs",
+          "mainDocId": "doc1",
+          "docs": [
+            {
+              "id": "doc1",
+              "path": "/docs/",
+              "sidebar": "someSidebar"
+            },
+            {
+              "id": "doc3",
+              "path": "/docs/doc3",
+              "sidebar": "someSidebar"
+            },
+            {
+              "id": "docs/doc1",
+              "path": "/docs/"
+            },
+            {
+              "id": "docs/doc3",
+              "path": "/docs/docs/doc3"
+            },
+            {
+              "id": "docs/gettingstarted",
+              "path": "/docs/docs/gettingstarted"
+            },
+            {
+              "id": "docs/intro",
+              "path": "/docs/docs/intro"
+            },
+            {
+              "id": "docs/mdx",
+              "path": "/docs/docs/mdx"
+            },
+            {
+              "id": "gettingstarted",
+              "path": "/docs/gettingstarted",
+              "sidebar": "someSidebar"
+            },
+            {
+              "id": "intro",
+              "path": "/docs/intro",
+              "sidebar": "someSidebar"
+            },
+            {
+              "id": "mdx",
+              "path": "/docs/mdx",
+              "sidebar": "someSidebar"
+            },
+            {
+              "id": "README",
+              "path": "/docs/README"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

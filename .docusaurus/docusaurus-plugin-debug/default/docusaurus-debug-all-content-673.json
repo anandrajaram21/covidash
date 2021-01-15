@@ -1,0 +1,258 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "loadedVersions": [
+        {
+          "versionName": "current",
+          "versionLabel": "Next",
+          "versionPath": "/docs",
+          "isLast": true,
+          "routePriority": -1,
+          "sidebarFilePath": "/Users/anandrajaram21/Documents/Computer Science/Projects/covidash/sidebars.js",
+          "docsDirPath": "/Users/anandrajaram21/Documents/Computer Science/Projects/covidash/docs",
+          "mainDocId": "doc1",
+          "sidebars": {
+            "someSidebar": [
+              {
+                "collapsed": true,
+                "type": "category",
+                "label": "Docusaurus",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "doc1"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "intro"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "gettingstarted"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "doc3"
+                  }
+                ]
+              },
+              {
+                "collapsed": true,
+                "type": "category",
+                "label": "Features",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "mdx"
+                  }
+                ]
+              }
+            ]
+          },
+          "permalinkToSidebar": {
+            "/docs/": "someSidebar",
+            "/docs/doc3": "someSidebar",
+            "/docs/gettingstarted": "someSidebar",
+            "/docs/intro": "someSidebar",
+            "/docs/mdx": "someSidebar"
+          },
+          "docs": [
+            {
+              "unversionedId": "doc1",
+              "id": "doc1",
+              "isDocsHomePage": false,
+              "title": "Style Guide",
+              "description": "You can write content using GitHub-flavored Markdown syntax.",
+              "source": "@site/docs/doc1.md",
+              "slug": "/",
+              "permalink": "/docs/",
+              "editUrl": "https://github.com/facebook/docusaurus/edit/master/website/docs/doc1.md",
+              "version": "current",
+              "sidebar_label": "Style Guide",
+              "sidebar": "someSidebar",
+              "next": {
+                "title": "Introduction",
+                "permalink": "/docs/intro"
+              }
+            },
+            {
+              "unversionedId": "doc3",
+              "id": "doc3",
+              "isDocsHomePage": false,
+              "title": "This is Document Number 3",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In ac euismod odio, eu consequat dui. Nullam molestie consectetur risus id imperdiet. Proin sodales ornare turpis, non mollis massa ultricies id. Nam at nibh scelerisque, feugiat ante non, dapibus tortor. Vivamus volutpat diam quis tellus elementum bibendum. Praesent semper gravida velit quis aliquam. Etiam in cursus neque. Nam lectus ligula, malesuada et mauris a, bibendum faucibus mi. Phasellus ut interdum felis. Phasellus in odio pulvinar, porttitor urna eget, fringilla lectus. Aliquam sollicitudin est eros. Mauris consectetur quam vitae mauris interdum hendrerit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+              "source": "@site/docs/doc3.md",
+              "slug": "/doc3",
+              "permalink": "/docs/doc3",
+              "editUrl": "https://github.com/facebook/docusaurus/edit/master/website/docs/doc3.md",
+              "version": "current",
+              "sidebar": "someSidebar",
+              "previous": {
+                "title": "Getting Started",
+                "permalink": "/docs/gettingstarted"
+              },
+              "next": {
+                "title": "Powered by MDX",
+                "permalink": "/docs/mdx"
+              }
+            },
+            {
+              "unversionedId": "docs/doc1",
+              "id": "docs/doc1",
+              "isDocsHomePage": false,
+              "title": "Style Guide",
+              "description": "You can write content using GitHub-flavored Markdown syntax.",
+              "source": "@site/docs/docs/doc1.md",
+              "slug": "/",
+              "permalink": "/docs/",
+              "editUrl": "https://github.com/facebook/docusaurus/edit/master/website/docs/docs/doc1.md",
+              "version": "current",
+              "sidebar_label": "Style Guide"
+            },
+            {
+              "unversionedId": "docs/doc3",
+              "id": "docs/doc3",
+              "isDocsHomePage": false,
+              "title": "This is Document Number 3",
+              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In ac euismod odio, eu consequat dui. Nullam molestie consectetur risus id imperdiet. Proin sodales ornare turpis, non mollis massa ultricies id. Nam at nibh scelerisque, feugiat ante non, dapibus tortor. Vivamus volutpat diam quis tellus elementum bibendum. Praesent semper gravida velit quis aliquam. Etiam in cursus neque. Nam lectus ligula, malesuada et mauris a, bibendum faucibus mi. Phasellus ut interdum felis. Phasellus in odio pulvinar, porttitor urna eget, fringilla lectus. Aliquam sollicitudin est eros. Mauris consectetur quam vitae mauris interdum hendrerit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+              "source": "@site/docs/docs/doc3.md",
+              "slug": "/docs/doc3",
+              "permalink": "/docs/docs/doc3",
+              "editUrl": "https://github.com/facebook/docusaurus/edit/master/website/docs/docs/doc3.md",
+              "version": "current"
+            },
+            {
+              "unversionedId": "docs/gettingstarted",
+              "id": "docs/gettingstarted",
+              "isDocsHomePage": false,
+              "title": "Getting Started",
+              "description": "Hello world",
+              "source": "@site/docs/docs/gettingstarted.md",
+              "slug": "/docs/gettingstarted",
+              "permalink": "/docs/docs/gettingstarted",
+              "editUrl": "https://github.com/facebook/docusaurus/edit/master/website/docs/docs/gettingstarted.md",
+              "version": "current",
+              "sidebar_label": "Getting Started"
+            },
+            {
+              "unversionedId": "docs/intro",
+              "id": "docs/intro",
+              "isDocsHomePage": false,
+              "title": "Introduction",
+              "description": "This is the introduction page",
+              "source": "@site/docs/docs/introduction.md",
+              "slug": "/docs/intro",
+              "permalink": "/docs/docs/intro",
+              "editUrl": "https://github.com/facebook/docusaurus/edit/master/website/docs/docs/introduction.md",
+              "version": "current",
+              "sidebar_label": "Introduction"
+            },
+            {
+              "unversionedId": "docs/mdx",
+              "id": "docs/mdx",
+              "isDocsHomePage": false,
+              "title": "Powered by MDX",
+              "description": "You can write JSX and use React components within your Markdown thanks to MDX.",
+              "source": "@site/docs/docs/mdx.md",
+              "slug": "/docs/mdx",
+              "permalink": "/docs/docs/mdx",
+              "editUrl": "https://github.com/facebook/docusaurus/edit/master/website/docs/docs/mdx.md",
+              "version": "current"
+            },
+            {
+              "unversionedId": "gettingstarted",
+              "id": "gettingstarted",
+              "isDocsHomePage": false,
+              "title": "Getting Started",
+              "description": "Hello world",
+              "source": "@site/docs/gettingstarted.md",
+              "slug": "/gettingstarted",
+              "permalink": "/docs/gettingstarted",
+              "editUrl": "https://github.com/facebook/docusaurus/edit/master/website/docs/gettingstarted.md",
+              "version": "current",
+              "sidebar_label": "Getting Started",
+              "sidebar": "someSidebar",
+              "previous": {
+                "title": "Introduction",
+                "permalink": "/docs/intro"
+              },
+              "next": {
+                "title": "This is Document Number 3",
+                "permalink": "/docs/doc3"
+              }
+            },
+            {
+              "unversionedId": "intro",
+              "id": "intro",
+              "isDocsHomePage": false,
+              "title": "Introduction",
+              "description": "This is the introduction page",
+              "source": "@site/docs/introduction.md",
+              "slug": "/intro",
+              "permalink": "/docs/intro",
+              "editUrl": "https://github.com/facebook/docusaurus/edit/master/website/docs/introduction.md",
+              "version": "current",
+              "sidebar_label": "Introduction",
+              "sidebar": "someSidebar",
+              "previous": {
+                "title": "Style Guide",
+                "permalink": "/docs/"
+              },
+              "next": {
+                "title": "Getting Started",
+                "permalink": "/docs/gettingstarted"
+              }
+            },
+            {
+              "unversionedId": "mdx",
+              "id": "mdx",
+              "isDocsHomePage": false,
+              "title": "Powered by MDX",
+              "description": "You can write JSX and use React components within your Markdown thanks to MDX.",
+              "source": "@site/docs/mdx.md",
+              "slug": "/mdx",
+              "permalink": "/docs/mdx",
+              "editUrl": "https://github.com/facebook/docusaurus/edit/master/website/docs/mdx.md",
+              "version": "current",
+              "sidebar": "someSidebar",
+              "previous": {
+                "title": "This is Document Number 3",
+                "permalink": "/docs/doc3"
+              }
+            },
+            {
+              "unversionedId": "README",
+              "id": "README",
+              "isDocsHomePage": false,
+              "title": "README",
+              "description": "Website",
+              "source": "@site/docs/README.md",
+              "slug": "/README",
+              "permalink": "/docs/README",
+              "editUrl": "https://github.com/facebook/docusaurus/edit/master/website/docs/README.md",
+              "version": "current"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "docusaurus-plugin-content-blog": {
+    "default": null
+  },
+  "docusaurus-plugin-content-pages": {
+    "default": [
+      {
+        "type": "jsx",
+        "permalink": "/",
+        "source": "@site/src/pages/index.js"
+      }
+    ]
+  },
+  "docusaurus-plugin-debug": {
+    "default": null
+  },
+  "docusaurus-theme-classic": {
+    "default": null
+  }
+}

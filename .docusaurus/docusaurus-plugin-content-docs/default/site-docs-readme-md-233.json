@@ -1,0 +1,12 @@
+{
+  "unversionedId": "README",
+  "id": "README",
+  "isDocsHomePage": false,
+  "title": "README",
+  "description": "Website",
+  "source": "@site/docs/README.md",
+  "slug": "/README",
+  "permalink": "/docs/README",
+  "editUrl": "https://github.com/facebook/docusaurus/edit/master/website/docs/README.md",
+  "version": "current"
+}

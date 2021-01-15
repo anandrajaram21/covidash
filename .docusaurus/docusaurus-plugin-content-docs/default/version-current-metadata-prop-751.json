@@ -1,0 +1,56 @@
+{
+  "pluginId": "default",
+  "version": "current",
+  "label": "Next",
+  "isLast": true,
+  "docsSidebars": {
+    "someSidebar": [
+      {
+        "collapsed": true,
+        "type": "category",
+        "label": "Docusaurus",
+        "items": [
+          {
+            "type": "link",
+            "label": "Style Guide",
+            "href": "/docs/"
+          },
+          {
+            "type": "link",
+            "label": "Introduction",
+            "href": "/docs/intro"
+          },
+          {
+            "type": "link",
+            "label": "Getting Started",
+            "href": "/docs/gettingstarted"
+          },
+          {
+            "type": "link",
+            "label": "This is Document Number 3",
+            "href": "/docs/doc3"
+          }
+        ]
+      },
+      {
+        "collapsed": true,
+        "type": "category",
+        "label": "Features",
+        "items": [
+          {
+            "type": "link",
+            "label": "Powered by MDX",
+            "href": "/docs/mdx"
+          }
+        ]
+      }
+    ]
+  },
+  "permalinkToSidebar": {
+    "/docs/": "someSidebar",
+    "/docs/doc3": "someSidebar",
+    "/docs/gettingstarted": "someSidebar",
+    "/docs/intro": "someSidebar",
+    "/docs/mdx": "someSidebar"
+  }
+}

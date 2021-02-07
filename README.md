@@ -6,7 +6,7 @@ Covidash is an open source, community driven, COVID-19 dashboard that not only s
 
 ### Prerequisites
 
-- The program will run without any issues on any computer, but for a smooth performance, it is recommended to use a system with atleast 4 GB memory, and atleast 2 CPU cores, running at atleast 2.2 GHz.
+- The program will run without any issues on any computer, but for a smooth performance, it is recommended to use a system with atleast 4 GB memory, and atleast 2 CPU cores.
 - Either Python or Docker must be installed.
 - Both npm and Node JS have to be installed to view the documentation.
 - You can use git to clone the repository, or you can download the zip file.

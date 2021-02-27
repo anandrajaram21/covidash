@@ -21,15 +21,15 @@ With a better understanding of the data, the decisions made by people can be mor
 
 #### MINIMUM REQUIREMENTS
 
-- Processor : Intel® CoreTM i3 CPU
-- CPU Speed : 2.2 GHz
-- RAM : 4GB
+❖ Processor : Intel® CoreTM i3 CPU
+❖ CPU Speed : 2.2 GHz
+❖ RAM : 4GB
 
 #### RECOMMENDED REQUIREMENTS
 
-- Processor : Intel® CoreTM i5 CPU
-- CPU Speed : 2.8 GHz
-- RAM : 8GB
+❖ Processor : Intel® CoreTM i5 CPU
+❖ CPU Speed : 2.8 GHz
+❖ RAM : 8GB
 
 #### SOFTWARE
 
@@ -2301,4 +2301,5 @@ def cnn_predict(df_name, country):
 
 ## Scope for Improvement
 
-The model can be improved for better results by utilizing more information to get a better overview of the situation.
+❖ The model can be improved for better results and lower training time using more sophisticated models and algorithms.
+❖ The dashboard can be made more interactive for the users by giving them more filters.

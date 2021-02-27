@@ -2301,5 +2301,5 @@ def cnn_predict(df_name, country):
 
 ## Scope for Improvement
 
-❖ The model can be improved for better results and lower training time using more sophisticated models and algorithms.
+❖ The neural network can be improved for better results and lower training time using more sophisticated models and algorithms.
 ❖ The dashboard can be made more interactive for the users by giving them more filters.

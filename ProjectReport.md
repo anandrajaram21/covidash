@@ -1,16 +1,21 @@
 ## ACKNOWLEDGEMENT
 
-The success of a project depends on the persistent efforts of an individual projecting it and the sustained support received from a few others who are equally responsible for their precious appreciation of such endeavours. My strength is all due to my honourable Principal Mrs. Pushkala Parasuraman, who has been an unending source of inspiration and support towards accomplishment of this project. I would like to express my deepest sense of gratitude to my computer teachers Mrs. Padma Pavani
-Kanukollu and Mrs. Smitha Ravindran without whom I could not have successfully completed this project. I would also like to thank all my friends who helped me create such a project. My personal gratitude is extended towards my parents, who have been a constant source of encouragement and support in the success of the project. Last but not the least I want to thank the Almighty for enlightening, strengthening, and guiding me in the completion of this project.
+The success of a project depends on the persistent efforts of an individual projecting it and the sustained support received from a few others who are equally responsible for their precious appreciation of such endeavors. My strength is all due to my honorable Principal **Mrs. Pushkala Parasuraman**, who has been an unending source of inspiration and support towards the accomplishment of this project. I would like to express my deepest sense of gratitude to my computer teachers **Mrs. Padma Pavani Kanukollu** and **Mrs. Smitha Ravindran** without whom I could not have successfully completed this project. 
+
+I would also like to thank all my friends who helped me create such a project. My personal gratitude is extended towards my parents, who have been a constant source of encouragement and support in the success of the project. 
+
+Last but not least I want to thank the Almighty for enlightening, strengthening, and guiding me in the completion of this project.
 
 ## SYNOPSIS
 
-Coronavirus disease (COVID-19) is an inflammation disease from a new virus. The disease causes respiratory ailment (like influenza) with manifestations, for example, cold, cough and fever, and in progressively serious cases, the problem in breathing. COVID-19 has been perceived as a pandemic and a few examinations are being led utilizing different numerical models to anticipate the likely advancement of this pestilence.
-The project is mainly based on Machine learning, and all models are built specifically for the project
-We have used an Artificial Neural Network Hybrid on the data to predict the pace of COVID-19 cases in the world. 
-Identification of the potential patterns of increasing COVID-19 cases in the world dependent on data gathered from the John Hopkins University dataset using a 1 Dimensional Convolutional Neural Network. The common data about confirmed, death and recovered cases across the world for over a time span helps in estimating the not so distant future. For extra assessment or future perspective, case definition and data combination must be kept up persistently.
-The rapid spread of COVID-19 across the globe is affecting millions of people and is at the same time resulting in the spread of information, misinformation (false information spread without malicious intent) and disinformation (false information spread with the intent to deceive). Our intention is not to create additional information, but to bring together credible COVID-19 related information that is easy to access, understand and act upon
-With better understanding of the data, the decisions made by people can be more informed, which can help keep the number of infections in check, and bring them down
+Coronavirus disease (COVID-19) is an inflammation disease from a new virus. The disease causes respiratory ailment (like influenza) with manifestations, for example, cold, cough, and fever, and in progressively serious cases, problems in breathing. COVID-19 has been perceived as a global pandemic and a few examinations are being led utilizing different numerical and statistical models to anticipate the likely advancement of this pestilence.
+
+The project is mainly based on Machine learning, and all models are built and customized specifically for this project.
+Identification of the potential patterns of increasing COVID-19 cases in the world, dependent on data gathered from the John Hopkins University dataset, has been performed using a 1 Dimensional Convolutional Neural Network, which is followed by a Artificial Neural Network Hybrid to predict the rise and fall of COVID-19 cases globally.
+
+The common data about confirmed, death, and recovered cases across the world for over a specific period help in estimating the not-so-distant future. For extra assessment or future perspective, case definition, and data combination must be kept up persistently.
+The rapid spread of COVID-19 across the globe is affecting millions of people and is at the same time resulting in the spread of information, misinformation (false information spread without malicious intent), and disinformation (false information spread with the intent to deceive). We intend to bring together credible COVID-19 related information that is easy to access, understand and act upon.
+With a better understanding of the data, the decisions made by people can be more informed, which can help keep the number of infections in check, and bring them down.
 
 ## HARDWARE AND SOFTWARE SPECIFICATIONS
 
@@ -29,7 +34,7 @@ With better understanding of the data, the decisions made by people can be more 
 #### SOFTWARE
 
 ❖ Operating System : Any 64 bit OS
-❖ Software : Python 3.8, Chrome or Firefox (works with Safari too, but loading speeds are a lot slower), pip
+❖ Software : Python 3.8, Chrome or Firefox (works with Safari too, but loading is significantly slowed), pip or poetry
 
 ## SYSTEM DESIGN
 
@@ -37,20 +42,20 @@ With better understanding of the data, the decisions made by people can be more 
 
 | SL.NO | LIBRARY MODULES | PURPOSE |
 | --- | --- | --- |
-| 1   | dash | To create a visually appealing website. |
+| 1   | dash | To create a visually appealing dashboard. |
 | 2   | plotly | To create beautiful, fully extensible, and interactive graphs. |
-| 3   | pandas | To allow smooth handling of data. |
-| 4   | datetime | To provide functions for working with dates and time. |
+| 3   | pandas | To allow smooth handling and manipulatin of data in the form of dataframes. |
+| 4   | datetime | To provide functions for working with date and time. |
 | 5   | requests | To send HTTP requests using Python. |
 | 6   | os  | To provide functions for interacting with the operating system. |
 | 7   | flask_caching | To increase program efficiency with the help of caching. |
-| 8   | time | To provide various time-related functions. |
+| 8   | time | To provide various time related functions. |
 | 9   | pickle | To work with binary files. |
-| 10  | numpy | To provide functions for working with arrays. |
+| 10  | numpy | To provide functions to working with arrays. |
 | 11  | collections | To provide different types of containers. |
 | 12  | TSErrors | To analyse time series prediction errors. |
-| 13  | sklearn | To provide powerful machine learning tools for data analysis. |
-| 14  | keras | To develop and evaluate deep learning models. |
+| 13  | sklearn | To provide powerful statistical and preprocessing tools for data analysis. |
+| 14  | keras | To develop and evaluate deep neural networks. |
 | 15  | chart_studio | To make interactive, publication-quality graphs online. |
 | 16  | itertools | To provide a collection of tools for handling iterators. |
 | 17  | math | To access mathematical functions in Python. |
@@ -125,12 +130,20 @@ The data files that have been used in the project are:
 
 | SL.NO | LIBRARY MODULES | PURPOSE |
 | --- | --- | --- |
-| 1   | confirmed_global.csv | To provide the global data for confirmed cases |
-| 2   | country_cases.csv | To provide country wise data |
-| 3   | deaths_global.csv | To provide the global data for deaths |
-| 4   | recovered_global.csv | To provide the global data for recoveries |
+| 1   | confirmed_global.csv | To provide the global data for confirmed cases (updated daily) |
+| 2   | country_cases.csv | To provide country wise data (updated daily)|
+| 3   | deaths_global.csv | To provide the global data for deaths (updated daily)|
+| 4   | recovered_global.csv | To provide the global data for recoveries (updated daily)|
 
 ## SOURCE CODE
+
+### cnn.py
+
+```python
+
+```
+
+### app.py
 
 ```python
     # Imports and data preprocessing

@@ -1,18 +1,16 @@
 ## ACKNOWLEDGEMENT
 
-The success of a project depends upon the persistent efforts of an individual along with the sustained support received from others. My strength is all due to my honorable Principal, who has been an unending source of inspiration and support towards the accomplishment of this project.
-
-I would like to express my deepest sense of gratitude to my computer teacher without whom I could not have successfully completed this project.
-
-Finally, my personal gratitude is extended towards my parents who have been a constant source of encouragement and support in the success of this project.
+The success of a project depends on the persistent efforts of an individual projecting it and the sustained support received from a few others who are equally responsible for their precious appreciation of such endeavours. My strength is all due to my honourable Principal Mrs. Pushkala Parasuraman, who has been an unending source of inspiration and support towards accomplishment of this project. I would like to express my deepest sense of gratitude to my computer teachers Mrs. Padma Pavani
+Kanukollu and Mrs. Smitha Ravindran without whom I could not have successfully completed this project. I would also like to thank all my friends who helped me create such a project. My personal gratitude is extended towards my parents, who have been a constant source of encouragement and support in the success of the project. Last but not the least I want to thank the Almighty for enlightening, strengthening, and guiding me in the completion of this project.
 
 ## SYNOPSIS
 
-The rapid spread of COVID-19 across the globe is affecting millions of people and is at the same time resulting in the spread of information, misinformation (false information spread without malicious intent) and disinformation (false information spread with the intent to deceive). Our intention is not to create additional information, but to bring together credible COVID-19 related information that is easy to access, understand and act upon.
-
-The project is mainly based on Machine Learning, with a custom model built specifically for the task at hand i.e. to analyze and predict the cases in the near future.
-
-The model used is a 1-Dimensional Convolutional Neural Network for identifying patterns, and an Artificial Neural Network Hybrid for the prediction
+Coronavirus disease (COVID-19) is an inflammation disease from a new virus. The disease causes respiratory ailment (like influenza) with manifestations, for example, cold, cough and fever, and in progressively serious cases, the problem in breathing. COVID-19 has been perceived as a pandemic and a few examinations are being led utilizing different numerical models to anticipate the likely advancement of this pestilence.
+The project is mainly based on Machine learning, and all models are built specifically for the project
+We have used an Artificial Neural Network Hybrid on the data to predict the pace of COVID-19 cases in the world. 
+Identification of the potential patterns of increasing COVID-19 cases in the world dependent on data gathered from the John Hopkins University dataset using a 1 Dimensional Convolutional Neural Network. The common data about confirmed, death and recovered cases across the world for over a time span helps in estimating the not so distant future. For extra assessment or future perspective, case definition and data combination must be kept up persistently.
+The rapid spread of COVID-19 across the globe is affecting millions of people and is at the same time resulting in the spread of information, misinformation (false information spread without malicious intent) and disinformation (false information spread with the intent to deceive). Our intention is not to create additional information, but to bring together credible COVID-19 related information that is easy to access, understand and act upon
+With better understanding of the data, the decisions made by people can be more informed, which can help keep the number of infections in check, and bring them down
 
 ## HARDWARE AND SOFTWARE SPECIFICATIONS
 
@@ -2005,7 +2003,11 @@ The data files that have been used in the project are:
 
     if __name__ == "__main__":
         app.run_server()
+        
+
 ```
+
+
 
 ## Scope for Improvement
 

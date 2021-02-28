@@ -107,8 +107,8 @@ With a better understanding of the data, the decisions made by people can be mor
 | 39  | get\_lat\_long() | To get the latitude and longitude of a country. |
 | 40  | get\_country\_wise_data() | To get the data grouped by country. |
 | 41  | interactive_map() | To create the interactive map. |
-| 42  | plot_study() |  Arun please fill this in  |
-| 43  | plot_country() | To plot the situation of the country. |
+| 42  | plot_study() |  To plot the global map for a given study (confirmed/deaths/recovered)  |
+| 43  | plot_country() | To plot the the given study (confirmed/deaths/recovered) for a particular country  |
 | 44  | get\_new\_cases() | To get the new confirmed cases. |
 | 45  | get\_new\_deaths() | To get the new deaths. |
 | 46  | get\_new\_recoveries() | To get the new recoveries. |
@@ -116,13 +116,12 @@ With a better understanding of the data, the decisions made by people can be mor
 | 48  | plot_timeseries() | To plot the number of new cases of each day. |
 | 49  | get\_world\_timeseries(). | To get a dataframe with global data |
 | 50  | plot\_world\_timeseries(). | To create a chart of the global data |
-| 51  | unpivot(). | to unpivot the dataframe |
+| 51  | unpivot(). | to unpivot/melt the dataframe |
 | 52  | take_top10(). |   Arun fill this in please  |
-| 53  | line\_comparison\_data() |  Arun fill this in please   |
-| 54  | compare() |   Arun fill this in please  |
-| 55  | animated_barchart() | To create an animated barchart showing change in situation with time |
-| 56  | make_column() | To add a column in the dataframe with relevant stats |
-| 57  | get() |   Arun fill this in please  |
+| 53  | line\_comparison\_data() |  To create a static line chart for a given study(confirmed/deaths/recovered) for one or more countries|
+| 54 | animated_barchart() | To create an animated barchart showing change in situation with time |
+
+
 
 ## DATA DICTIONARY
 

@@ -56,7 +56,8 @@ def create_data_frame(dataframe, country):
 
     data_diff = data.diff()
 
-    # removing the first value from data_diff as it had no previous value and is a NaN after taking the difference
+    # Removing the first value from data_diff 
+    # It had no previous value and is a NaN after taking the difference
     data_diff = data_diff[1:]
 
     return data, data_diff

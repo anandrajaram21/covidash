@@ -7,7 +7,6 @@ COPY src/ app/
 WORKDIR /app
 
 RUN pip install -r requirements.txt
-RUN pip install tensorflow
 
 ENV PORT 8050
 

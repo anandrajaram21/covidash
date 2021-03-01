@@ -40,20 +40,20 @@ With a better understanding of the data, the decisions made by people can be mor
 
 #### MINIMUM REQUIREMENTS
 
-• Processor : Intel® CoreTM i3 CPU
-• CPU Speed : 2.2 GHz
-• RAM : 4GB
+- Processor : Intel® CoreTM i3 CPU
+- CPU Speed : 2.2 GHz
+- RAM : 4GB
 
 #### RECOMMENDED REQUIREMENTS
 
-• Processor : Intel® CoreTM i5 CPU
-• CPU Speed : 2.8 GHz
-• RAM : 8GB
+- Processor : Intel® CoreTM i5 CPU
+- CPU Speed : 2.8 GHz
+- RAM : 8GB
 
 #### SOFTWARE
 
-• Operating System : Any 64 bit OS
-• Software : Python 3.8, Chrome or Firefox (works with Safari too, but loading is significantly slowed), pip or poetry
+- Operating System : Any 64 bit OS
+- Software : Python 3.8, Chrome or Firefox (works with Safari too, but loading is significantly slowed), pip or poetry
 
 
 ## SYSTEM DESIGN
@@ -89,6 +89,7 @@ With a better understanding of the data, the decisions made by people can be mor
 
 
 ### FUNCTIONS AND THEIR PURPOSE
+
 #### app.py
 | SL.NO | FUNCTIONS | USES |
 | --- | --- | --- |
@@ -168,7 +169,7 @@ With a better understanding of the data, the decisions made by people can be mor
 | SL.NO | FUNCTIONS | USES |
 | --- | --- | --- |
 | 51  | unpivot(). | to unpivot/melt the dataframe |
-| 52  | take_top10(). |   Arun fill this in please  |
+| 52  | take_top10(). |  To take the top ten countries with the highest number of cases of given study  |
 | 53  | line\_comparison\_data() |  To create a static line chart for a given study(confirmed/deaths/recovered) for one or more countries|
 | 54 | animated_barchart() | To create an animated barchart showing change in situation with time |
 
@@ -2353,5 +2354,5 @@ def cnn_predict(df_name, country):
 
 ## Scope for Improvement
 
-• The neural network can be improved for better results and lower training time using more sophisticated models and algorithms.
-• The dashboard can be made more interactive for the users by giving them more filters.
+- The neural network can be improved for better results and lower training time using more sophisticated models and algorithms.
+- The dashboard can be made more interactive for the users by giving them more filters.

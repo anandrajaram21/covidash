@@ -1,3 +1,20 @@
+## INDEX
+
+| SL . NO | TITLE | PAGE NO. |
+| --- | --- | --- |
+| 1   | ACKNOWLEDGEMENT |  |
+| 2   | SYNOPSIS | |
+| 3   | HARDWARE AND SOFTWARE SPECIFICATIONS | |
+| 4   | FLOW DIAGRAM | |
+| 5   | LIBRARY MODULES AND THEIR PURPOSE | |
+| 6   | FUNCTIONS AND THEIR PURPOSE | |
+| 7   | DATA FILES AND THEIR PURPOSE | |
+| 8   |SOURCE CODE | |
+| 9   | OUTPUT SCREENSHOTS | |
+| 10   | SCOPE FOR IMPROVEMENT | |
+| 11   | BIBLIOGRAPHY | |
+
+
 ## ACKNOWLEDGEMENT
 
 The success of a project depends on the persistent efforts of an individual projecting it and the sustained support received from a few others who are equally responsible for their precious appreciation of such endeavors. My strength is all due to my honorable Principal **Mrs. Pushkala Parasuraman**, who has been an unending source of inspiration and support towards the accomplishment of this project. I would like to express my deepest sense of gratitude to my computer teachers **Mrs. Padma Pavani Kanukollu** and **Mrs. Smitha Ravindran** without whom I could not have successfully completed this project. 
@@ -5,6 +22,7 @@ The success of a project depends on the persistent efforts of an individual proj
 I would also like to thank all my friends who helped me create such a project. My personal gratitude is extended towards my parents, who have been a constant source of encouragement and support in the success of the project. 
 
 Last but not least I want to thank the Almighty for enlightening, strengthening, and guiding me in the completion of this project.
+
 
 ## SYNOPSIS
 
@@ -17,24 +35,26 @@ The common data about confirmed, death, and recovered cases across the world for
 The rapid spread of COVID-19 across the globe is affecting millions of people and is at the same time resulting in the spread of information, misinformation (false information spread without malicious intent), and disinformation (false information spread with the intent to deceive). We intend to bring together credible COVID-19 related information that is easy to access, understand and act upon.
 With a better understanding of the data, the decisions made by people can be more informed, which can help keep the number of infections in check, and bring them down.
 
+
 ## HARDWARE AND SOFTWARE SPECIFICATIONS
 
 #### MINIMUM REQUIREMENTS
 
-❖ Processor : Intel® CoreTM i3 CPU
-❖ CPU Speed : 2.2 GHz
-❖ RAM : 4GB
+• Processor : Intel® CoreTM i3 CPU
+• CPU Speed : 2.2 GHz
+• RAM : 4GB
 
 #### RECOMMENDED REQUIREMENTS
 
-❖ Processor : Intel® CoreTM i5 CPU
-❖ CPU Speed : 2.8 GHz
-❖ RAM : 8GB
+• Processor : Intel® CoreTM i5 CPU
+• CPU Speed : 2.8 GHz
+• RAM : 8GB
 
 #### SOFTWARE
 
-❖ Operating System : Any 64 bit OS
-❖ Software : Python 3.8, Chrome or Firefox (works with Safari too, but loading is significantly slowed), pip or poetry
+• Operating System : Any 64 bit OS
+• Software : Python 3.8, Chrome or Firefox (works with Safari too, but loading is significantly slowed), pip or poetry
+
 
 ## SYSTEM DESIGN
 
@@ -61,9 +81,15 @@ With a better understanding of the data, the decisions made by people can be mor
 | 17  | math | To access mathematical functions in Python. |
 | 18  | app_vars | To allow reusability of variables (custom module). |
 | 19  | time_series | To provide functions for working with timeseries (custom module). |
+| 20  | app | Frontend web application to interact with the data (custom module). |
+| 21  | cnn | To provide the data pipeline and predictive model functions (custom module). |
+| 22  | country_visuals | To create engaging visuals that depictt the spread of COVID-19 in countrieso (custom module). |
+| 23  | maps | To create visually appealing maps (custom module). |
+| 24  | timeseries | To provide functions for data preprocessing (custom module). |
+
 
 ### FUNCTIONS AND THEIR PURPOSE
-
+#### app.py
 | SL.NO | FUNCTIONS | USES |
 | --- | --- | --- |
 | 1   | collect_data() | Retrieve and pre process data from the John Hopkins University Dataset on GitHub |
@@ -80,6 +106,11 @@ With a better understanding of the data, the decisions made by people can be mor
 | 12  | update_stats() | Get province wise details of a country. |
 | 13  | forecast_cases() | Forecast the cases based on metric selected using the custom CNN Model. |
 | 14  | display_page() | Display the page on the website based on the choice. |
+
+
+#### cnn.py
+| SL.NO | FUNCTIONS | USES |
+| --- | --- | --- |
 | 15  | get_data() | Get the required data from the original dataset. |
 | 16  | create\_data\_frame() | Create a dataframe on which all operations would be conducted. |
 | 17  | make_series() | Create a series of daily data from the cumulative data. |
@@ -95,9 +126,19 @@ With a better understanding of the data, the decisions made by people can be mor
 | 27  | check_slope() | Check the slope and make sure it is not Zero. |
 | 28  | naive_forecast() | Perform a naive forecast. |
 | 29  | cnn_predict() | Perform the predictions such that if MASE is more than one, then a naive forecast is performed. |
+
+
+#### country_visuals.py
+| SL.NO | FUNCTIONS | USES |
+| --- | --- | --- |
 | 30  | get\_country\_frame() |  Get a dataframe with all the values required for a specific country.  |
 | 31  | plot_province() | Get a visual representation of the provincial data. |
 | 32  | table\_province\_data() | Get a tabulated representation of provincial data. |
+
+
+#### maps.py
+| SL.NO | FUNCTIONS | USES |
+| --- | --- | --- |
 | 33  | chainer() | To get a list from series of comma-separated strings. |
 | 34  | convert_df() | To convert the dataframe to a form suitable to work with. |
 | 35  | create_hovertemplate() | To create hovertemplates for the maps. |
@@ -109,6 +150,11 @@ With a better understanding of the data, the decisions made by people can be mor
 | 41  | interactive_map() | To create the interactive map. |
 | 42  | plot_study() |  To plot the global map for a given study (confirmed/deaths/recovered)  |
 | 43  | plot_country() | To plot the the given study (confirmed/deaths/recovered) for a particular country  |
+
+
+#### timeseries.py
+| SL.NO | FUNCTIONS | USES |
+| --- | --- | --- |
 | 44  | get\_new\_cases() | To get the new confirmed cases. |
 | 45  | get\_new\_deaths() | To get the new deaths. |
 | 46  | get\_new\_recoveries() | To get the new recoveries. |
@@ -116,6 +162,11 @@ With a better understanding of the data, the decisions made by people can be mor
 | 48  | plot_timeseries() | To plot the number of new cases of each day. |
 | 49  | get\_world\_timeseries(). | To get a dataframe with global data |
 | 50  | plot\_world\_timeseries(). | To create a chart of the global data |
+
+
+#### animations.py
+| SL.NO | FUNCTIONS | USES |
+| --- | --- | --- |
 | 51  | unpivot(). | to unpivot/melt the dataframe |
 | 52  | take_top10(). |   Arun fill this in please  |
 | 53  | line\_comparison\_data() |  To create a static line chart for a given study(confirmed/deaths/recovered) for one or more countries|
@@ -133,6 +184,7 @@ The data files that have been used in the project are:
 | 2   | country_cases.csv | To provide country wise data (updated daily)|
 | 3   | deaths_global.csv | To provide the global data for deaths (updated daily)|
 | 4   | recovered_global.csv | To provide the global data for recoveries (updated daily)|
+
 
 ## SOURCE CODE
 
@@ -2298,7 +2350,8 @@ def cnn_predict(df_name, country):
 
 
 
+
 ## Scope for Improvement
 
-❖ The neural network can be improved for better results and lower training time using more sophisticated models and algorithms.
-❖ The dashboard can be made more interactive for the users by giving them more filters.
+• The neural network can be improved for better results and lower training time using more sophisticated models and algorithms.
+• The dashboard can be made more interactive for the users by giving them more filters.

@@ -127,7 +127,7 @@ With a better understanding of the data, the decisions made by people can be mor
 
 The data files that have been used in the project are:
 
-| SL.NO | LIBRARY MODULES | PURPOSE |
+| SL.NO | FILE NAME | PURPOSE |
 | --- | --- | --- |
 | 1   | confirmed_global.csv | To provide the global data for confirmed cases (updated daily) |
 | 2   | country_cases.csv | To provide country wise data (updated daily)|

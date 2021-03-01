@@ -55,6 +55,9 @@ With a better understanding of the data, the decisions made by people can be mor
 - Operating System : Any 64 bit OS
 - Software : Python 3.8, Chrome or Firefox (works with Safari too, but loading is significantly slowed), pip or poetry
 
+## FLOW DIAGRAM
+
+
 
 ## SYSTEM DESIGN
 
@@ -71,7 +74,7 @@ With a better understanding of the data, the decisions made by people can be mor
 | 7   | flask_caching | To increase program efficiency with the help of caching. |
 | 8   | time | To provide various time related functions. |
 | 9   | pickle | To work with binary files. |
-| 10  | numpy | To provide functions to working with arrays. |
+| 10  | numpy | To work with large, multi-dimensional arrays and matrices, and use high-level mathematical functions to operate on them |
 | 11  | collections | To provide different types of containers. |
 | 12  | TSErrors | To analyse time series prediction errors. |
 | 13  | sklearn | To provide powerful statistical and preprocessing tools for data analysis. |
@@ -80,12 +83,11 @@ With a better understanding of the data, the decisions made by people can be mor
 | 16  | itertools | To provide a collection of tools for handling iterators. |
 | 17  | math | To access mathematical functions in Python. |
 | 18  | app_vars | To allow reusability of variables (custom module). |
-| 19  | time_series | To provide functions for working with timeseries (custom module). |
-| 20  | app | Frontend web application to interact with the data (custom module). |
-| 21  | cnn | To provide the data pipeline and predictive model functions (custom module). |
-| 22  | country_visuals | To create engaging visuals that depictt the spread of COVID-19 in countrieso (custom module). |
-| 23  | maps | To create visually appealing maps (custom module). |
-| 24  | timeseries | To provide functions for data preprocessing (custom module). |
+| 19  | app | Frontend web application to interact with the data (custom module). |
+| 20  | cnn | To provide the data pipeline and predictive model functions (custom module). |
+| 21  | country_visuals | To create engaging visuals that depict the spread of COVID-19 in countries (custom module). |
+| 22  | maps | To create visually appealing maps (custom module). |
+| 23  | timeseries | To provide functions for data preprocessing (custom module). |
 
 
 ### FUNCTIONS AND THEIR PURPOSE
@@ -2349,10 +2351,12 @@ def cnn_predict(df_name, country):
 
 ```
 
+## OUTPUT SCREENSHOTS
 
 
-
-## Scope for Improvement
+## SCOPE FOR IMPROVEMENT
 
 - The neural network can be improved for better results and lower training time using more sophisticated models and algorithms.
 - The dashboard can be made more interactive for the users by giving them more filters.
+
+## BIBLIOGRAPHY

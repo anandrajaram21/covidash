@@ -3,6 +3,9 @@ name: Generate Predictions and Graphs
 on:
   schedule:
   - cron: '0 0 * * *'
+  push:
+    branches:
+    - main
 
 jobs:
   generate_predictions_and_graphs:

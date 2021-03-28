@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://anandrajaram21.github.io/covidash/blog</id>
+    <title>Covidash Blog</title>
+    <updated>2015-10-25T23:29:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://anandrajaram21.github.io/covidash/blog"/>
+    <subtitle>Covidash Blog</subtitle>
+    <icon>https://anandrajaram21.github.io/covidash/img/favicon.ico</icon>
+</feed>

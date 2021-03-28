@@ -346,7 +346,7 @@ def cnn_predict(df_name, country):
     return fig, MASE, predictions
 
 
-countries = ["India", "US", "Brazil", "Canada", "United Kingdom"]
+countries = ["India", "US", "Brazil", "Canada", "United Kingdom", "Germany"]
 
 dfs = ["confirmed", "recovered", "deaths"]
 

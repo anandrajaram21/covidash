@@ -1185,7 +1185,7 @@ preventive_page = dbc.Container(
                                             ),
                                             dbc.Col(
                                                 html.P(
-                                                   av.mask,
+                                                    av.mask,
                                                     style={
                                                         "text-align": "left",
                                                         "font-size": "large",

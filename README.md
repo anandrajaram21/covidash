@@ -67,7 +67,7 @@ python .\src\web_app\app.py # or change directory to web_app and run `python app
 - Run the following commands to start the docusaurus project and navigate to localhost:3000 on your browser.
 
 ```
-cd docs
+cd covidocs
 npm start
 ```
 

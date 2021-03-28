@@ -95,8 +95,6 @@ npm start
 - **Keras** is the framework used to make the predictive model (CNN) that forecasts the cases for the next seven days. We chose Keras as it offered the most flexibility along with ease of learning and experimentation.
 
 
-Web Application/Dashboard [(link here)](https://github.com/anandrajaram21/covidash) 
-
 ### Main Contributors
  - [Anand Rajaram](https://github.com/anandrajaram21/)
  - [Anirudh Lakhotia](https://github.com/anirudhlakhotia/)

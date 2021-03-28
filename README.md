@@ -97,3 +97,4 @@ npm start
 ### Main Contributors
  - [Anand Rajaram](https://github.com/anandrajaram21/)
  - [Anirudh Lakhotia](https://github.com/anirudhlakhotia/)
+ - [Arunachala A.M](https://github.com/majimearun/)

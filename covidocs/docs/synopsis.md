@@ -1,0 +1,9 @@
+---
+title: Synopsis
+---
+
+Coronavirus disease (COVID-19) is an inflammation disease from a new virus. The disease causes respiratory ailment (like influenza) with manifestations, for example, cold, cough, and fever, and in progressively serious cases, problems in breathing. COVID-19 has been perceived as a global pandemic and a few examinations are being led utilizing different numerical and statistical models to anticipate the likely advancement of this pestilence.
+
+The project is mainly based on Machine learning, and all models are built and customized specifically for this project. Identification of the potential patterns of increasing COVID-19 cases in the world, dependent on data gathered from the John Hopkins University dataset, has been performed using a 1 Dimensional Convolutional Neural Network, which is followed by a Artificial Neural Network Hybrid to predict the rise and fall of COVID-19 cases globally.
+
+The common data about confirmed, death, and recovered cases across the world for over a specific period help in estimating the not-so-distant future. For extra assessment or future perspective, case definition, and data combination must be kept up persistently. The rapid spread of COVID-19 across the globe is affecting millions of people and is at the same time resulting in the spread of information, misinformation (false information spread without malicious intent), and disinformation (false information spread with the intent to deceive). We intend to bring together credible COVID-19 related information that is easy to access, understand and act upon. With a better understanding of the data, the decisions made by people can be more informed, which can help keep the number of infections in check, and bring them down.

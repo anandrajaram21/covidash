@@ -47,7 +47,8 @@ gunicorn --bind :8050 --workers 2 --threads 8 app:server # Change the number of 
 - Run the following commands and navigate to localhost:3000 on your browser.
 
 ```
-cd docs
+git checkout docs
+cd covidocs
 npm start
 ```
 ### Presentation

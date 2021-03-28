@@ -1,0 +1,21 @@
+{
+  "unversionedId": "synopsis",
+  "id": "synopsis",
+  "isDocsHomePage": false,
+  "title": "Synopsis",
+  "description": "Coronavirus disease (COVID-19) is an inflammation disease from a new virus. The disease causes respiratory ailment (like influenza) with manifestations, for example, cold, cough, and fever, and in progressively serious cases, problems in breathing. COVID-19 has been perceived as a global pandemic and a few examinations are being led utilizing different numerical and statistical models to anticipate the likely advancement of this pestilence.",
+  "source": "@site/docs/synopsis.md",
+  "slug": "/synopsis",
+  "permalink": "/docs/synopsis",
+  "editUrl": "https://github.com/anandrajaram21/covidash/docs/synopsis.md",
+  "version": "current",
+  "sidebar": "docs",
+  "previous": {
+    "title": "Acknowledgement",
+    "permalink": "/docs/"
+  },
+  "next": {
+    "title": "Hardware and Software Specifications",
+    "permalink": "/docs/hardware"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "unversionedId": "hardware",
+  "id": "hardware",
+  "isDocsHomePage": false,
+  "title": "Hardware and Software Specifications",
+  "description": "Minimum Requirements",
+  "source": "@site/docs/hardware.md",
+  "slug": "/hardware",
+  "permalink": "/docs/hardware",
+  "editUrl": "https://github.com/anandrajaram21/covidash/docs/hardware.md",
+  "version": "current",
+  "sidebar": "docs",
+  "previous": {
+    "title": "Synopsis",
+    "permalink": "/docs/synopsis"
+  },
+  "next": {
+    "title": "Library Modules and their Purpose",
+    "permalink": "/docs/modules"
+  }
+}

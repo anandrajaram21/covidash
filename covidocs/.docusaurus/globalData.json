@@ -1,0 +1,53 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/docs",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/docs",
+          "mainDocId": "acknowledgement",
+          "docs": [
+            {
+              "id": "acknowledgement",
+              "path": "/docs/",
+              "sidebar": "docs"
+            },
+            {
+              "id": "datadict",
+              "path": "/docs/datadict",
+              "sidebar": "docs"
+            },
+            {
+              "id": "functions",
+              "path": "/docs/functions",
+              "sidebar": "docs"
+            },
+            {
+              "id": "hardware",
+              "path": "/docs/hardware",
+              "sidebar": "docs"
+            },
+            {
+              "id": "modules",
+              "path": "/docs/modules",
+              "sidebar": "docs"
+            },
+            {
+              "id": "sourcecode",
+              "path": "/docs/sourcecode",
+              "sidebar": "docs"
+            },
+            {
+              "id": "synopsis",
+              "path": "/docs/synopsis",
+              "sidebar": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

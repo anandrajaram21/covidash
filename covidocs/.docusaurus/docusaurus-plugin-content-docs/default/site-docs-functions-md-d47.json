@@ -1,0 +1,21 @@
+{
+  "unversionedId": "functions",
+  "id": "functions",
+  "isDocsHomePage": false,
+  "title": "Functions and their Purpose",
+  "description": "app.py",
+  "source": "@site/docs/functions.md",
+  "slug": "/functions",
+  "permalink": "/docs/functions",
+  "editUrl": "https://github.com/anandrajaram21/covidash/docs/functions.md",
+  "version": "current",
+  "sidebar": "docs",
+  "previous": {
+    "title": "Library Modules and their Purpose",
+    "permalink": "/docs/modules"
+  },
+  "next": {
+    "title": "Data Dictionary",
+    "permalink": "/docs/datadict"
+  }
+}

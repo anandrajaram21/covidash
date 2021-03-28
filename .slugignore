@@ -1,0 +1,5 @@
+/output
+*.yml
+*.md
+*.sh
+Dockerfile

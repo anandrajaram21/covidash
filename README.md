@@ -87,9 +87,8 @@ npm start
 
 ### Technologies Used
 
-- Python is the primary programming language used
-- Plotly Dash is the framework used to build the web app. (Plotly Dash uses Flask in its underlying implementation, so its very fast)
-- Tensorflow is the main library used to make the model that forecasts the cases. Some other libraries like Scikitlearn and Facebook Prophet were also used, but none of them provided as good a speed to accuracy ratio as Tensorflow.
-- Plotly is the library used for all the data visualizations and graphs that you see on the dashboard.
-- Jupyter Notebooks were used widely for testing our models and our visualizations.
-- Docusaurus was used to make the project documentation.
+### Technologies Used
+
+- All the visuals and the dashboard were built solely using **Python**. 
+- **Plotly** and **Plotly Dash** were the frameworks used to create the visualizations and make the web app.
+- **Keras** is the framework used to make the predictive model (CNN) that forecasts the cases for the next seven days. We chose Keras as it offered the most flexibility along with ease of learning and experimentation.

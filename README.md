@@ -61,9 +61,8 @@ npm start
 - **Plotly** and **Plotly Dash** were the frameworks used to create the visualizations and make the web app.
 - **Keras** is the framework used to make the predictive model (CNN) that forecasts the cases for the next seven days. We chose Keras as it offered the most flexibility along with ease of learning and experimentation.
 
-<br>
 
-Web Application/Dashboard [(link here)](https://github.com/anandrajaram21/covidash/tree/web_app) 
+Web Application/Dashboard [(link here)](https://github.com/anandrajaram21/covidash) 
 
 ### Main Contributors
  - [Anand Rajaram](https://github.com/anandrajaram21/)

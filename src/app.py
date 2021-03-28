@@ -441,7 +441,7 @@ home_page = dbc.Container(
                                             ),
                                             html.P(
                                                 "See the statistics for the global situation",
-                                                className="card-text",
+                                                className="card-text text-center",
                                             ),
                                             dbc.Button(
                                                 "Global Situation",
@@ -484,7 +484,7 @@ home_page = dbc.Container(
                                             ),
                                             html.P(
                                                 "See the statistics for your country",
-                                                className="card-text",
+                                                className="card-text text-center",
                                             ),
                                             dbc.Button(
                                                 "Country Analysis",
@@ -526,7 +526,7 @@ home_page = dbc.Container(
                                             ),
                                             html.P(
                                                 "Generate forecasts for your country",
-                                                className="card-text",
+                                                className="card-text text-center",
                                             ),
                                             dbc.Button(
                                                 "Forecast",
@@ -1771,7 +1771,7 @@ def forecast_cases(btn1, btn2, btn3, value):
     if "forecast-confirmed" in changed_id:
         try:
             response = requests.get(
-                f"https://github.com/anandrajaram21/covidash/raw/web_app/output/{value}-confirmed.pkl"
+                f"https://github.com/anandrajaram21/covidash/raw/main/output/{value}-confirmed.pkl"
             )
             with open("temp.pkl", "wb") as fh:
                 fh.write(response.content)
@@ -1795,7 +1795,7 @@ def forecast_cases(btn1, btn2, btn3, value):
     elif "forecast-recoveries" in changed_id:
         try:
             response = requests.get(
-                f"https://github.com/anandrajaram21/covidash/raw/web_app/output/{value}-recovered.pkl"
+                f"https://github.com/anandrajaram21/covidash/raw/main/output/{value}-recovered.pkl"
             )
             with open("temp.pkl", "wb") as fh:
                 fh.write(response.content)
@@ -1819,7 +1819,7 @@ def forecast_cases(btn1, btn2, btn3, value):
     elif "forecast-deaths" in changed_id:
         try:
             response = requests.get(
-                f"https://github.com/anandrajaram21/covidash/raw/web_app/output/{value}-deaths.pkl"
+                f"https://github.com/anandrajaram21/covidash/raw/main/output/{value}-deaths.pkl"
             )
             with open("temp.pkl", "wb") as fh:
                 fh.write(response.content)

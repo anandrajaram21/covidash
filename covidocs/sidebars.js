@@ -6,7 +6,8 @@ module.exports = {
       items: [
         'acknowledgement',
         'synopsis',
-        'hardware'
+        'hardware',
+	'setup'
       ]
     },
     {

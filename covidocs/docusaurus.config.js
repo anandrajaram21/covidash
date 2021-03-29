@@ -3,7 +3,7 @@ module.exports = {
   title: 'Covidash',
   tagline: 'An open source, community driver, COVID-19 dashboard',
   url: 'https://anandrajaram21.github.io/covidash',
-  baseUrl: '/',
+  baseUrl: '/covidash/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',

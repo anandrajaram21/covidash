@@ -1551,7 +1551,7 @@ def update_graphs_country(value, btn1, btn2, btn3):
     elif "deaths-country" in changed_id:
         try:
             return (
-                maps.plot_country(value, today_country_data, "deaths"),
+                maps.plot_country(value, today_country_data, "Deaths"),
                 timeseries.plot_timeseries(
                     value,
                     timeseries.get_new_deaths,
@@ -1562,7 +1562,7 @@ def update_graphs_country(value, btn1, btn2, btn3):
             )
         except:
             return (
-                maps.plot_country(value, today_country_data, "deaths"),
+                maps.plot_study(country_cases_sorted, columns, deaths, value),
                 timeseries.plot_timeseries(
                     value,
                     timeseries.get_new_deaths,

@@ -7,9 +7,8 @@ from TSErrors import FindErrors
 
 from sklearn.model_selection import ParameterGrid
 
-from keras.models import Sequential
-from keras.layers.convolutional import Conv1D, MaxPooling1D
-from keras.layers import Dense, Flatten
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv1D, MaxPooling1D, Dense, Flatten
 
 import plotly.graph_objects as go
 import plotly.io as pio

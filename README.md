@@ -1,5 +1,7 @@
 # Covidash
 
+![covidash](https://socialify.git.ci/anandrajaram21/covidash/image?description=1&font=Raleway&language=1&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Dark)
+
 Covidash is an open source, community driven, COVID-19 dashboard that not only shows the daily statistics of the growing pandemic, but also forecasts the growth of the pandemic.
 
 ## Getting Started

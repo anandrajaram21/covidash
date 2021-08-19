@@ -26,7 +26,7 @@ confirmed_global, deaths_global, recovered_global, country_cases_sorted = (
 
 
 def chainer(s):
-    return list(chain.from_iterable(s.str.split(",")))
+    return list(chain.from_iterable(s.astype(str).str.split(",")))
 
 
 def convert_df(df, cols):
@@ -45,7 +45,7 @@ def convert_df(df, cols):
         L.append(string)
 
     df["New"] = L
-    lens = df["New"].str.split(",").map(len)
+    lens = df["New"].astype(str).str.split(",").map(len)
 
     df = pd.DataFrame(
         {

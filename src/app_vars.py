@@ -45,9 +45,9 @@ safety = """
     - **Take your temperature** if symptoms develop.
         - Don’t take your temperature within 30 minutes of exercising or after taking medications that could lower your temperature, like acetaminophen.
     """
-pcloud1="https://api.pcloud.com/getpubthumb?code=XZuvpQXZsR3nbzh8S9j61OE1DfDCHbAVIOdk&linkpassword=undefined&size=413x460&crop=0&type=auto"    
-pcloud2="https://api.pcloud.com/getpubthumb?code=XZ7ipQXZ5KUuyw3hghJcuqkGaMUU1VQJqyOk&linkpassword=undefined&size=430x365&crop=0&type=auto"
-pcloud3="https://api.pcloud.com/getpubthumb?code=XZY9HQXZEKg6hUK7fay5q06RYI65GJ5OXVay&linkpassword=undefined&size=499x499&crop=0&type=auto"
+pcloud1="https://api.pcloud.com/getpubthumb?code=XZ16DKXZQvhh7MoKPNpOcVPnp3ovILmMzEf7&linkpassword=undefined&size=670x670&crop=0&type=auto"    
+pcloud2="https://api.pcloud.com/getpubthumb?code=XZQEDKXZox4tOFcRUO5Knh824FChhFUm8wKy&linkpassword=undefined&size=1536x1536&crop=0&type=auto"
+pcloud3="https://api.pcloud.com/getpubthumb?code=XZejDKXZ9pGoYQUloeSzS9H28jMDPyVVrVvV&linkpassword=undefined&size=1536x1536&crop=0&type=auto"
 pcloud4="https://api.pcloud.com/getpubthumb?code=XZlEpQXZpJuyvwybNSmg8RVr1VPyxYcWDHCX&linkpassword=undefined&size=279x382&crop=0&type=auto"
 pcloud5="https://api.pcloud.com/getpubthumb?code=XZScpQXZAAbOx5c5QeRUQzz7ji6jqFkeEJKk&linkpassword=undefined&size=387x99&crop=0&type=auto"
 pcloud6="https://api.pcloud.com/getpubthumb?code=XZfOpQXZdAvDtsdvjX0Rg6RWhabgDk11fMTy&linkpassword=undefined&size=218x433&crop=0&type=auto"

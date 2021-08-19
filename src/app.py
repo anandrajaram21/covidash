@@ -1,5 +1,6 @@
 # Imports and data preprocessing
 import dash
+from dash_bootstrap_components._components.Col import Col
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
@@ -16,10 +17,25 @@ import app_vars as av
 import time
 import datetime
 import pickle
+import json
+from fake_useragent import UserAgent
 
 pio.templates.default = "plotly_dark"
 
 external_stylesheets = [dbc.themes.CYBORG]
+
+temp_user_agent = UserAgent()
+header = {'User-Agent': temp_user_agent.random}
+district_list=[]
+dist_id=[]
+for code in range(1,40):
+    response = requests.get("https://cdn-api.co-vin.in/api/v2/admin/location/districts/{}".format(code), headers=header)
+    json_data = json.loads(response.text)
+    for i in json_data["districts"]:
+        district_list.append(i['district_name'])
+        dist_id.append(i['district_id'])
+
+
 
 app = dash.Dash(
     __name__,
@@ -114,7 +130,7 @@ def get_today_data():
 
 def cases_object(array):
     obj1 = {
-        study: sum([(i["stats"][study]) for i in array])
+        study: sum([(i["stats"][study]) for i in array if i["stats"][study]])
         for study in ["confirmed", "deaths", "recovered"]
     }
     return {**obj1, "updatedAt": [i["updatedAt"] for i in array]}
@@ -202,6 +218,7 @@ navbar = dbc.NavbarSimple(
         dbc.NavItem(dbc.NavLink("Country Analysis", href="/country")),
         dbc.NavItem(dbc.NavLink("Forecasts", href="/forecast")),
         dbc.NavItem(dbc.NavLink("Preventive Measures", href="/prevent")),
+        dbc.NavItem(dbc.NavLink("Vaccination", href="/vaccine")),
     ],
     dark=True,
     color="dark",
@@ -1011,6 +1028,60 @@ forecast_page = html.Div(
     className="m-5",
 )
 
+
+vaccine_page = html.Div(
+    [
+        dbc.Row(
+            dbc.Col(
+                 dcc.Input(
+            id="dtrue", type="number",
+            debounce=True, placeholder="Enter Your Age",min=18, max=110,
+            style={"text-align":"center","width":"100%"}
+        ),
+            ),
+            className="m-5",
+        ),
+            dbc.Row(
+            dbc.Col(
+                dcc.Dropdown(
+                    id="vaccine-dropdown",
+                    options=[
+                        {"label": district_list[i], "value": dist_id[i]}
+                        for i in range(1,len(district_list))
+                    ],
+                    value=265,
+                    style={"color": "black","text-align":"center"},
+                ),
+            ),
+            className="m-5",
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    dbc.Button(
+                        "Check Vaccination Slots",
+                        size="lg",
+                        id="check-vaccine",
+                        color="primary",
+                        block=True,
+                    ),
+                    sm=12,
+                    md=12,
+                    lg=4,
+                    xl=4,
+                    className="mb-4",
+                ),
+            ],
+            className="mt-5 justify-content-center",
+        ),
+        dbc.Row(
+            id="vacc",
+            className="mt-5 justify-content-center",
+        ),
+    ],
+    className="m-5",
+)
+
 preventive_page = dbc.Container(
     children=[
         dbc.Row(
@@ -1225,39 +1296,40 @@ preventive_page = dbc.Container(
         ),
         dbc.Row(
             [
-                dbc.Col(
-                    html.Img(
-                        src=av.pcloud4,
-                        height="60%",
-                        width="90%",
-                        style={"margin-top": "25%", "width": "125%"},
-                    ),
-                    align="start",
-                    width=3,
-                ),
-                dbc.Col(
-                    html.Img(
-                        src=av.pcloud5,
-                        width="100%",
-                    ),
-                    align="center",
-                    width=6,
-                ),
-                dbc.Col(
-                    html.Img(
-                        src=av.pcloud6,
-                        height="45%",
-                        width="100%",
-                        style={"float": "right"},
-                    ),
-                    align="end",
-                    width=3,
-                ),
+                # dbc.Col(
+                #     html.Img(
+                #         src=av.pcloud4,
+                #         height="60%",
+                #         width="90%",
+                #         style={"margin-top": "25%", "width": "125%"},
+                #     ),
+                #     align="start",
+                #     width=3,
+                # ),
+                # dbc.Col(
+                #     html.Img(
+                #         src=av.pcloud5,
+                #         width="100%",
+                #     ),
+                #     align="center",
+                #     width=6,
+                # ),
+                # dbc.Col(
+                #     html.Img(
+                #         src=av.pcloud6,
+                #         height="45%",
+                #         width="100%",
+                #         style={"float": "right"},
+                #     ),
+                #     align="end",
+                #     width=3,
+                # ),
             ]
         ),
     ],
 )
 
+   
 app.layout = html.Div(
     [dcc.Location(id="url", refresh=False), navbar, html.Div(id="page-content")]
 )
@@ -1765,7 +1837,145 @@ def update_stats(value, btn1, btn2, btn3):
     dash.dependencies.Input("forecast-deaths", "n_clicks"),
     dash.dependencies.State("country-dropdown-prediction", "value"),
     prevent_initial_call=True,
+
 )
+
+
+@app.callback(
+    dash.dependencies.Output("vacc", "children"),
+    dash.dependencies.Input("check-vaccine", "n_clicks"),
+    dash.dependencies.Input("vaccine-dropdown", "value"),
+    dash.dependencies.Input("dtrue", "value"),
+    prevent_initial_call=True,
+
+)
+def check_slot(value,children,age):
+    print("AGE IS",age)
+    # print('CHECK SLOT VALUE IS:',value)
+    # print('CHECK SLOT CHILDREN IS:',children)
+    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    print(changed_id)
+    if "check-vaccine" in changed_id:
+        DIST_ID = children
+        # Print available centre description (y/n)?
+        print_flag = 'y'
+
+        numdays = 20
+        base = datetime.datetime.today()
+        date_list = [base + datetime.timedelta(days=x) for x in range(numdays)]
+        date_str = [x.strftime("%d-%m-%Y") for x in date_list]
+
+        print('DIST_ID',DIST_ID)
+        for INP_DATE in date_str:
+            print(INP_DATE)
+            URL = f"https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id={DIST_ID}&date={INP_DATE}"
+            print("URL",URL)
+            response = requests.get(URL, headers=header)
+            print(response)
+            if response.ok:
+                resp_json = response.json()
+                print('Here')
+                L=[]
+                D={}
+                # print(json.dumps(resp_json, indent = 1))
+                if resp_json["centers"]:
+                    print("Available on: {}".format(INP_DATE))
+                    if(print_flag=='y' or print_flag=='Y'):
+                        for center in resp_json["centers"]:
+                            for session in center["sessions"]:
+                                # print('SESSION')
+                                print(session)
+                                if session["min_age_limit"] <= age:
+                                    print("\t", center["name"])
+                                    D['Name']= center["name"]
+                                    print("\t", center["block_name"])
+                                    D['Block_Name']= center["block_name"]
+                                    print("\t Price: ", center["fee_type"])
+                                    D['Price']=center['fee_type']
+                                    print("\t Available Capacity: ", session["available_capacity"])
+                                    if(session["vaccine"] != ''):
+                                        print("\t Vaccine: ", session["vaccine"])
+                                        D['Vaccine']=session["vaccine"]
+                                        # D['Address']=session['address']
+                                        Time=[]
+                                        for i in session['slots']:
+                                            Time.append(i+'\n')
+                                        D['Time']=Time
+                                        D['Date']=session['date']
+                                        D['available']=session['available_capacity']
+                                    L.append(dict(D))
+                                    print("\n\n")
+                      
+                else:
+                    print("No available slots on {}".format(INP_DATE))
+                    L=None
+                return [dbc.Col(dbc.Card(
+            dbc.CardBody(
+                [
+                    html.Div(
+                        [
+                            dbc.Row(
+                                [
+                                    dbc.Col(
+                                        [
+                                            html.P(
+                                                x['Name']),
+                                            html.P(
+                                                x['Block_Name']),
+                                                html.P(x['Vaccine']),
+                                                html.P(x['Date']),
+                                                html.P(x['Price']),
+                                                html.P(x['Time']),
+                                                dbc.Col(
+
+                                                html.Img(
+                                                    src="https://api.pcloud.com/getpubthumb?code=XZyfAnXZjGYa5SIIYkFc5jBUTYY13j6c3VOV&linkpassword=undefined&size=524x476&crop=0&type=auto" if x['available'] else "https://img.pngio.com/wrong-multicolor-icon-with-png-and-vector-format-for-free-wrong-png-512_512.png",
+                                                    height="20%",
+                                                    width="20%",
+                                                    className="img-fluid",
+                                                    style={
+                                                        "float":"right"
+                                                    },
+                                                ),
+                                                sm=12,
+                                                lg=12,
+                                                md=12,
+                                                style={
+                                                    "text-align": "center",
+                                                },
+                                            ),
+                                            html.Br(),
+                                        ],
+                                        sm=12,
+                                        md=12,
+                                        lg=12,
+                                    ),
+                                ],
+                            ),
+                        ],
+                        className="clearfix",
+                    )
+                ]
+            ),
+            style={
+                "width": "100%",
+                "display": "flex",
+                "flex": "1 1 auto",
+                "align-items":'end',
+                "margin-top": "5%",
+                "margin-bottom": "5%",
+                "border-radius": "2rem",
+                "background-color": "white",
+                'color':'black'
+            },
+        ), sm=12,
+                            md=12,
+                            lg=4, ) for x in L]
+                
+
+
+
+
 def forecast_cases(btn1, btn2, btn3, value):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     if "forecast-confirmed" in changed_id:
@@ -1857,6 +2067,8 @@ def display_page(pathname):
         return preventive_page
     elif pathname == "/forecast":
         return forecast_page
+    elif pathname == "/vaccine":
+        return vaccine_page
 
 
 if __name__ == "__main__":

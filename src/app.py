@@ -1,8 +1,6 @@
 # Imports and data preprocessing
-import dash
+from dash import *
 from dash_bootstrap_components._components.Col import Col
-import dash_core_components as dcc
-import dash_html_components as html
 import dash_bootstrap_components as dbc
 import plotly.express as px
 import plotly.graph_objects as go
@@ -37,7 +35,7 @@ for code in range(1,40):
 
 
 
-app = dash.Dash(
+app = Dash(
     __name__,
     external_stylesheets=external_stylesheets,
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
@@ -470,7 +468,7 @@ home_page = dbc.Container(
                                                     "border-radius": "1rem",
                                                 },
                                                 className="mr-1",
-                                                block=True,
+                                                # block=True,
                                             ),
                                         ]
                                     ),
@@ -513,7 +511,7 @@ home_page = dbc.Container(
                                                     "border-radius": "1rem",
                                                 },
                                                 className="mr-1",
-                                                block=True,
+                                                # block=True,
                                             ),
                                         ]
                                     ),
@@ -555,7 +553,7 @@ home_page = dbc.Container(
                                                     "border-radius": "1rem",
                                                 },
                                                 className="mr-1",
-                                                block=True,
+                                                #block=True,
                                             ),
                                         ]
                                     ),
@@ -592,7 +590,7 @@ global_page = html.Div(
                         size="lg",
                         id="confirmed",
                         color="primary",
-                        block=True,
+                        #block=True,
                         outline=True,
                     ),
                     sm=12,
@@ -607,7 +605,7 @@ global_page = html.Div(
                         size="lg",
                         id="recoveries",
                         color="success",
-                        block=True,
+                        #block=True,
                         outline=True,
                     ),
                     sm=12,
@@ -622,7 +620,7 @@ global_page = html.Div(
                         size="lg",
                         id="deaths",
                         color="danger",
-                        block=True,
+                        #block=True,
                         outline=True,
                     ),
                     sm=12,
@@ -754,7 +752,7 @@ country_page = html.Div(
                         size="lg",
                         id="confirmed-country",
                         color="primary",
-                        block=True,
+                        #block=True,
                         outline=True,
                     ),
                     sm=12,
@@ -769,7 +767,7 @@ country_page = html.Div(
                         size="lg",
                         id="recoveries-country",
                         color="success",
-                        block=True,
+                        #block=True,
                         outline=True,
                     ),
                     sm=12,
@@ -784,7 +782,7 @@ country_page = html.Div(
                         size="lg",
                         id="deaths-country",
                         color="danger",
-                        block=True,
+                        #block=True,
                         outline=True,
                     ),
                     sm=12,
@@ -959,7 +957,7 @@ forecast_page = html.Div(
                         size="lg",
                         id="forecast-confirmed",
                         color="primary",
-                        block=True,
+                        #block=True,
                     ),
                     sm=12,
                     md=12,
@@ -973,7 +971,7 @@ forecast_page = html.Div(
                         size="lg",
                         id="forecast-recoveries",
                         color="success",
-                        block=True,
+                        #block=True,
                     ),
                     sm=12,
                     md=12,
@@ -987,7 +985,7 @@ forecast_page = html.Div(
                         size="lg",
                         id="forecast-deaths",
                         color="danger",
-                        block=True,
+                        #block=True,
                     ),
                     sm=12,
                     md=12,
@@ -1035,7 +1033,7 @@ vaccine_page = html.Div(
             dbc.Col(
                  dcc.Input(
             id="dtrue", type="number",
-            debounce=True, placeholder="Enter Your Age",min=18, max=110,
+            debounce=True, placeholder="Enter Your Age",min=15, max=110,
             style={"text-align":"center","width":"100%"}
         ),
             ),
@@ -1063,13 +1061,13 @@ vaccine_page = html.Div(
                         size="lg",
                         id="check-vaccine",
                         color="primary",
-                        block=True,
+                        #block=True,
                     ),
                     sm=12,
                     md=12,
                     lg=4,
                     xl=4,
-                    className="mb-4",
+                    className="mb-4 d-grid gap-2 col-6 mx-auto"
                 ),
             ],
             className="mt-5 justify-content-center",
@@ -1096,6 +1094,7 @@ preventive_page = dbc.Container(
                                     style={
                                         "text-align": "center",
                                         "font-weight": "bold",
+                                        "color": "black",
                                     },
                                 ),
                                 html.Div(
@@ -1167,6 +1166,7 @@ preventive_page = dbc.Container(
                                     style={
                                         "text-align": "center",
                                         "font-weight": "bold",
+                                        "color": "black",
                                     },
                                 ),
                                 html.Div(
@@ -1234,6 +1234,7 @@ preventive_page = dbc.Container(
                                     style={
                                         "text-align": "center",
                                         "font-weight": "bold",
+                                        "color": "black",
                                     },
                                 ),
                                 html.Div(
@@ -1338,13 +1339,13 @@ app.layout = html.Div(
 
 # Updates the message on top of the page
 @app.callback(
-    dash.dependencies.Output("global-message", "children"),
-    dash.dependencies.Input("confirmed", "n_clicks"),
-    dash.dependencies.Input("recoveries", "n_clicks"),
-    dash.dependencies.Input("deaths", "n_clicks"),
+    dependencies.Output("global-message", "children"),
+    dependencies.Input("confirmed", "n_clicks"),
+    dependencies.Input("recoveries", "n_clicks"),
+    dependencies.Input("deaths", "n_clicks"),
 )
 def update_message(btn1, btn2, btn3):
-    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    changed_id = [p["prop_id"] for p in callback_context.triggered][0]
     time_updated = datetime.datetime.fromtimestamp(
         today_data["updated"] / 1000
     ).strftime("%H:%M")
@@ -1385,16 +1386,16 @@ def update_message(btn1, btn2, btn3):
 
 # Updates the huge world map, the animation, and the time series on the page
 @app.callback(
-    dash.dependencies.Output("metric-output", "figure"),
-    dash.dependencies.Output("animation-output", "figure"),
-    dash.dependencies.Output("timeseries-output", "figure"),
-    dash.dependencies.Input("confirmed", "n_clicks"),
-    dash.dependencies.Input("recoveries", "n_clicks"),
-    dash.dependencies.Input("deaths", "n_clicks"),
+    dependencies.Output("metric-output", "figure"),
+    dependencies.Output("animation-output", "figure"),
+    dependencies.Output("timeseries-output", "figure"),
+    dependencies.Input("confirmed", "n_clicks"),
+    dependencies.Input("recoveries", "n_clicks"),
+    dependencies.Input("deaths", "n_clicks"),
 )
 @cache.memoize(timeout=TIMEOUT)
 def update_graphs(btn1, btn2, btn3):
-    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    changed_id = [p["prop_id"] for p in callback_context.triggered][0]
 
     if "confirmed" in changed_id:
         return (
@@ -1432,18 +1433,18 @@ def update_graphs(btn1, btn2, btn3):
 
 # Updates the text and stats on the page
 @app.callback(
-    dash.dependencies.Output("today", "children"),
-    dash.dependencies.Output("lastweek", "children"),
-    dash.dependencies.Output("lastweek-diff", "children"),
-    dash.dependencies.Output("lastmonth", "children"),
-    dash.dependencies.Output("lastmonth-diff", "children"),
-    dash.dependencies.Input("confirmed", "n_clicks"),
-    dash.dependencies.Input("recoveries", "n_clicks"),
-    dash.dependencies.Input("deaths", "n_clicks"),
+    dependencies.Output("today", "children"),
+    dependencies.Output("lastweek", "children"),
+    dependencies.Output("lastweek-diff", "children"),
+    dependencies.Output("lastmonth", "children"),
+    dependencies.Output("lastmonth-diff", "children"),
+    dependencies.Input("confirmed", "n_clicks"),
+    dependencies.Input("recoveries", "n_clicks"),
+    dependencies.Input("deaths", "n_clicks"),
 )
 @cache.memoize(timeout=TIMEOUT)
 def update_cases(btn1, btn2, btn3):
-    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    changed_id = [p["prop_id"] for p in callback_context.triggered][0]
 
     lastweek = today - timedelta(weeks=1)
     lastmonth = today - timedelta(days=30)
@@ -1510,14 +1511,14 @@ def update_cases(btn1, btn2, btn3):
 
 # Updates the message on top of the page for the country selected in the dropdown
 @app.callback(
-    dash.dependencies.Output("country-message", "children"),
-    dash.dependencies.Input("country-dropdown", "value"),
-    dash.dependencies.Input("confirmed-country", "n_clicks"),
-    dash.dependencies.Input("recoveries-country", "n_clicks"),
-    dash.dependencies.Input("deaths-country", "n_clicks"),
+    dependencies.Output("country-message", "children"),
+    dependencies.Input("country-dropdown", "value"),
+    dependencies.Input("confirmed-country", "n_clicks"),
+    dependencies.Input("recoveries-country", "n_clicks"),
+    dependencies.Input("deaths-country", "n_clicks"),
 )
 def update_country_message(value, btn1, btn2, btn3):
-    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    changed_id = [p["prop_id"] for p in callback_context.triggered][0]
     country_stats = get_final_object(value, today_country_data)
     date_obj = datetime.datetime.strptime(
         country_stats["updatedAt"][0], "%Y-%m-%d %H:%M:%S"
@@ -1564,15 +1565,15 @@ def update_country_message(value, btn1, btn2, btn3):
 
 # Updates the graphs shown on the page for the country chosen in the dropdown
 @app.callback(
-    dash.dependencies.Output("metric-output-country", "figure"),
-    dash.dependencies.Output("timeseries-output-country", "figure"),
-    dash.dependencies.Input("country-dropdown", "value"),
-    dash.dependencies.Input("confirmed-country", "n_clicks"),
-    dash.dependencies.Input("recoveries-country", "n_clicks"),
-    dash.dependencies.Input("deaths-country", "n_clicks"),
+    dependencies.Output("metric-output-country", "figure"),
+    dependencies.Output("timeseries-output-country", "figure"),
+    dependencies.Input("country-dropdown", "value"),
+    dependencies.Input("confirmed-country", "n_clicks"),
+    dependencies.Input("recoveries-country", "n_clicks"),
+    dependencies.Input("deaths-country", "n_clicks"),
 )
 def update_graphs_country(value, btn1, btn2, btn3):
-    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    changed_id = [p["prop_id"] for p in callback_context.triggered][0]
 
     if "confirmed-country" in changed_id:
         try:
@@ -1670,18 +1671,18 @@ def update_graphs_country(value, btn1, btn2, btn3):
 
 # Update the stats shown on the page
 @app.callback(
-    dash.dependencies.Output("today-country", "children"),
-    dash.dependencies.Output("lastweek-country", "children"),
-    dash.dependencies.Output("lastweek-country-diff", "children"),
-    dash.dependencies.Output("lastmonth-country", "children"),
-    dash.dependencies.Output("lastmonth-country-diff", "children"),
-    dash.dependencies.Input("country-dropdown", "value"),
-    dash.dependencies.Input("confirmed-country", "n_clicks"),
-    dash.dependencies.Input("recoveries-country", "n_clicks"),
-    dash.dependencies.Input("deaths-country", "n_clicks"),
+    dependencies.Output("today-country", "children"),
+    dependencies.Output("lastweek-country", "children"),
+    dependencies.Output("lastweek-country-diff", "children"),
+    dependencies.Output("lastmonth-country", "children"),
+    dependencies.Output("lastmonth-country-diff", "children"),
+    dependencies.Input("country-dropdown", "value"),
+    dependencies.Input("confirmed-country", "n_clicks"),
+    dependencies.Input("recoveries-country", "n_clicks"),
+    dependencies.Input("deaths-country", "n_clicks"),
 )
 def update_cases_country(value, btn1, btn2, btn3):
-    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    changed_id = [p["prop_id"] for p in callback_context.triggered][0]
 
     country_stats = get_final_object(value, today_country_data)
     cases = format(country_stats["confirmed"], ",d")
@@ -1753,15 +1754,15 @@ def update_cases_country(value, btn1, btn2, btn3):
 
 
 @app.callback(
-    dash.dependencies.Output("stats-graph", "children"),
-    dash.dependencies.Output("stats-table", "children"),
-    dash.dependencies.Input("country-dropdown", "value"),
-    dash.dependencies.Input("confirmed-country", "n_clicks"),
-    dash.dependencies.Input("recoveries-country", "n_clicks"),
-    dash.dependencies.Input("deaths-country", "n_clicks"),
+    dependencies.Output("stats-graph", "children"),
+    dependencies.Output("stats-table", "children"),
+    dependencies.Input("country-dropdown", "value"),
+    dependencies.Input("confirmed-country", "n_clicks"),
+    dependencies.Input("recoveries-country", "n_clicks"),
+    dependencies.Input("deaths-country", "n_clicks"),
 )
 def update_stats(value, btn1, btn2, btn3):
-    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    changed_id = [p["prop_id"] for p in callback_context.triggered][0]
     country_stats = maps.get_country_frame(
         maps.choose_country(today_country_data, value)
     )
@@ -1830,22 +1831,22 @@ def update_stats(value, btn1, btn2, btn3):
 
 
 @app.callback(
-    dash.dependencies.Output("predictions-graph", "children"),
-    dash.dependencies.Output("predictions-table", "children"),
-    dash.dependencies.Input("forecast-confirmed", "n_clicks"),
-    dash.dependencies.Input("forecast-recoveries", "n_clicks"),
-    dash.dependencies.Input("forecast-deaths", "n_clicks"),
-    dash.dependencies.State("country-dropdown-prediction", "value"),
+    dependencies.Output("predictions-graph", "children"),
+    dependencies.Output("predictions-table", "children"),
+    dependencies.Input("forecast-confirmed", "n_clicks"),
+    dependencies.Input("forecast-recoveries", "n_clicks"),
+    dependencies.Input("forecast-deaths", "n_clicks"),
+    dependencies.State("country-dropdown-prediction", "value"),
     prevent_initial_call=True,
 
 )
 
 
 @app.callback(
-    dash.dependencies.Output("vacc", "children"),
-    dash.dependencies.Input("check-vaccine", "n_clicks"),
-    dash.dependencies.Input("vaccine-dropdown", "value"),
-    dash.dependencies.Input("dtrue", "value"),
+    dependencies.Output("vacc", "children"),
+    dependencies.Input("check-vaccine", "n_clicks"),
+    dependencies.Input("vaccine-dropdown", "value"),
+    dependencies.Input("dtrue", "value"),
     prevent_initial_call=True,
 
 )
@@ -1853,7 +1854,7 @@ def check_slot(value,children,age):
     print("AGE IS",age)
     # print('CHECK SLOT VALUE IS:',value)
     # print('CHECK SLOT CHILDREN IS:',children)
-    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    changed_id = [p["prop_id"] for p in callback_context.triggered][0]
     print(changed_id)
     if "check-vaccine" in changed_id:
         DIST_ID = children
@@ -1977,7 +1978,7 @@ def check_slot(value,children,age):
 
 
 def forecast_cases(btn1, btn2, btn3, value):
-    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
+    changed_id = [p["prop_id"] for p in callback_context.triggered][0]
     if "forecast-confirmed" in changed_id:
         try:
             response = requests.get(
@@ -2053,8 +2054,8 @@ def forecast_cases(btn1, btn2, btn3, value):
 
 
 @app.callback(
-    dash.dependencies.Output("page-content", "children"),
-    [dash.dependencies.Input("url", "pathname")],
+    dependencies.Output("page-content", "children"),
+    [dependencies.Input("url", "pathname")],
 )
 def display_page(pathname):
     if pathname == "/":

@@ -12,10 +12,10 @@ from math import log
 from math import e
 
 chart_studio.tools.set_credentials_file(
-    username="chartstudiouser", api_key="m9KxT5JPEEukONNW8E50"
+    username="anirudhlakhotia", api_key="tcCFHV4CoCJaqmLfANU6"
 )
 
-mapbox_access_token = "pk.eyJ1IjoiY2hhcnRzdHVkaW91c2VyIiwiYSI6ImNrZXd3bTBoNTA4bnYyemw4N3l5aDN5azIifQ.7e-KoC1KMXr_EKbkahgAQQ"
+mapbox_access_token = "pk.eyJ1IjoiYW5pcnVkaGxha2hvdGlhIiwiYSI6ImNreThyeDl6NDEyeHUyd3BmaWo3Ynp6MTcifQ.o7XgaewOUt_7BPH6F41R0w"
 
 confirmed_global, deaths_global, recovered_global, country_cases_sorted = (
     av.confirmed_global,

@@ -1,9 +1,11 @@
 from math import sqrt
 from scipy.special import xlogy
 from scipy.stats import gmean
+from scipy import stats
 import numpy as np
 import warnings
 import json
+import datetime
 
 import matplotlib.pyplot as plt
 
@@ -180,7 +182,7 @@ class FindErrors(object):
                 assert isinstance(name, str)
                 fname = name
             else:
-                fname = str(dateandtime_now())
+                fname = str(datetime.now())
 
             with open(fname + ".json", "w") as fp:
                 json.dump(errors, fp, sort_keys=True, indent=4)
@@ -275,7 +277,7 @@ class FindErrors(object):
 
     def sse(self):
         """Sum of squared errors (model vs actual).
-        measure of how far off our model’s predictions are from the observed values. A value of 0 indicates that all
+        measure of how far off our model's predictions are from the observed values. A value of 0 indicates that all
          predications are spot on. A non-zero value indicates errors.
         https://dziganto.github.io/data%20science/linear%20regression/machine%20learning/python/Linear-Regression-101-Metrics/
         This is also called residual sum of squares (RSS) or sum of squared residuals as per
@@ -1133,7 +1135,7 @@ class FindErrors(object):
         return a * np.arcsin(1 - (self.mse() / f))
 
     def stats(self, verbose: bool = False) -> dict:
-        """ returs some important stats about true and predicted values."""
+        """ returns some important stats about true and predicted values."""
         _stats = dict()
         _stats["true"] = stats(self.true)
         _stats["predicted"] = stats(self.predicted)

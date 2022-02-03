@@ -78,6 +78,7 @@ def collect_data():
 
     recovered_global.drop(columns=["Province/State", "Lat", "Long"], inplace=True)
 
+
     country_cases.drop(
         columns=[
             "Last_Update",
@@ -108,6 +109,7 @@ def collect_data():
     confirmed_global = confirmed_global.groupby(["country"], as_index=False).sum()
     deaths_global = deaths_global.groupby(["country"], as_index=False).sum()
     recovered_global = recovered_global.groupby(["country"], as_index=False).sum()
+
 
     country_cases_sorted = country_cases.sort_values("confirmed", ascending=False)
     country_cases_sorted.index = [x for x in range(len(country_cases_sorted))]
@@ -170,6 +172,7 @@ av.country_cases_sorted = av.country_cases
     av.country_cases_sorted,
 )
 
+
 # Importing these modules later as they rely on having data stored
 
 import animations
@@ -190,6 +193,7 @@ deaths = dict(study="deaths", color="#f54842")
 columns = ["country", ["deaths", "confirmed", "recovered"], "Lat", "Long_"]
 
 world_map = maps.plot_study(country_cases_sorted, columns, confirmed)
+
 
 confirmed_timeseries = timeseries.plot_world_timeseries(
     confirmed_global, "confirmed", n=-20, daily=True
@@ -466,9 +470,11 @@ home_page = dbc.Container(
                                                     "background-color": "#322daa",
                                                     "border-color": "transparent",
                                                     "border-radius": "1rem",
+                                                    "justify":"center",
+                                                    "display":"block"
                                                 },
                                                 className="mr-1",
-                                                # block=True,
+                                                #block=True,
                                             ),
                                         ]
                                     ),
@@ -509,6 +515,7 @@ home_page = dbc.Container(
                                                     "background-color": "#322daa",
                                                     "border-color": "transparent",
                                                     "border-radius": "1rem",
+                                                    "display":"block"
                                                 },
                                                 className="mr-1",
                                                 # block=True,
@@ -522,6 +529,7 @@ home_page = dbc.Container(
                                     "background-color": "#000000",
                                     "border-style": "solid",
                                     "border-width": "medium",
+
                                 },
                                 inverse=True,
                             ),
@@ -551,6 +559,7 @@ home_page = dbc.Container(
                                                     "background-color": "#322daa",
                                                     "border-color": "transparent",
                                                     "border-radius": "1rem",
+                                                    "display":"block"
                                                 },
                                                 className="mr-1",
                                                 #block=True,
@@ -591,6 +600,9 @@ global_page = html.Div(
                         id="confirmed",
                         color="primary",
                         #block=True,
+                        style={
+                            "width": "-webkit-fill-available",
+                        },
                         outline=True,
                     ),
                     sm=12,
@@ -606,6 +618,9 @@ global_page = html.Div(
                         id="recoveries",
                         color="success",
                         #block=True,
+                         style={
+                             "width": "-webkit-fill-available",
+                        },
                         outline=True,
                     ),
                     sm=12,
@@ -621,6 +636,9 @@ global_page = html.Div(
                         id="deaths",
                         color="danger",
                         #block=True,
+                         style={
+                             "width": "-webkit-fill-available",
+                        },
                         outline=True,
                     ),
                     sm=12,
@@ -753,6 +771,9 @@ country_page = html.Div(
                         id="confirmed-country",
                         color="primary",
                         #block=True,
+                         style={
+                             "width": "-webkit-fill-available",
+                        },
                         outline=True,
                     ),
                     sm=12,
@@ -768,6 +789,9 @@ country_page = html.Div(
                         id="recoveries-country",
                         color="success",
                         #block=True,
+                         style={
+                             "width": "-webkit-fill-available",
+                        },
                         outline=True,
                     ),
                     sm=12,
@@ -783,6 +807,9 @@ country_page = html.Div(
                         id="deaths-country",
                         color="danger",
                         #block=True,
+                         style={
+                             "width": "-webkit-fill-available",
+                        },
                         outline=True,
                     ),
                     sm=12,
@@ -958,6 +985,9 @@ forecast_page = html.Div(
                         id="forecast-confirmed",
                         color="primary",
                         #block=True,
+                         style={
+                            "display": "block",
+                        },
                     ),
                     sm=12,
                     md=12,
@@ -972,6 +1002,9 @@ forecast_page = html.Div(
                         id="forecast-recoveries",
                         color="success",
                         #block=True,
+                         style={
+                            "display": "block",
+                        },
                     ),
                     sm=12,
                     md=12,
@@ -986,6 +1019,9 @@ forecast_page = html.Div(
                         id="forecast-deaths",
                         color="danger",
                         #block=True,
+                         style={
+                            "display": "block",
+                        },
                     ),
                     sm=12,
                     md=12,
@@ -1062,6 +1098,9 @@ vaccine_page = html.Div(
                         id="check-vaccine",
                         color="primary",
                         #block=True,
+                         style={
+                            "display": "block",
+                        },
                     ),
                     sm=12,
                     md=12,
@@ -1338,7 +1377,7 @@ app.layout = html.Div(
 # Callbacks for the Global Situation Page
 
 # Updates the message on top of the page
-@app.callback(
+@callback(
     dependencies.Output("global-message", "children"),
     dependencies.Input("confirmed", "n_clicks"),
     dependencies.Input("recoveries", "n_clicks"),
@@ -1385,7 +1424,7 @@ def update_message(btn1, btn2, btn3):
 
 
 # Updates the huge world map, the animation, and the time series on the page
-@app.callback(
+@callback(
     dependencies.Output("metric-output", "figure"),
     dependencies.Output("animation-output", "figure"),
     dependencies.Output("timeseries-output", "figure"),
@@ -1432,7 +1471,7 @@ def update_graphs(btn1, btn2, btn3):
 
 
 # Updates the text and stats on the page
-@app.callback(
+@callback(
     dependencies.Output("today", "children"),
     dependencies.Output("lastweek", "children"),
     dependencies.Output("lastweek-diff", "children"),
@@ -1510,7 +1549,7 @@ def update_cases(btn1, btn2, btn3):
 # Callbacks for the Country Analysis Page
 
 # Updates the message on top of the page for the country selected in the dropdown
-@app.callback(
+@callback(
     dependencies.Output("country-message", "children"),
     dependencies.Input("country-dropdown", "value"),
     dependencies.Input("confirmed-country", "n_clicks"),
@@ -1564,7 +1603,7 @@ def update_country_message(value, btn1, btn2, btn3):
 
 
 # Updates the graphs shown on the page for the country chosen in the dropdown
-@app.callback(
+@callback(
     dependencies.Output("metric-output-country", "figure"),
     dependencies.Output("timeseries-output-country", "figure"),
     dependencies.Input("country-dropdown", "value"),
@@ -1670,7 +1709,7 @@ def update_graphs_country(value, btn1, btn2, btn3):
 
 
 # Update the stats shown on the page
-@app.callback(
+@callback(
     dependencies.Output("today-country", "children"),
     dependencies.Output("lastweek-country", "children"),
     dependencies.Output("lastweek-country-diff", "children"),
@@ -1753,7 +1792,7 @@ def update_cases_country(value, btn1, btn2, btn3):
         )
 
 
-@app.callback(
+@callback(
     dependencies.Output("stats-graph", "children"),
     dependencies.Output("stats-table", "children"),
     dependencies.Input("country-dropdown", "value"),
@@ -1830,7 +1869,7 @@ def update_stats(value, btn1, btn2, btn3):
 # Callbacks for the Forecasts Page
 
 
-@app.callback(
+@callback(
     dependencies.Output("predictions-graph", "children"),
     dependencies.Output("predictions-table", "children"),
     dependencies.Input("forecast-confirmed", "n_clicks"),
@@ -1842,7 +1881,7 @@ def update_stats(value, btn1, btn2, btn3):
 )
 
 
-@app.callback(
+@callback(
     dependencies.Output("vacc", "children"),
     dependencies.Input("check-vaccine", "n_clicks"),
     dependencies.Input("vaccine-dropdown", "value"),
@@ -1851,11 +1890,9 @@ def update_stats(value, btn1, btn2, btn3):
 
 )
 def check_slot(value,children,age):
-    print("AGE IS",age)
     # print('CHECK SLOT VALUE IS:',value)
     # print('CHECK SLOT CHILDREN IS:',children)
     changed_id = [p["prop_id"] for p in callback_context.triggered][0]
-    print(changed_id)
     if "check-vaccine" in changed_id:
         DIST_ID = children
         # Print available centre description (y/n)?
@@ -1866,36 +1903,23 @@ def check_slot(value,children,age):
         date_list = [base + datetime.timedelta(days=x) for x in range(numdays)]
         date_str = [x.strftime("%d-%m-%Y") for x in date_list]
 
-        print('DIST_ID',DIST_ID)
         for INP_DATE in date_str:
-            print(INP_DATE)
             URL = f"https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id={DIST_ID}&date={INP_DATE}"
-            print("URL",URL)
             response = requests.get(URL, headers=header)
-            print(response)
             if response.ok:
                 resp_json = response.json()
-                print('Here')
                 L=[]
                 D={}
                 # print(json.dumps(resp_json, indent = 1))
                 if resp_json["centers"]:
-                    print("Available on: {}".format(INP_DATE))
                     if(print_flag=='y' or print_flag=='Y'):
                         for center in resp_json["centers"]:
                             for session in center["sessions"]:
-                                # print('SESSION')
-                                print(session)
                                 if session["min_age_limit"] <= age:
-                                    print("\t", center["name"])
                                     D['Name']= center["name"]
-                                    print("\t", center["block_name"])
                                     D['Block_Name']= center["block_name"]
-                                    print("\t Price: ", center["fee_type"])
                                     D['Price']=center['fee_type']
-                                    print("\t Available Capacity: ", session["available_capacity"])
                                     if(session["vaccine"] != ''):
-                                        print("\t Vaccine: ", session["vaccine"])
                                         D['Vaccine']=session["vaccine"]
                                         # D['Address']=session['address']
                                         Time=[]
@@ -1905,10 +1929,8 @@ def check_slot(value,children,age):
                                         D['Date']=session['date']
                                         D['available']=session['available_capacity']
                                     L.append(dict(D))
-                                    print("\n\n")
                       
                 else:
-                    print("No available slots on {}".format(INP_DATE))
                     L=None
                 return [dbc.Col(dbc.Card(
             dbc.CardBody(
@@ -2053,7 +2075,7 @@ def forecast_cases(btn1, btn2, btn3, value):
             )
 
 
-@app.callback(
+@callback(
     dependencies.Output("page-content", "children"),
     [dependencies.Input("url", "pathname")],
 )

@@ -10,6 +10,7 @@ import requests
 from itertools import chain
 from math import log
 from math import e
+import app as app
 
 chart_studio.tools.set_credentials_file(
     username="anirudhlakhotia", api_key="tcCFHV4CoCJaqmLfANU6"
@@ -25,14 +26,15 @@ confirmed_global, deaths_global, recovered_global, country_cases_sorted = (
 )
 
 
+
+
 def chainer(s):
     return list(chain.from_iterable(s.astype(str).str.split(",")))
 
 
 def convert_df(df, cols):
-    df.dropna(inplace=True)
+    df.dropna(inplace=False)
     df.set_index(df[cols[0]].values)
-
     L = []
     for i in range(len(df)):
         string = ""
@@ -45,7 +47,9 @@ def convert_df(df, cols):
         L.append(string)
 
     df["New"] = L
+
     lens = df["New"].astype(str).str.split(",").map(len)
+
 
     df = pd.DataFrame(
         {
@@ -58,6 +62,7 @@ def convert_df(df, cols):
     df["Study"] = [cols[1][i] for i in range(len(cols[1]))] * (
         len(df.index) // len(cols[1])
     )
+
     return df
 
 
@@ -104,6 +109,7 @@ def create_data(df, study, color):
             data.append(event_data)
         except:
             continue
+
 
     return data
 
@@ -192,7 +198,7 @@ def get_country_frame(country):
 
 def interactive_map(data, layout):
     figure = {"data": data, "layout": layout}
-
+ 
     return figure
 
 
@@ -200,18 +206,20 @@ def plot_study(
     starting_df,
     cols,
     study_dict,
-    location="global",
     zoom=2,
     latitude=20.59,
     longitude=78.96,
 ):
     color = study_dict["color"]
     study = study_dict["study"]
+
     df = convert_df(starting_df, cols)
     data = create_data(df, study, color)
+    
     layout = create_basic_layout(latitude, longitude, zoom)
     updated_layout = update_layout(study, layout)
     figure = interactive_map(data, updated_layout)
+
     return figure
 
 

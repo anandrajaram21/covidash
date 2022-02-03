@@ -1,3 +1,4 @@
+
 confirmed_global, deaths_global, recovered_global, country_cases, country_cases_sorted = (
     None,
     None,

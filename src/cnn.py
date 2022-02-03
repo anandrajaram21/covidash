@@ -16,35 +16,34 @@ confirmed_global, deaths_global, recovered_global, country_cases_sorted = (
     av.country_cases_sorted,
 )
 
-
 def get_data(
-    confirmed=confirmed_global, deaths=deaths_global, recovered=recovered_global
+    confirmed=confirmed_global, deaths=deaths_global
 ):
 
-    recovered = recovered.groupby("country").sum().T
+    # recovered = recovered.groupby("country").sum().T
     deaths = deaths.groupby("country").sum().T
     confirmed = confirmed.groupby("country").sum().T
 
     deaths.index = pd.to_datetime(deaths.index, infer_datetime_format=True)
-    recovered.index = pd.to_datetime(recovered.index, infer_datetime_format=True)
+    # recovered.index = pd.to_datetime(recovered.index, infer_datetime_format=True)
     confirmed.index = pd.to_datetime(confirmed.index, infer_datetime_format=True)
 
-    return deaths, recovered, confirmed
+    return deaths, confirmed
 
 
 def create_data_frame(dataframe, country):
 
-    deaths, recovered, confirmed = get_data()
+    deaths,  confirmed = get_data()
 
     if dataframe == "deaths":
         data = pd.DataFrame(
             index=deaths.index, data=deaths[country].values, columns=["Total"]
         )
 
-    elif dataframe == "recovered":
-        data = pd.DataFrame(
-            index=recovered.index, data=recovered[country].values, columns=["Total"]
-        )
+    # elif dataframe == "recovered":
+    #     data = pd.DataFrame(
+    #         index=recovered.index, data=recovered[country].values, columns=["Total"]
+    #     )
 
     elif dataframe == "confirmed":
         data = pd.DataFrame(

@@ -240,7 +240,7 @@ def plot_country(Country, data, study):
         columns,
         d,
         country,
-        zoom=4.5,
+        zoom=7.5,
         latitude=get_lat_long(Country)[0],
         longitude=get_lat_long(Country)[1],
     )

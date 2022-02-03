@@ -313,6 +313,7 @@ home_page = dbc.Container(
                                     style={
                                         "text-align": "center",
                                         "font-weight": "bold",
+                                        "color": "black"
                                     },
                                 ),
                                 html.Div(
@@ -384,6 +385,7 @@ home_page = dbc.Container(
                                     style={
                                         "text-align": "center",
                                         "font-weight": "bold",
+                                        "color": "#060606",
                                     },
                                 ),
                                 html.Div(
@@ -410,6 +412,7 @@ home_page = dbc.Container(
                                                     style={
                                                         "text-align": "left",
                                                         "font-size": "large",
+                                                        
                                                     },
                                                 ),
                                                 sm=12,
@@ -986,7 +989,7 @@ forecast_page = html.Div(
                         color="primary",
                         #block=True,
                          style={
-                            "display": "block",
+                            "width": "-webkit-fill-available",
                         },
                     ),
                     sm=12,
@@ -1003,7 +1006,7 @@ forecast_page = html.Div(
                         color="success",
                         #block=True,
                          style={
-                            "display": "block",
+                            "width": "-webkit-fill-available",
                         },
                     ),
                     sm=12,
@@ -1020,7 +1023,7 @@ forecast_page = html.Div(
                         color="danger",
                         #block=True,
                          style={
-                            "display": "block",
+                            "width": "-webkit-fill-available",
                         },
                     ),
                     sm=12,
@@ -1866,20 +1869,6 @@ def update_stats(value, btn1, btn2, btn3):
         )
 
 
-# Callbacks for the Forecasts Page
-
-
-@callback(
-    dependencies.Output("predictions-graph", "children"),
-    dependencies.Output("predictions-table", "children"),
-    dependencies.Input("forecast-confirmed", "n_clicks"),
-    dependencies.Input("forecast-recoveries", "n_clicks"),
-    dependencies.Input("forecast-deaths", "n_clicks"),
-    dependencies.State("country-dropdown-prediction", "value"),
-    prevent_initial_call=True,
-
-)
-
 
 @callback(
     dependencies.Output("vacc", "children"),
@@ -1998,7 +1987,19 @@ def check_slot(value,children,age):
 
 
 
+# Callbacks for the Forecasts Page
 
+
+@callback(
+    dependencies.Output("predictions-graph", "children"),
+    dependencies.Output("predictions-table", "children"),
+    dependencies.Input("forecast-confirmed", "n_clicks"),
+    dependencies.Input("forecast-recoveries", "n_clicks"),
+    dependencies.Input("forecast-deaths", "n_clicks"),
+    dependencies.State("country-dropdown-prediction", "value"),
+    prevent_initial_call=True,
+
+)
 def forecast_cases(btn1, btn2, btn3, value):
     changed_id = [p["prop_id"] for p in callback_context.triggered][0]
     if "forecast-confirmed" in changed_id:
@@ -2067,6 +2068,11 @@ def forecast_cases(btn1, btn2, btn3, value):
             os.remove("temp.pkl")
         except:
             preds, _, fig = cnn.cnn_predict("deaths", value)
+            print("DDDDDDDDDDDDDDD")
+            print(preds)
+            print("DDDDDDDDDDDDDDD")
+
+
             return (
                 dcc.Graph(figure=fig),
                 dbc.Table.from_dataframe(

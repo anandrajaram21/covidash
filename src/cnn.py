@@ -8,42 +8,37 @@ from TSErrors import FindErrors
 from sklearn.model_selection import ParameterGrid
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv1D, MaxPooling1D, Dense, Flatten
+import app
 
-confirmed_global, deaths_global, recovered_global, country_cases_sorted = (
-    av.confirmed_global,
-    av.deaths_global,
-    av.recovered_global,
-    av.country_cases_sorted,
-)
-
+confirmed_global, deaths_global, recovered_global, country_cases_sorted = app.collect_data()
 def get_data(
-    confirmed=confirmed_global, deaths=deaths_global
+    confirmed=confirmed_global, deaths=deaths_global, recovered=recovered_global
 ):
 
-    # recovered = recovered.groupby("country").sum().T
+    recovered = recovered.groupby("country").sum().T
     deaths = deaths.groupby("country").sum().T
     confirmed = confirmed.groupby("country").sum().T
 
     deaths.index = pd.to_datetime(deaths.index, infer_datetime_format=True)
-    # recovered.index = pd.to_datetime(recovered.index, infer_datetime_format=True)
+    recovered.index = pd.to_datetime(recovered.index, infer_datetime_format=True)
     confirmed.index = pd.to_datetime(confirmed.index, infer_datetime_format=True)
 
-    return deaths, confirmed
+    return deaths,recovered, confirmed
 
 
 def create_data_frame(dataframe, country):
 
-    deaths,  confirmed = get_data()
+    deaths, recovered,  confirmed = get_data()
 
     if dataframe == "deaths":
         data = pd.DataFrame(
             index=deaths.index, data=deaths[country].values, columns=["Total"]
         )
 
-    # elif dataframe == "recovered":
-    #     data = pd.DataFrame(
-    #         index=recovered.index, data=recovered[country].values, columns=["Total"]
-    #     )
+    elif dataframe == "recovered":
+        data = pd.DataFrame(
+            index=recovered.index, data=recovered[country].values, columns=["Total"]
+        )
 
     elif dataframe == "confirmed":
         data = pd.DataFrame(
@@ -121,7 +116,7 @@ def compile_model(p):
 
 def hyperparameter_tuning(grid, X_train, y_train):
 
-    parameters = pd.DataFrame(columns=["MASE", "Parameters"])
+    # parameters = pd.DataFrame(columns=["MASE", "Parameters"])
     for p in grid:
         model = compile_model(p)
 
@@ -135,8 +130,8 @@ def hyperparameter_tuning(grid, X_train, y_train):
         predictions = predictions.flatten()
 
         MASE = mase(y_train, predictions)
-        parameters = parameters.append(
-            {"MASE": MASE, "Parameters": p}, ignore_index=True
+        parameters = pd.DataFrame.from_records(
+           [{"MASE": MASE, "Parameters": p}],
         )
 
     return parameters
@@ -282,3 +277,7 @@ pred, _, figure = cnn_predict("confirmed", "India")
 pred, _, figure = cnn_predict("deaths", "US")
 pred, _, figure = cnn_predict("recovered", "Japan")
 """
+pred, _, figure = cnn_predict("confirmed", "India")
+print("########################")
+print(pred)
+print("########################")

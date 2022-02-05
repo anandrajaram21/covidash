@@ -190,7 +190,7 @@ def get_country_frame(country):
     df["lat"] = make_column("latitude", coords)
     df["lon"] = make_column("longitude", coords)
     df["Confirmed"] = make_column("confirmed", stats)
-    df["Recoveries"] = make_column("recovered", stats)
+    # df["Recoveries"] = make_column("recovered", stats)
     df["Deaths"] = make_column("deaths", stats)
     df = df[df["Provinces"] != "Unknown"]
     return df

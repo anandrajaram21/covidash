@@ -114,7 +114,7 @@ def collect_data():
     country_cases_sorted = country_cases.sort_values("confirmed", ascending=False)
     country_cases_sorted.index = [x for x in range(len(country_cases_sorted))]
 
-    return (confirmed_global, deaths_global, recovered_global, country_cases_sorted)
+    return (confirmed_global, deaths_global, recovered_global,country_cases_sorted)
 
 
 @cache.memoize(timeout=TIMEOUT)
@@ -974,7 +974,7 @@ forecast_page = html.Div(
         dbc.Row(
             [
                 html.H5(
-                    "It can take upto 2 minutes for our bots to generate the predictions.",
+                    "It can take a few minutes for our bots to generate the predictions.",
                 ),
             ],
             className="mt-5 justify-content-center",

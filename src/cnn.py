@@ -8,15 +8,9 @@ from TSErrors import FindErrors
 from sklearn.model_selection import ParameterGrid
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv1D, MaxPooling1D, Dense, Flatten
+import app
 
-confirmed_global, deaths_global, recovered_global, country_cases_sorted = (
-    av.confirmed_global,
-    av.deaths_global,
-    av.recovered_global,
-    av.country_cases_sorted,
-)
-
-
+confirmed_global, deaths_global, recovered_global, country_cases_sorted = app.collect_data()
 def get_data(
     confirmed=confirmed_global, deaths=deaths_global, recovered=recovered_global
 ):
@@ -29,12 +23,12 @@ def get_data(
     recovered.index = pd.to_datetime(recovered.index, infer_datetime_format=True)
     confirmed.index = pd.to_datetime(confirmed.index, infer_datetime_format=True)
 
-    return deaths, recovered, confirmed
+    return deaths,recovered, confirmed
 
 
 def create_data_frame(dataframe, country):
 
-    deaths, recovered, confirmed = get_data()
+    deaths, recovered,  confirmed = get_data()
 
     if dataframe == "deaths":
         data = pd.DataFrame(
@@ -122,7 +116,7 @@ def compile_model(p):
 
 def hyperparameter_tuning(grid, X_train, y_train):
 
-    parameters = pd.DataFrame(columns=["MASE", "Parameters"])
+    # parameters = pd.DataFrame(columns=["MASE", "Parameters"])
     for p in grid:
         model = compile_model(p)
 
@@ -136,8 +130,8 @@ def hyperparameter_tuning(grid, X_train, y_train):
         predictions = predictions.flatten()
 
         MASE = mase(y_train, predictions)
-        parameters = parameters.append(
-            {"MASE": MASE, "Parameters": p}, ignore_index=True
+        parameters = pd.DataFrame.from_records(
+           [{"MASE": MASE, "Parameters": p}],
         )
 
     return parameters

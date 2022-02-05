@@ -7,15 +7,20 @@ import plotly.graph_objects as go
 import chart_studio.plotly as py
 import chart_studio
 import requests
+import os
 from itertools import chain
 from math import log
 from math import e
-
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
+API_KEY=os.getenv("API_KEY")
+MAPBOX_ACCESS_TOKEN=os.getenv("MAPBOX_ACCESS_TOKEN")
+CHART_STUDIO_USERNAME=os.getenv("CHART_STUDIO_USERNAME")
 chart_studio.tools.set_credentials_file(
-    username="chartstudiouser", api_key="m9KxT5JPEEukONNW8E50"
+    username=CHART_STUDIO_USERNAME, api_key=API_KEY
 )
 
-mapbox_access_token = "pk.eyJ1IjoiY2hhcnRzdHVkaW91c2VyIiwiYSI6ImNrZXd3bTBoNTA4bnYyemw4N3l5aDN5azIifQ.7e-KoC1KMXr_EKbkahgAQQ"
+mapbox_access_token = MAPBOX_ACCESS_TOKEN
 
 confirmed_global, deaths_global, recovered_global, country_cases_sorted = (
     av.confirmed_global,
@@ -25,14 +30,15 @@ confirmed_global, deaths_global, recovered_global, country_cases_sorted = (
 )
 
 
+
+
 def chainer(s):
     return list(chain.from_iterable(s.astype(str).str.split(",")))
 
 
 def convert_df(df, cols):
-    df.dropna(inplace=True)
+    df.dropna(inplace=False)
     df.set_index(df[cols[0]].values)
-
     L = []
     for i in range(len(df)):
         string = ""
@@ -45,7 +51,9 @@ def convert_df(df, cols):
         L.append(string)
 
     df["New"] = L
+
     lens = df["New"].astype(str).str.split(",").map(len)
+
 
     df = pd.DataFrame(
         {
@@ -58,6 +66,7 @@ def convert_df(df, cols):
     df["Study"] = [cols[1][i] for i in range(len(cols[1]))] * (
         len(df.index) // len(cols[1])
     )
+
     return df
 
 
@@ -104,6 +113,7 @@ def create_data(df, study, color):
             data.append(event_data)
         except:
             continue
+
 
     return data
 
@@ -184,7 +194,7 @@ def get_country_frame(country):
     df["lat"] = make_column("latitude", coords)
     df["lon"] = make_column("longitude", coords)
     df["Confirmed"] = make_column("confirmed", stats)
-    df["Recoveries"] = make_column("recovered", stats)
+    # df["Recoveries"] = make_column("recovered", stats)
     df["Deaths"] = make_column("deaths", stats)
     df = df[df["Provinces"] != "Unknown"]
     return df
@@ -192,7 +202,7 @@ def get_country_frame(country):
 
 def interactive_map(data, layout):
     figure = {"data": data, "layout": layout}
-
+ 
     return figure
 
 
@@ -200,18 +210,20 @@ def plot_study(
     starting_df,
     cols,
     study_dict,
-    location="global",
     zoom=2,
     latitude=20.59,
     longitude=78.96,
 ):
     color = study_dict["color"]
     study = study_dict["study"]
+
     df = convert_df(starting_df, cols)
     data = create_data(df, study, color)
+    
     layout = create_basic_layout(latitude, longitude, zoom)
     updated_layout = update_layout(study, layout)
     figure = interactive_map(data, updated_layout)
+
     return figure
 
 
@@ -232,7 +244,7 @@ def plot_country(Country, data, study):
         columns,
         d,
         country,
-        zoom=4.5,
+        zoom=7.5,
         latitude=get_lat_long(Country)[0],
         longitude=get_lat_long(Country)[1],
     )

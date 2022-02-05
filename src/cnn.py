@@ -277,7 +277,3 @@ pred, _, figure = cnn_predict("confirmed", "India")
 pred, _, figure = cnn_predict("deaths", "US")
 pred, _, figure = cnn_predict("recovered", "Japan")
 """
-pred, _, figure = cnn_predict("confirmed", "India")
-print("########################")
-print(pred)
-print("########################")

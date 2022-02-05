@@ -15,8 +15,9 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 API_KEY=os.getenv("API_KEY")
 MAPBOX_ACCESS_TOKEN=os.getenv("MAPBOX_ACCESS_TOKEN")
+CHART_STUDIO_USERNAME=os.getenv("CHART_STUDIO_USERNAME")
 chart_studio.tools.set_credentials_file(
-    username="anirudhlakhotia", api_key=API_KEY
+    username=CHART_STUDIO_USERNAME, api_key=API_KEY
 )
 
 mapbox_access_token = MAPBOX_ACCESS_TOKEN

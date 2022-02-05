@@ -7,16 +7,19 @@ import plotly.graph_objects as go
 import chart_studio.plotly as py
 import chart_studio
 import requests
+import os
 from itertools import chain
 from math import log
 from math import e
-import app as app
-
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
+API_KEY=os.getenv("API_KEY")
+MAPBOX_ACCESS_TOKEN=os.getenv("MAPBOX_ACCESS_TOKEN")
 chart_studio.tools.set_credentials_file(
-    username="anirudhlakhotia", api_key="tcCFHV4CoCJaqmLfANU6"
+    username="anirudhlakhotia", api_key=API_KEY
 )
 
-mapbox_access_token = "pk.eyJ1IjoiYW5pcnVkaGxha2hvdGlhIiwiYSI6ImNreThyeDl6NDEyeHUyd3BmaWo3Ynp6MTcifQ.o7XgaewOUt_7BPH6F41R0w"
+mapbox_access_token = MAPBOX_ACCESS_TOKEN
 
 confirmed_global, deaths_global, recovered_global, country_cases_sorted = (
     av.confirmed_global,
